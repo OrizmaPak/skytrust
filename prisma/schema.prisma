@@ -1,0 +1,1134 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "cockroachdb"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+  SUPERADMIN
+}
+
+enum Module {
+  AUTH
+}
+
+enum Acc {
+  ACTIVE
+  SUSPENDED
+  PENDING
+  DELETED
+}
+
+enum Yn {
+  YES
+  NO
+}
+
+enum accounttype {
+    ASSET
+    CASH
+    CURRENT_ASSETS
+    EXPENSE
+    INCOME
+    EQUITY_RETAINED_EARNINGS
+    EQUITY_DOES_NOT_CLOSE
+    INVENTORY
+    OTHER_ASSET
+    COST_OF_SALES
+    FIXED_ASSET
+    OTHER_CURRENT_ASSET
+    ACCOUNTS_PAYABLE
+    ACCOUNTS_RECEIVABLE
+    ACCUMULATED_DEPRECIATION
+    LIABILITIES
+    OTHER_CURRENT_LIABILITIES
+    LONG_TERM_LIABILITIES
+    EQUITY
+}
+
+model User {
+  id            Int       @id @default(sequence())
+  firstname     String
+  lastname      String
+  othernames    String? 
+  image         String?
+  email         String    @unique
+  phone         String    @unique
+  country       String?
+  state         String?
+  emailverified DateTime?
+  address       String?
+  role          String    @default("MEMBER")
+  permissions   String?
+  userpermissions   String? @default("")
+  password      String
+  officeaddress String?
+  image2         String?
+  gender        String?
+  occupation    String?
+  lga           String?
+  town          String?
+  maritalstatus          String?
+  spousename          String?
+  stateofresidence      String?
+  lgaofresidence      String?
+  nextofkinfullname      String?
+  nextofkinphone      String?
+  nextofkinrelationship      String?
+  nextofkinaddress      String?
+  nextofkinofficeaddress      String?
+  nextofkinoccupation      String?
+  dateofbirth   DateTime?
+  branch        Int?       @default(1)
+  registrationpoint   Int    @default(0)
+  dateadded     DateTime  @default(now())
+  lastupdated   DateTime?
+  status        String    @default("ACTIVE")
+  createdby     Int       @default(0)
+  sessions      Session[]
+  activities    Activity[] 
+  pin          String?   @default("")
+  level         Int?       @default(0)
+}
+
+model Roles {
+  role          String    @id @unique
+  permissions   String?   
+  description   String?
+  status        String    @default("ACTIVE")
+}
+
+model Department {
+  id            Int       @id @default(sequence())
+  department    String    
+  branch        Int
+  category      String? @default("STORE") // "OFFICE", "STORE", "IT", "MOBILE UNIT", "OTHER"
+  applyforsales String? @default("JUST DEPARTMENT") // "JUST DEPARTMENT", "STOCK", "NON STOCK"
+  userid        Int?
+  dateadded     DateTime  @default(now())
+  status        String    @default("ACTIVE")
+  lastupdated   DateTime?
+  createdby     Int       @default(0)
+}
+
+model DefineMember {
+  id            Int       @id @default(sequence())
+  member        String    @unique
+  dateadded     DateTime  @default(now())
+  status        String    @default("ACTIVE")
+  lastupdated   DateTime?
+  addmember     String    @default("YES")    
+  createdby     Int       @default(0)
+}
+
+model Membership {
+  id            Int      @id @default(sequence())
+  member        Int      @default(1)
+  userid        Int
+  createdby     Int      @default(0)
+  dateadded     DateTime @default(now())
+  lastupdated   DateTime?
+  status        String    @default("ACTIVE")
+}
+
+model Position {
+  id            Int       @id @default(sequence())
+  member        Int  
+  position      String
+  userid        Int? @default(0)
+  branch        Int?      @default(0)
+  createdby     Int       @default(0)
+  dateadded     DateTime  @default(now())
+  lastupdated   DateTime?
+  status        String    @default("ACTIVE")
+}
+
+model Activity {
+  id        Int           @id @default(sequence())
+  userid    Int
+  activity  String
+  date      DateTime
+  module    String    @default("AUTH")
+  status    String    @default("ACTIVE")
+
+  user      User          @relation(fields: [userid], references: [id])
+}
+
+model Session {
+  id           Int       @id @default(sequence()) 
+  sessiontoken String    @unique
+  userid       Int
+  expires      DateTime
+  device       String?
+  status       String    @default("ACTIVE")
+  
+  user User @relation(fields: [userid], references: [id])
+}
+
+model VerificationToken {
+  identifier String
+  token      String       @unique
+  expires    DateTime 
+  status     String       @default("ACTIVE")
+
+  @@unique([identifier, token])
+}
+
+model Branch {
+  id          Int        @id @default(sequence()) 
+  branch      String
+  country     String?
+  state       String?
+  lga         String?
+  address     String?
+  status        String    @default("ACTIVE")
+  dateadded   DateTime   @default(now())
+  lastupdated DateTime?
+  userid      Int?
+  createdby   Int        @default(0)
+
+  @@unique([branch])
+}
+
+model Organisationsettings {
+  id                                         Int      @id @default(1) // Marked as primary key
+  company_name                               String
+  sms_sender_id                              String
+  phone                                      String @default("")
+  mobile                                     String @default("")
+  email                                      String
+  address                                    String
+  logo                                       String?
+
+  sms_charge                                 Float?
+  maintenace_charge                         Float?
+  vat_rate_percent                           Float      @default(0)
+  addition_savings_registration_charge       Float?
+  addition_loan_registration_charge       Float? @default(0)
+
+  allow_back_dated_transaction               String    @default("NO")
+  allow_future_transaction                   String    @default("NO")
+  personal_account_overdrawn                 Boolean   @default(false)
+  set_accounting_year_end                    DateTime?
+  schedule_maintenace_charge                String    @default("NO")
+  sms_charge_members                         String    @default("YES")
+  minimum_credit_amount                      Float    @default(2000)
+  minimum_credit_amount_penalty              Float    @default(200)
+
+  personal_transaction_prefix                String?
+  loan_transaction_prefix                    String?
+  rotary_transaction_prefix                  String? @default("")
+  gl_transaction_prefix                      String?
+  savings_transaction_prefix                 String?
+  property_transaction_prefix                String? @default("")
+
+  savings_account_prefix                     String?
+  personal_account_prefix                    String   @default("DHF")
+  loan_account_prefix                        String?
+  property_account_prefix                        String? @default("")
+  rotary_account_prefix                        String? @default("")
+  asset_account_prefix                       String?
+  cash_account_prefix                        String?
+  current_assets_account_prefix              String?
+  expense_account_prefix                     String?
+  income_account_prefix                      String?
+  equity_retained_earnings_account_prefix    String?
+  equity_does_not_close_prefix               String?
+  inventory_account_prefix                   String?
+  other_asset_account_prefix                 String?
+  cost_of_sales_account_prefix               String?
+  fixed_asset_account_prefix                 String?
+  other_current_asset_account_prefix         String?
+  accounts_payable_account_prefix            String?
+  accounts_receivable_account_prefix         String?
+  accumulated_depreciation_account_prefix    String?
+  liabilities_account_prefix                 String?
+  other_current_liabilities_account_prefix   String?
+  long_term_liabilities_account_prefix       String?
+  equity_account_prefix                      String?
+  
+  default_sms_charge_account                  Float?
+  default_asset_account                       Float?
+  default_cash_account                        Float?
+  default_current_assets_account              Float?
+  default_expense_account                     Float?
+  default_income_account                      Float?
+  default_equity_retained_earnings_account    Float?
+  default_equity_does_not_close_account       Float?
+  default_inventory_account                   Float?
+  default_other_asset_account                 Float?
+  default_cost_of_sales_account               Float?
+  default_fixed_asset_account                 Float?
+  default_other_current_asset_account         Float?
+  default_accounts_payable_account            Float?
+  default_accounts_receivable_account         Float?
+  default_accumulated_depreciation_account    Float?
+  default_liabilities_account                 Float?
+  default_other_current_liabilities_account   Float?
+  default_long_term_liabilities_account       Float?
+  default_equity_account                      Float?
+  default_tax_account                         Float?
+  default_excess_account                      Float?
+  default_allocation_account                  Float? @default(0)
+  default_property_account                  Float? @default(0)
+  default_rotary_account                  Float? @default(0)
+  status                                      String @default("ACTIVE")
+}
+
+model Rejecttransactiondate {
+  id                 Int       @id @default(sequence())
+  rejectiondate      DateTime
+  status             String    @default("ACTIVE")
+  reason             String?
+}
+
+model Registrationpoint {
+  id                 Int       @id @default(sequence())
+  registrationpoint  String
+  description        String?
+  branch             Int
+  status             String    @default("ACTIVE")
+  datecreated        DateTime?
+  createdby          Int
+}
+
+model Task {
+  id                 Int       @id @default(sequence())
+  title              String
+  description        String?
+  priority           String
+  assignedto         String?
+  branch             String
+  startdate          DateTime
+  enddate            DateTime
+  taskstatus         String @default("NOT STARTED")
+  status             String @default("ACTIVE")
+  createdby          Int
+}
+
+model Subtask {
+  id                 Int       @id @default(sequence())
+  task               Int
+  title              String
+  startdate          DateTime
+  enddate            DateTime
+  description        String?
+  taskstatus         String @default("NOT STARTED")
+  createdby          String
+  assignedto         String
+  status             String @default("ACTIVE")
+}
+
+model Cashierlimit {
+  id                 Int       @id @default(sequence())
+  cashier            Int
+  depositlimit       Float
+  withdrawallimit    Float
+  status             String @default("ACTIVE")
+  dateadded          DateTime
+  createdby          Int
+}
+
+model Lastseen {
+  id                 Int       @id @default(sequence())
+  userid             Int
+  date               DateTime
+  status             String    @default("ACTIVE")
+}
+
+model Inventory {
+  id                 Int       @id @default(sequence())
+  itemid             Int
+  itemname           String
+  department         String    
+  branch             Int
+  units              String
+  cost               Float?
+  price              Float?
+  pricetwo           Float?
+  beginbalance       Float?
+  qty                Float?
+  minimumbalance     Float?
+  group              String?
+  applyto            String
+  itemclass          String
+  composite          String
+  compositeid        Int?
+  description        String?
+  imageone           String?
+  imagetwo           String? 
+  imagethree         String?
+  sellingprice       Float?
+  reference          String?
+  transactiondate    String?
+  transactiondesc    String?
+  transactionref     String? @default("")
+  reorderlevel       String? @default("2")
+  issue              String?
+  issuetype          String?
+  supplier           String?
+  staff             String? @default("")
+  returned           Boolean @default(false)
+  status             String @default("ACTIVE")
+  dateadded          DateTime
+  createdby          Int
+}
+
+model issue {
+  id                 Int       @id @default(sequence())
+  issuetype          String    @unique
+  status             String @default("ACTIVE")
+  dateadded          DateTime
+  createdby          Int
+}
+
+model Supplier {
+  id                 Int       @id @default(sequence())
+  supplier           String    @unique
+  contactperson      String
+  contactpersonphone String
+  officeaddress      String?
+  nationality        String
+  currency           String? @default("NGN")
+  state              String
+  bank1              String?
+  accountnumber1     String?
+  bank2              String?
+  accountnumber2     String?
+  status             String @default("ACTIVE")
+  dateadded          DateTime
+  createdby          Int
+}
+
+model savingsproduct {
+  activationfee                     Float?
+  allowdeposit                      Boolean
+  allowoverdrawn                    Boolean
+  allowwithdrawal                   Boolean
+  chargehere                        Boolean   @default(false)
+  addmember                         String    @default("NO")
+  compulsorydeposit                 Boolean
+  compulsorydepositdeficit          Boolean  @default(false) // if this is true compulsorydepositpenalty will be ignored
+  compulsorydepositfrequency        String?   // "D1", "W1", "M1"
+  compulsorydepositfrequencyamount  Float?
+  compulsorydepositfrequencyskip    Int?
+  compulsorydepositpenalty          Float?
+  compulsorydepositpenaltyfallbackfrom String?  // Reference to fallback product ID
+  compulsorydepositpenaltyfrom      String?   // Reference to another product ID
+  compulsorydepositpenaltytype      String?   // "AMOUNT" or "PERCENTAGE"
+  compulsorydepositspillover        Boolean
+  compulsorydeposittype             String?   // "FIXED" or "MINIMUM"
+  currency                          String   // "NGN" or "USD"
+  dateadded                         DateTime @default(now())
+  deductions                        Deduction[]
+  depositcharge                     Float?
+  depositechargetype                String?   @default("PERCENTAGE")  // "PERCENTAGE" or "AMOUNT"
+  eligibilityaccountage             Int?    // in months for SAVINGS
+  eligibilityminbalance             Float?
+  eligibilitymincredit              Float?
+  eligibilitymindebit               Float?
+  eligibilityminimumclosedaccounts  Int?
+  eligibilityminimumloan            Float? // for LOAN
+  eligibilityproduct                Int? @default(0)  // the product that the user must have account in
+  eligibilityproductcategory        String? // "LOAN" or "SAVINGS" 
+  id                                Int      @id @default(sequence())
+  interests                         Interest[]
+  maxbalance                        Float?
+  membership                        String? @default("")
+  minimumaccountbalance             Float?
+  productname                       String
+  status                            String @default("ACTIVE")
+  updatedat                         DateTime?
+  useraccount                       Int? @default(1) // number of maximum account a user can open for this product... note that this is yet to be implemented in the code base
+  withdrawalcharges                 Float?
+  withdrawalchargeinterval          String?   // "D1", "W1", "M1"
+  withdrawalchargetype              String?   // "PERCENTAGE" or "AMOUNT"
+  withdrawalcontrol                 Boolean?  @default(false)
+  withdrawalcontrolamount           Float?    @default(0)
+  withdrawalcontrolsize             String?   // "FIXED" or "MINIMUM"
+  withdrawalcontroltype             String?   // "PERCENTAGE" or "AMOUNT"
+  withdrawalcontrolwindow           String?   // "D1", "W1", "M1" the one with plus
+  withdrawallimit                   Float?
+  withdrawallimittype               String?   // "PERCENTAGE" or "AMOUNT"
+}
+
+model Interest {
+  id                        Int      @id @default(sequence())
+  savingsproductid          Int
+  interestname              String
+  interestmethod            String   // "LAST BALANCE" or "PRO RATA BASIS"
+  interesteligibilityaccountage     Int    @default(0)  // in months
+  interesteligibilitybalance        Float   @default(0) 
+  interestamount            Float
+  interesttype              String   // "PERCENTAGE" or "AMOUNT"
+  interestfrequency         String   // "D1", "W1", "M1"
+  interestfrequencynumber   Int?
+  interestfrequencyskip     Int?
+  interestgoforapproval             Boolean   @default(false) 
+  status             String @default("ACTIVE")
+
+
+  savingsproduct            savingsproduct @relation(fields: [savingsproductid], references: [id])
+}
+
+model frequencyoverride {
+  id                        Int      @id @default(sequence())
+  savingsproductid          Int 
+  compulsorydepositfrequency String   // "D1", "W1", "M1"
+  branch                  Int
+  status             String @default("ACTIVE")
+}
+    
+model Deduction {
+  id                        Int      @id @default(sequence())
+  savingsproductid          Int 
+  deductionname             String
+  deductioneligibilityaccountage     Int   @default(0)    // in months
+  deductioneligibilitybalance        Float @default(0) 
+  deductionamount           Float
+  deductiontype             String   // "PERCENTAGE" or "AMOUNT"
+  deductionmethod           String   // "LATEST BALANCE" or "PRO RATA BASIS"
+  deductionfrequency        String   // "D1", "W1", "M1"
+  deductionfrequencynumber  Int?
+  deductionfrequencyskip    Int?
+  deductiongoforapproval             Boolean @default(false) 
+    status             String @default("ACTIVE")
+
+
+  savingsproduct            savingsproduct @relation(fields: [savingsproductid], references: [id])
+}
+
+model savings {
+  id                        Int      @id @default(sequence())
+  savingsproductid          Int
+  accountnumber             Int
+  userid                    Int
+  amount                    Float
+  member                    Int? @default(0)
+  branch                    Int
+  registrationpoint         Int?
+  registrationcharge        Float
+  registrationdate          DateTime
+  registrationdesc          String?
+  bankname1                 String?
+  bankaccountname1              String?
+  bankaccountnumber1              Int?
+  bankname2                 String?
+  bankaccountname2              String?
+  bankaccountnumber2              String?
+  accountofficer            String?
+  sms                       Boolean?
+  whatsapp                  Boolean?
+  email                     Boolean?
+  status                    String @default("ACTIVE")
+  dateadded                 DateTime
+  createdby                 Int
+  reason                    String? @default("")
+}
+
+model transaction {
+  id                        Int       @id @default(sequence())
+  accountnumber             String
+  userid                    Int
+  currency                  String
+  credit                    Float @default(0) 
+  debit                     Float @default(0)
+  description               String?
+  image                     String?
+  branch                    Int?
+  registrationpoint         Int?
+  dateadded                 DateTime @default(now())
+  approvedby                Int?
+  status                    String @default("ACTIVE")
+  updateddated              DateTime?
+  transactiondate           DateTime?
+  transactiondesc           String?
+  transactionref            String? @default("")
+  cashref                   String? @default("")
+  updatedby                 Int?
+  ttype                     String? // "CHARGES" or "INTEREST" or "DEDUCTION" or "WITHDRAWAL" or "DEPOSIT" or "CASH"
+  tfrom                     String? // "BANK" or "CASH"
+  createdby                 Int @default(0)
+  valuedate                 DateTime?
+  reference                 String?
+  whichaccount              String? // "SAVINGS" or "PERSONAL" or "LOAN" or "GLACCCOUNT"
+  voucher                   String? @default("")
+  tax                       Boolean? @default(false)
+}
+
+model listofbanks {
+  id                        Int        @id @default(sequence())
+  bank                      String @unique
+  country                   String
+  status                    String @default("ACTIVE")
+  dateadded                 DateTime @default(now())
+  createdby                 Int       @default(0)
+}
+
+model reciepients {
+  id                        Int        @id @default(sequence())
+  fullname                  String
+  bank                      Int
+  accountnumber             String
+  createdby                 Int       @default(0)
+  dateadded                 DateTime @default(now()) 
+  status                    String @default("ACTIVE")
+}
+
+model banktransaction {
+  id                        Int        @id @default(sequence())
+  accountnumber             String
+  userid                    Int @default(0)
+  description               String?
+  debit                     Int?
+  credit                    Int?
+  ttype                     String? // "CHARGES" or "INTEREST" or "DEDUCTION" or "WITHDRAWAL" or "DEPOSIT" or "CASH"
+  tfrom                     String? // "BANK" or "CASH"
+  createdby                 Int @default(0)
+  valuedate                 DateTime?
+  reference                 String?
+  transactiondate           DateTime?
+  transactiondesc           String?
+  transactionref            String?
+  status                    String @default("ACTIVE")
+  whichaccount              String? // "GTBANK" or "WEMA" or "PAYSTACK" or "STERLING" or "FIRSTBANK"
+  rawdata                   String?
+}
+
+model Accounts {
+  id                       Int        @id @default(sequence()) 
+  accountnumber            String
+  groupname                String?
+  accounttype              String?
+  description              String?
+  status                   String @default("ACTIVE")
+  dateadded                DateTime @default(now())
+  createdby                Int
+}
+ 
+model loanfee {
+  id                       Int        @id @default(sequence()) 
+  feename                  String    @unique
+  feemethod                String    // "FORM FEE" or "PROCESSING FEE" or "INSURANCE FEE" or "DEDUCTION FEE" or "PENALTY"
+  chargesbasedon           String    // "PRINCIPAL AMOUNT ONLY" or "PRINCIPAL AND INTEREST"
+  chargeamount               Float?    
+  chargetype                String?    // "PERCENTAGE" or "AMOUNT"
+  glaccount                String
+  status                   String @default("ACTIVE")
+  dateadded                DateTime
+  createdby                Int
+}
+
+model loanproduct {
+      id                       Int        @id @default(sequence()) 
+      productname              String    @unique
+      description              String?
+      registrationcharge       Float?
+
+      repaymentsettings        String // "ACCOUNT" or "PRODUCT"
+      
+      repaymentfrequency       String? // "D1", "W1", "M1"
+      numberofrepayments       Int?
+      duration                 Int? // refers to the cycle
+      durationcategory         String? // "DAY" or "WEEK" or "MONTH" or "YEAR"
+      interestmethod            String  // "NO INTEREST", "FLAT RATE", "ONE OF INTEREST", "INTEREST ONLY", "EQUAL INSTALLMENTS", "REDUCING BALANCE", "BALLOON LOAN", "FIXED RATE", "UNSECURE LOAN", "INSTALLMENT LOAN", "PAYDAY LOAN", "MICRO LOAN", "BRIDGE LOAN", "AGRICULTURAL LOAN", "EDUCATION LOAN", "WORKIN CAPITAL"
+      interestrate             Float
+      interestratetype          String? // "INSTALLMENT", "PRINCIPAL"
+      defaultpenaltyid         Int?
+      seperateinterest         Boolean? @default(false)
+
+      useraccount              Int? @default(1) // number of maximum account a user can open for this product... note that this is yet to be implemented in the code base
+      eligibilityproductcategory       String? // "LOAN" or "SAVINGS" 
+      eligibilityproduct       Int? @default(0)  // the product that the user must have account in
+
+      eligibilityaccountage    Int?    // in months for SAVINGS
+      eligibilityminbalance    Float?
+      eligibilitymincredit    Float?
+      eligibilitymindebit    Float?
+      
+      eligibilityminimumloan   Float? // for LOAN
+      eligibilityminimumclosedaccounts Int?
+
+      eligibilitytype          String? // "PERCENTAGE" or "AMOUNT"
+
+      maximumloan              Float? 
+      minimumloan              Float?
+      membership               String? @default("")
+
+      currency                 String? // "NGN" or "USD"
+      excludebranch            String? // "1,2,3"
+      productofficer           String?
+      status                   String @default("ACTIVE")
+      member                    Int? @default(0)
+      dateadded                DateTime
+      createdby                Int
+}
+
+model loanaccounts {
+      id                        Int       @id @default(sequence()) 
+      loanproduct               Int? @default(0)
+      accountnumber             String?
+      userid                    Int 
+      branch                    Int
+      registrationpoint         Int?
+      registrationcharge        Float?
+      registrationdate          DateTime
+      registrationdesc          String?
+      loanamount                Float
+      bankname1                 String?
+      bankaccountname1          String?
+      bankaccountnumber1        String?
+      bankname2                 String?
+      bankaccountname2          String?
+      bankaccountnumber2        String?
+      accountofficer            String?
+
+
+      repaymentfrequency        String? // "D1", "W1", "M1"
+      numberofrepayments        Int?
+      duration                  Int? // refers to the cycle
+      durationcategory          String? // "DAY" or "WEEK" or "MONTH" or "YEAR"
+      interestmethod            String  // "NO INTEREST", "FLAT RATE", "ONE OF INTEREST", "INTEREST ONLY", "EQUAL INSTALLMENTS", "REDUCING BALANCE", "BALLOON LOAN", "FIXED RATE", "UNSECURE LOAN", "INSTALLMENT LOAN", "PAYDAY LOAN", "MICRO LOAN", "BRIDGE LOAN", "AGRICULTURAL LOAN", "EDUCATION LOAN", "WORKIN CAPITAL"
+      interestrate              Float
+      interestratetype          String? // "INSTALLMENT", "PRINCIPAL"
+      defaultpenaltyid          Int?
+      seperateinterest         Boolean? @default(false)
+
+      status                    String     @default("ACTIVE") // "ACTIVE", "PAID_OFF", "CLOSED", etc.
+      dateadded                 DateTime
+      dateclosed                DateTime?
+      closeamount               Float?
+      createdby                 Int
+      member                    Int? @default(0)
+      disbursementref           String? @default("")
+      disbursementdate          DateTime? @default(now())
+}
+
+model loanpaymentschedule {
+      id                        Int       @id @default(sequence())
+      accountnumber             Int
+      scheduledpaymentdate      DateTime
+      gracepaymentdate          DateTime?
+      scheduleamount            Float
+      interestamount            Float
+      status                    String    @default("ACTIVE") // "PENDING", "PAID", "MISSED", etc.
+      createdby                 Int
+      dateadded                 DateTime
+      reference                 String?
+}
+
+model collateral {
+  id                 Int      @id @default(sequence())
+  accountnumber      Int
+  documenttitle      String
+  documentnumber     String
+  description        String
+  docposition        String @default("ISSUED") // "ISSUED", "WITHHELD", "INVALID", "RETURNED", "DESTROYED", "LOST", "DAMAGED", "RECOVERED"
+  documentexpiration DateTime?
+  worth              Float
+  file1              String?
+  file2              String?
+  file3              String?
+  file4              String?
+  file5              String?
+  dateadded          DateTime @default(now())
+  createdby          Int 
+  status             String   @default("ACTIVE")
+}
+
+model Service {
+  id                 Int      @id @default(sequence())
+  serviceid          String   @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  supplier           Int
+  staff              Int?
+  servicetype        String  // "LOGISTICS", "IT", "NETWORK", "OTHER", "MAINTENANCE"
+  description        String
+  otherdetails       String? @default("")
+  amount             Float?
+  currency           String? @default("NGN")
+  amountfrom         Float?
+  amountto           Float?
+  servicestartdate   DateTime?  @default(now())
+  serviceenddate     DateTime?  @default(now())
+  branch             Int
+  dateadded          DateTime @default(now())
+  createdby          Int
+  issue              String?
+  reference          String @default("")
+  status             String   @default("ACTIVE")
+}
+
+model otp {
+  id                 Int       @id @default(sequence())
+  userid             Int
+  otp                String
+  created_at         DateTime  @default(now())
+}
+
+model Property {
+  id                 Int       @id @default(sequence())
+  itemid             Int
+  itemname           String
+  department         String    
+  branch             Int
+  units              String
+  cost               Float?
+  price              Float?
+  pricetwo           Float?
+  beginbalance       Float?
+  qty                Float?
+  minimumbalance     Float?
+  group              String?
+  applyto            String
+  itemclass          String
+  composite          String
+  compositeid        Int?
+  description        String?
+  imageone           String?
+  imagetwo           String? 
+  imagethree         String?
+  sellingprice       Float?
+  reference          String?
+  transactiondate    String?
+  transactiondesc    String?
+  transactionref     String? @default("")
+  reorderlevel       String? @default("2")
+  issue              String?
+  issuetype          String?
+  supplier           String?
+  staff              String? @default("")
+  returned           Boolean @default(false)
+  status             String @default("ACTIVE")
+  dateadded          DateTime
+  createdby          Int
+}
+
+model compositedetails {
+  id                 Int       @id @default(sequence())
+  compositeid        Int
+  itemid             Int
+  qty                Int
+  createdby          Int
+  dateadded          DateTime
+  status             String @default("ACTIVE")
+}
+
+model categorytimeline {
+  id                 Int       @id @default(sequence())
+  valuefrom          Int
+  valueto            Int
+  numberofdays       Int
+  createdby          Int
+  dateadded          DateTime
+  status             String @default("ACTIVE")
+}
+
+model propertyproduct {
+  id                 Int       @id @default(sequence())
+  product            String @unique
+  member             String?
+  useraccount        Int @default(1)
+  registrationcharge String?
+  createdby          Int
+  description        String?  @default("")
+  currency           String @default("NGN")
+  productofficer     Int?
+  dateadded          DateTime @default(now())
+  status             String @default("ACTIVE")
+}
+
+model propertyaccount {
+  id                 Int      @id @default(sequence())
+  productid          Int
+  accountnumber      String
+  userid             Int
+  membershipid       Int?
+  registrationcharge  Int
+  registrationdate    DateTime @default(now())
+  registrationpoint   String?
+  accountofficer     Int?
+  repaymentfrequency String?
+  numberofrepayments Int?
+  percentagedelivery Int?
+  createdby          Int
+  status             String @default("ACTIVE")
+  dateadded          DateTime @default(now())
+}
+
+model propertyitems {
+  id                 Int      @id @default(sequence())
+  accountnumber      String
+  itemid             Int
+  qty                Int
+  price              Int
+  userid             Int
+  delivered          String @default("NO")
+  deliverystatus     String @default("NOT STARTED")
+  deliveryrequested  String @default("NO")
+  deliveryrequestdate DateTime?
+  readyfordelivery   String @default("NO")
+  createdby          Int
+  status             String @default("ACTIVE")
+  dateadded          DateTime @default(now())
+}
+
+model propertyinstallments {
+  id                 Int       @id @default(sequence())
+  accountnumber      String
+  amount             Float @default(0)
+  duedate            DateTime
+  delivered          String @default("NO")
+  userid             Int
+  transactionref     String? @default("")
+  description        String? @default("")
+  createdby          Int
+  status             String @default("ACTIVE")
+  dateadded          DateTime @default(now())
+}
+
+model rotaryProduct {
+  id                 Int       @id @default(sequence())
+  product            String @unique
+  member             String?
+  useraccount        Int @default(1)
+  registrationcharge String?
+  createdby          Int
+  description        String?  @default("")
+  currency           String @default("NGN")
+  productofficer     Int?
+  poolnumber         String // "SEQUENCE", "RANDOM"
+  rotaryschedule     String? @default("PRODUCT") // "PRODUCT", "ACCOUNT"
+  frequency          String?
+  frequencynumber    Int?
+  dateadded          DateTime @default(now())
+  status             String @default("ACTIVE")
+}
+
+model rotaryaccount {
+  id                 Int      @id @default(sequence())
+  accountnumber      String
+  userid             Int @default(0)
+  branch             Int @default(0)
+  registrationcharge  Float? @default(0)
+  registrationdate    DateTime @default(now())
+  registrationpoint   Int? @default(0)
+  registrationdesc    String? @default("")
+  member             Int @default(0)
+  productid          Int
+  amount             Float
+  frequency          String?
+  frequencynumber    Int?
+  autorunnew         String @default("YES")
+  createdby          Int @default(0)
+  dateadded          DateTime @default(now())
+  dateupdated        DateTime? @default(now())
+  takeout            Int @default(0)
+  status             String @default("ACTIVE")
+}
+
+model rotaryschedule {
+  id                 Int      @id @default(sequence())
+  accountnumber      Int
+  amount             Float
+  duedate            String?
+  dateadded          DateTime @default(now())
+  currentschedule    String @default("true")
+  createdby          Int
+  payout             String @default("NO")
+  payoutref          String? @default("")
+  status             String @default("ACTIVE")
+}
+
+model level {
+  id                 Int      @id @default(sequence())
+  level              String 
+  description        String?
+  basicsalary        Float?
+
+  dateadded          DateTime @default(now())
+  createdby          Int
+  status             String @default("ACTIVE")
+}
+
+model allowances {
+  id                 Int      @id @default(sequence())
+  level              Int
+  allowance          Float //PERCENTAGE
+  allowancetype      String //AMOUNT, PERCENTAGE
+
+  dateadded          DateTime @default(now())
+  createdby          Int
+  status             String @default("ACTIVE")
+}
+
+model deductions {
+  id                 Int      @id @default(sequence())
+  level              Int
+  deduction          Float //PERCENTAGE
+  deductiontype      String //AMOUNT, PERCENTAGE
+
+  dateadded          DateTime @default(now())
+  createdby          Int
+  status             String @default("ACTIVE")
+}
+
+model guarantor {
+  id                 Int      @id @default(sequence())
+  userid             Int
+  guarantorname      String 
+  guarantorofficeaddress   String
+  guarantorresidentialaddress   String
+  guarantoroccupation   String
+  guarantorphone     String 
+  imageone           String?
+  imagetwo           String?
+  yearsknown         Int
+  createdby          Int
+  dateadded          DateTime @default(now())
+  status             String @default("ACTIVE")
+}
+
+model employmentrecord {
+  id                 Int      @id @default(sequence())
+  userid             Int
+  employer           String
+  position           String
+  years              Int
+  reasonofleaving    String
+  doc                String?
+
+  dateadded          DateTime @default(now())
+  createdby          Int
+  status             String @default("ACTIVE")
+}
+
+model referee {
+  id                      Int       @id @default(sequence())
+  userid                  Int
+  refereename             String
+  refereeofficeaddress    String
+  refereeresidentialaddress String
+  refereeoccupation       String
+  refereephone            String
+  refereeyearsknown       Int
+  relationship            String
+  imageone                String?
+  imagetwo                String?
+  dateadded               DateTime @default(now())
+  createdby               Int 
+  status                  String @default("ACTIVE")
+}
+
+model qualification { 
+  id                      Int      @id @default(sequence())
+  userid                  Int
+  institution             String
+  certificationdate       DateTime
+  imageone                String?
+  imagetwo                String?
+  dateadded               DateTime @default(now())
+  qualification           String
+  createdby               Int
+  status                  String @default("ACTIVE")
+}
+
+model parentguardians {
+  id                      Int       @id @default(sequence())
+  userid                  Int
+  parentonename           String
+  parentoneoccupation     String
+  parentonestate          String
+  parentoneofficeaddress  String
+  parentonephone          String
+  parenttwoname           String
+  parenttwooccupation     String
+  parenttwoofficeaddress  String
+  parenttwostate          String
+  parenttwophone          String
+  parentoneimage          String?
+  parenttwoimage          String?
+  homeaddress             String
+  dateadded               DateTime @default(now())
+  createdby               Int
+  status                  String @default("ACTIVE")
+}
+
+model query {
+  id                      Int       @id @default(sequence())
+  userid                  Int
+  query                   String
+  imageone                String?
+  dateadded               DateTime @default(now())
+  createdby               Int
+  status                  String @default("ACTIVE")
+}
+
+model promotiondemotion {
+  id                      Int       @id @default(sequence())
+  userid                  Int
+  title                   String
+  type                   String //PROMOTION , DEMOTION
+  level                   Int
+  dateadded               DateTime @default(now())
+  createdby               Int
+  status                  String @default("ACTIVE")
+}
+
+model terminationresignation {
+  id                      Int       @id @default(sequence())
+  userid                  Int
+  title                   String
+  type                   String //TERMINATION , RESIGNATION
+  image                   String?
+  dateadded               DateTime @default(now())
+  createdby               Int
+  status                  String @default("ACTIVE")
+}
+
+model suspension {
+  id                      Int       @id @default(sequence())
+  userid                  Int
+  title                   String
+  image                   String?
+  dateadded               DateTime @default(now())
+  createdby               Int
+  status                  String @default("ACTIVE")
+}
+
+model leave {
+  id                      Int       @id @default(sequence())
+  userid                  Int
+  title                   String
+  startdate               DateTime
+  enddate                 DateTime
+  image                   String?
+  dateadded               DateTime @default(now())
+  createdby               Int
+  status                  String @default("ACTIVE")
+}
+
+model warning {
+  id                      Int       @id @default(sequence())
+  userid                  Int
+  title                   String  
+  image                   String?
+  dateadded               DateTime @default(now())
+  createdby               Int
+  status                  String @default("ACTIVE")
+}
+
+model monitoringevaluation {
+  id                      Int       @id @default(sequence())
+  userid                  Int
+  title                   String  
+  image                   String?
+  dateadded               DateTime @default(now())
+  createdby               Int
+  status                  String @default("ACTIVE")
+} 
