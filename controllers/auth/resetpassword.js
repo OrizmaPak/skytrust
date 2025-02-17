@@ -89,7 +89,7 @@ const resetPassword = async (req, res) => {
     // Send confirmation email
     await sendEmail({
       to: email,
-      subject: 'Your Divine Help Farmers Password Has Been Successfully Changed',
+      subject: 'Your Sky Trust Password Has Been Successfully Changed',
       text: "A secure password is the key to protecting your digital life. If this change wasn't made by you, take action now.",
       html: `<!DOCTYPE html>
             <html>
@@ -103,11 +103,11 @@ const resetPassword = async (req, res) => {
                 </div>
                 <div style="margin: 20px 0;">
                     <p>Hello ${existingUser.firstname},</p>
-                    <p>We wanted to let you know that your Divine Help Farmers account password was recently changed. If you made this change, no further action is required.</p>
+                    <p>We wanted to let you know that your Sky Trust account password was recently changed. If you made this change, no further action is required.</p>
                     <p>If you did not change your password, please secure your account immediately by resetting your password and reviewing your recent account activity.</p>
                     <p>For your security, we recommend using a strong and unique password that you do not use on any other sites.</p>
                     <p>If you need assistance, please contact our support team.</p>
-                    <p>Best Regards,<br>The Divine Help Farmers Team</p>
+                    <p>Best Regards,<br>The Sky Trust Team</p>
                 </div>
                 <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #666666;">
                     <p>&copy; 2024 divine. All rights reserved.</p>

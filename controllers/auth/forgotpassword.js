@@ -65,8 +65,8 @@ async function forgotpassword(req, res) {
         await sendEmail(
             {
                 to: email,
-                subject: 'Reset Your Password for Divine Help Farmers',
-                text: "A secure password is the key to protecting your digital life. Reset your password to start anew with Divine Help Farmers.",
+                subject: 'Reset Your Password for Sky Trust',
+                text: "A secure password is the key to protecting your digital life. Reset your password to start anew with Sky Trust.",
                 html: `<!DOCTYPE html>
                         <html>
                         <head> 
@@ -79,15 +79,15 @@ async function forgotpassword(req, res) {
                             </div>
                             <div style="margin: 20px 0;">
                                 <p>Hello ${existingUser.firstname},</p>
-                                <p>We received a request to reset your password for your Divine Help Farmers account. If you made this request, please click the button below to set a new password:</p>
+                                <p>We received a request to reset your password for your Sky Trust account. If you made this request, please click the button below to set a new password:</p>
                                 <a href="https://frontend.dhfdev.online/view/resetpassword.html?passwordtoken=${vtoken}" style="display: block; width: 200px; margin: 20px auto; text-align: center; background-color: #4CAF50; color: #ffffff; padding: 10px; border-radius: 5px; text-decoration: none; font-weight: bold;">Reset Password</a>
                                 <p>If the button above doesn't work, copy and paste the following link into your browser:</p>
                                 <p><a href="https://frontend.dhfdev.online/view/resetpassword.html?passwordtoken=${vtoken}" style="color: #4CAF50;">http://127.0.0.1:5501/view/resetpassword.html?passwordtoken=${vtoken}</a></p>
                                 <p>If you didn't request a password reset, please ignore this email or contact our support team if you have any concerns.</p>
-                                <p>Best Regards,<br>The Divine Help Farmers Team</p>
+                                <p>Best Regards,<br>The Sky Trust Team</p>
                             </div>
                             <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #666666;">
-                                <p>&copy; 2024 Divine Help Farmers. All rights reserved.</p>
+                                <p>&copy; 2024 Sky Trust. All rights reserved.</p>
                                 <p>1234 Farming Lane, Harvest City, Agriculture Country</p>
                             </div>
                             </div>

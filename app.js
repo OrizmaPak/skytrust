@@ -85,7 +85,7 @@ app.use('/node/api/v1/bank', authMiddleware, bankRouter);
 // app.use('/node/api/v1/ai', aiRouter);
 
 app.get('/node/', (req, res) => {
-    res.send('Welcome to the divine help farmers backend!');
+    res.send('Welcome to the Sky Trust backend!');
 });
 app.use('/node/*', (req, res) => {
     res.send(`wild card handled this route: ${req.protocol}://${req.get('host')}${req.originalUrl}`);

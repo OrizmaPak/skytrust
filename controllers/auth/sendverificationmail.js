@@ -67,8 +67,8 @@ async function sendverificationmail(req, res) {
             await sendEmail(
                 {
                     to: email,
-                    subject: 'Confirm Your Email to Begin Your Divine Help Farmers Journey 🌾',
-                    text: 'Verification is the key to unlocking your journey. Confirm your email to start your path to smarter farming practices with Divine Help Farmers.',
+                    subject: 'Confirm Your Email to Begin Your Sky Trust Journey 🌾',
+                    text: 'Verification is the key to unlocking your journey. Confirm your email to start your path to smarter farming practices with Sky Trust.',
                     html: `<!DOCTYPE html>
                         <html>
                         <head>
@@ -77,19 +77,19 @@ async function sendverificationmail(req, res) {
                         <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; color: #333333; margin: 0; padding: 0; line-height: 1.6;">
                             <div style="width: 80%; max-width: 600px; margin: 20px auto; background-color: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                             <div style="text-align: center; padding-bottom: 20px;">
-                                <h1 style="color: #4CAF50; margin: 0; font-size: 24px;">Welcome to Divine Help Farmers!</h1>
+                                <h1 style="color: #4CAF50; margin: 0; font-size: 24px;">Welcome to Sky Trust!</h1>
                             </div>
                             <div style="margin: 20px 0;">
                                 <p>Hello ${existingUser.firstname},</p>
-                                <p>Thank you for registering with Divine Help Farmers! To complete your registration and activate your account, please verify your email address by clicking the button below:</p>
+                                <p>Thank you for registering with Sky Trust! To complete your registration and activate your account, please verify your email address by clicking the button below:</p>
                                 <a href="${process.env.NEXT_PUBLIC_RETURN_APP_BASE}?emailtoken=${vtoken}" style="display: block; width: 200px; margin: 20px auto; text-align: center; background-color: #4CAF50; color: #ffffff; padding: 10px; border-radius: 5px; text-decoration: none; font-weight: bold;">Verify Email Address</a>
                                 <p>If the button above doesn't work, copy and paste the following link into your browser:</p>
                                 <p><a href="${process.env.NEXT_PUBLIC_RETURN_APP_BASE}?emailtoken=${vtoken}" style="color: #4CAF50;">${process.env.NEXT_PUBLIC_RETURN_APP_BASE}?emailtoken=${vtoken}</a></p>
-                                <p>If you didn't create an account with Divine Help Farmers, please ignore this email.</p>
-                                <p>Best Regards,<br>The Divine Help Farmers Team</p>
+                                <p>If you didn't create an account with Sky Trust, please ignore this email.</p>
+                                <p>Best Regards,<br>The Sky Trust Team</p>
                             </div>
                             <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #666666;">
-                                <p>&copy; 2024 Divine Help Farmers. All rights reserved.</p>
+                                <p>&copy; 2024 Sky Trust. All rights reserved.</p>
                                 <p>1234 Farm Lane, Harvest City, Agriculture Country</p>
                             </div>
                             </div>

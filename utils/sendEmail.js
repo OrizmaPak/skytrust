@@ -48,7 +48,7 @@ async function sendEmail(details) {
 
 //     const sender = {
 //       address: "mailtrap@demomailtrap.com",
-//       name: "Divine Help Farmers",
+//       name: "Sky Trust",
 //     };
 //     // const recipients = [
 //     //   to,

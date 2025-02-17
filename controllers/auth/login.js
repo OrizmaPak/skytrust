@@ -93,8 +93,8 @@ async function login(req, res) {
                 // send confirmation email
                 await sendEmail({
                     to: email,
-                    subject: 'Confirm Your Email to Begin Your Journey with divine Help Farmers Cooperative 🎉',
-                    text: 'Verification is key to unlocking financial freedom. Confirm your email to start your path to financial empowerment with divine Help Farmers Cooperative Society.',
+                    subject: 'Confirm Your Email to Begin Your Journey with Sky Trust Cooperative 🎉',
+                    text: 'Verification is key to unlocking financial freedom. Confirm your email to start your path to financial empowerment with Sky Trust Cooperative Society.',
                     html: `<!DOCTYPE html>
                         <html>
                         <head>
@@ -103,19 +103,19 @@ async function login(req, res) {
                         <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; color: #333333; margin: 0; padding: 0; line-height: 1.6;">
                             <div style="width: 80%; max-width: 600px; margin: 20px auto; background-color: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                             <div style="text-align: center; padding-bottom: 20px;">
-                                <h1 style="color: #4CAF50; margin: 0; font-size: 24px;">Welcome to divine Help Farmers Cooperative Society!</h1>
+                                <h1 style="color: #4CAF50; margin: 0; font-size: 24px;">Welcome to Sky Trust Cooperative Society!</h1>
                             </div>
                             <div style="margin: 20px 0;">
                                 <p>Hello ${existingUser.firstname},</p>
-                                <p>Thank you for joining <strong>divine Help Farmers Multi-Purpose Cooperative Society</strong>! To complete your registration and activate your account, please verify your email address by clicking the button below:</p>
+                                <p>Thank you for joining <strong>Sky Trust Multi-Purpose Cooperative Society</strong>! To complete your registration and activate your account, please verify your email address by clicking the button below:</p>
                                 <a href="${process.env.NEXT_PUBLIC_RETURN_APP_BASE}${vtoken}" style="display: block; width: 200px; margin: 20px auto; text-align: center; background-color: #4CAF50; color: #ffffff; padding: 10px; border-radius: 5px; text-decoration: none; font-weight: bold;">Verify Email Address</a>
                                 <p>If the button above doesn't work, copy and paste the following link into your browser:</p>
                                 <p><a href="${process.env.NEXT_PUBLIC_RETURN_APP_BASE}${vtoken}" style="color: #4CAF50;">${process.env.NEXT_PUBLIC_RETURN_APP_BASE}${vtoken}</a></p>
-                                <p>If you didn't create an account with divine Help Farmers Cooperative Society, please ignore this email.</p>
-                                <p>Best Regards,<br>The divine Help Farmers Team</p>
+                                <p>If you didn't create an account with Sky Trust Cooperative Society, please ignore this email.</p>
+                                <p>Best Regards,<br>The Sky Trust Team</p>
                             </div>
                             <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #666666;">
-                                <p>&copy; 2024 divine Help Farmers Multi-Purpose Cooperative Society. All rights reserved.</p>
+                                <p>&copy; 2024 Sky Trust Multi-Purpose Cooperative Society. All rights reserved.</p>
                                 <p>1234 Farming Lane, Prosperity City, Agriculture Nation</p>
                             </div>
                             </div>
