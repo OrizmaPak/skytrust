@@ -70,7 +70,7 @@ const getMembershipMembers = async (req, res) => {
             const { rows: columns } = await pg.query(`
                 SELECT column_name
                 FROM information_schema.columns
-                WHERE table_name = 'Membership'
+                WHERE table_schema = 'sky' AND table_name = 'Membership'
             `);
 
             const cols = columns.map(row => row.column_name);

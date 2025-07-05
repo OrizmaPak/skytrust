@@ -66,7 +66,7 @@ const getLoanProducts = async (req, res) => {
       const { rows: columns } = await pg.query(`
         SELECT column_name
         FROM information_schema.columns
-        WHERE table_name = 'loanproduct'
+        WHERE table_schema = 'sky' AND table_name = 'loanproduct'
       `);
 
       // Build up an array of "column_name ILIKE" expressions

@@ -9,15 +9,15 @@ const xss = require('xss-clean');
 const express = require('express');
 const cors = require('cors');
 const app = express();
-app.set('trust proxy', 1);
+app.set('trust proxy', 1); 
 
 // routers
 const authRouter = require('./routes/auth');
-const branchRouter = require('./routes/branch');
-const adminRouter = require('./routes/admin');
+const branchRouter = require('./routes/branch');   
+const adminRouter = require('./routes/admin'); 
 const inventoryRouter = require('./routes/inventory');
 const glaccountsRouter = require('./routes/glaccounts');
-const memberRouter = require('./routes/members');
+const memberRouter = require('./routes/members'); 
 const savingsRouter = require('./routes/savings');
 const loanRouter = require('./routes/loan');
 const paymentRouter = require('./routes/payment');

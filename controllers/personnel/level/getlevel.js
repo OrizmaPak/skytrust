@@ -34,7 +34,7 @@ const getLevel = async (req, res) => {
             const { rows: columns } = await pg.query(`
                 SELECT column_name
                 FROM information_schema.columns
-                WHERE table_name = 'level'
+                WHERE table_schema = 'sky' AND table_name = 'level'
             `);
 
             const cols = columns.map(row => row.column_name);

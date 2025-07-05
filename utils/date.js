@@ -11,7 +11,7 @@ function getTodayDate() {
   }
   
 function getDate30DaysAgo() {
-    const today = new Date();
+    const today = new Date(); 
     
     // Subtract 30 days from today's date
     today.setDate(today.getDate() - 30);

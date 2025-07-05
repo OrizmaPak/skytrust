@@ -1,6 +1,4 @@
 const cloudinary = require('cloudinary').v2;
-const path = require('path');
-const fs = require('fs');
 
 // Configure Cloudinary with your credentials
 cloudinary.config({
@@ -19,39 +17,34 @@ async function uploadToGoogleDrive(req, res) {
         console.log('No files were uploaded');
         return req;
     }
-
-    // Iterate over each file and upload to Cloudinary
-    for (let file of uploadedFiles) {
-        console.log('Processing file:', file.originalname);
-        try {
-            // Construct the file path
-            const filePath = path.join(__dirname, '..', file.path);
-            console.log('File path constructed:', filePath);
-
-            // Upload the file to Cloudinary
-            const result = await cloudinary.uploader.upload(filePath, {
-                resource_type: 'auto',
-                public_id: file.originalname.split('.')[0] // Use the original file name without extension
+  
+    // Use Promise.all to wait for all files to be uploaded
+    try {
+        const uploadPromises = uploadedFiles.map(file => {
+            console.log('Processing file:', file.originalname);
+            return new Promise((resolve, reject) => {
+                cloudinary.uploader.upload_stream({
+                    resource_type: 'auto',
+                    public_id: file.originalname.split('.')[0] // Use the original file name without extension
+                }, (error, result) => {
+                    if (error) {
+                        console.error(`Error uploading file ${file.originalname}:`, error);
+                        reject(`Failed to upload file: ${file.originalname}`);
+                    } else {
+                        console.log('File uploaded successfully:', result);
+                        // Add the secure URL to the request body under the appropriate field name
+                        req.body[file.fieldname] = result.secure_url;
+                        console.log(`Secure URL added to request body for field ${file.fieldname}:`, result.secure_url);
+                        resolve();
+                    }
+                }).end(file.buffer);
             });
+        });
 
-            console.log('File uploaded successfully:', result);
-
-            // Add the secure URL to the request body under the appropriate field name
-            req.body[file.fieldname] = result.secure_url;
-            console.log(`Secure URL added to request body for field ${file.fieldname}:`, result.secure_url);
-
-            // Delete the file from the server after uploading
-            fs.unlink(filePath, (err) => {
-                if (err) {
-                    console.error('Error deleting the file:', err);
-                } else {
-                    console.log(`File ${file.originalname} deleted successfully`);
-                }
-            });
-        } catch (error) {
-            console.error(`Error uploading file ${file.originalname}:`, error);
-            return res.status(500).json({ message: `Failed to upload file: ${file.originalname}` });
-        }
+        await Promise.all(uploadPromises);
+    } catch (error) {
+        console.error('Error during file upload:', error);
+        return res.status(500).json({ message: error });
     }
 
     // Return the modified request body (with the secure URLs added)

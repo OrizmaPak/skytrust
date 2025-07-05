@@ -57,7 +57,7 @@ const getRotaryProduct = async (req, res) => {
             const { rows: columns } = await pg.query(`
                 SELECT column_name
                 FROM information_schema.columns
-                WHERE table_name = 'rotaryProduct'
+                WHERE table_schema = 'sky' AND table_name = 'rotaryProduct'
             `);
 
             const cols = columns.map(row => row.column_name);

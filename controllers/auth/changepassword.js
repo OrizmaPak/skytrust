@@ -10,7 +10,7 @@ const changePassword = async (req, res) => {
     const { oldpassword, newpassword, token = '' } = req.body;
     const bearertoken = req.headers.authorization?.split(' ')[1];
     const changeType = "change password";
-
+ 
  
 
     // Ensure the frontend guy is not sending the same password
@@ -21,9 +21,9 @@ const changePassword = async (req, res) => {
         statuscode: StatusCodes.BAD_REQUEST,
         data: null,
         errors: []
-      });
-    }
-
+      }); 
+    }  
+    
     // Check if any token is available to work with
     if (!token && !bearertoken) {
       return res.status(StatusCodes.BAD_REQUEST).json({

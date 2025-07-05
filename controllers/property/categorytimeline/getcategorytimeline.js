@@ -43,7 +43,7 @@ const getCategoryTimeline = async (req, res) => {
             const { rows: columns } = await pg.query(`
                 SELECT column_name
                 FROM information_schema.columns
-                WHERE table_name = 'categorytimeline'
+                WHERE table_schema = 'sky' AND table_name = 'categorytimeline'
             `);
 
             const cols = columns.map(row => row.column_name);

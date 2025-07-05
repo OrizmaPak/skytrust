@@ -48,7 +48,7 @@ const getbranch = async (req, res) => {
         const { rows: columns } = await pg.query(`
             SELECT column_name
             FROM information_schema.columns
-            WHERE table_name = 'Branch'
+            WHERE table_schema = 'sky' AND table_name = 'Branch'
         `);
 
         const cols = columns.map(row => row.column_name);

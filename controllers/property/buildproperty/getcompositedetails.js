@@ -49,7 +49,7 @@ const getCompositeDetails = async (req, res) => {
             const { rows: columns } = await pg.query(`
                 SELECT column_name
                 FROM information_schema.columns
-                WHERE table_name = 'compositedetails'
+                WHERE table_schema = 'sky' AND table_name = 'compositedetails'
             `);
 
             const cols = columns.map(row => row.column_name);

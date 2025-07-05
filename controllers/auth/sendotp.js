@@ -16,7 +16,7 @@ const sendOtp = async (req, res) => {
             encoding: 'base32'
         });
 
-        sendEmail({
+        await sendEmail({
             to: user.email,  
             subject: "Your Secure OTP for Sky Trust Bank",
             html: `<div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6; padding: 20px; background-color: #f9f9f9; border-radius: 8px; border: 1px solid #ddd;">

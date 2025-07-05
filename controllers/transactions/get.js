@@ -78,7 +78,7 @@ const getTransactions = async (req, res) => {
             const { rows: columns } = await pg.query(`
                 SELECT column_name
                 FROM information_schema.columns
-                WHERE table_name = 'transaction'
+                WHERE table_schema = 'sky' AND table_name = 'transaction'
             `);
 
             const cols = columns.map(row => row.column_name);

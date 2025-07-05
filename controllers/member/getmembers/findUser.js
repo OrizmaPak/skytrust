@@ -16,22 +16,22 @@
             // Determine access level based on user role and permissions
             let whereClause = '';
 
-            console.log(user.branch)
+            console.log(user.branch);
     
             // Fetch column names from the 'User' table across all schemas
             const { rows: columns } = await pg.query(`
-                SELECT column_name, table_schema
+                SELECT column_name
                 FROM information_schema.columns
-                WHERE table_name = 'User'
+                WHERE table_schema = 'sky' AND table_name = 'User'
             `);
 
             // Dynamically build the WHERE clause based on query parameters
             let valueIndex = query.values.length + 1;
             Object.keys(req.query).forEach((key) => {
                 const column = columns.find(col => col.column_name === key);
-                if (column) {
+                if (column && req.query[key] !== '') { // Ensure the query parameter is not an empty string
                     whereClause += whereClause ? ` AND ` : ` WHERE `;
-                    whereClause += `"${column.table_schema}"."User"."${key}" = $${valueIndex}`;
+                    whereClause += `"User"."${key}" = $${valueIndex}`;
                     query.values.push(req.query[key]);
                     valueIndex++;
                 }
@@ -39,13 +39,6 @@
     
             // Add search query if provided
             if (req.query.q) {
-                // Fetch column names from the 'User' table
-                const { rows: columns } = await pg.query(`
-                    SELECT column_name
-                    FROM information_schema.columns
-                    WHERE table_name = 'User'
-                `);
-    
                 const cols = columns.map(row => row.column_name);
     
                 // Generate the dynamic SQL query
@@ -65,7 +58,7 @@
     
             query.text += ` LIMIT $${valueIndex} OFFSET $${valueIndex + 1}`;
             query.values.push(limit, offset);
-            console.log(query)
+            console.log('this', query);
             const result = await pg.query(query);
             const users = result.rows.map(user => {
                 const { password, ...userWithoutPassword } = user;
@@ -81,7 +74,7 @@
             // Get total count for pagination
             const countQuery = {
                 text: `SELECT COUNT(*) FROM sky."User" ${whereClause}`,
-                values: whereClause ? query.values.slice(0, -2) : []
+                values: query.values.slice(0, -2) // Exclude limit and offset
             };
             const { rows: [{ count: total }] } = await pg.query(countQuery);
             const pages = divideAndRoundUp(total, limit);
