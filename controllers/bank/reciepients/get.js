@@ -11,17 +11,15 @@ const getRecipients = async (req, res) => {
             values: []
         };
 
+        // Start with default WHERE clause for active status
+        let whereClause = ` WHERE r."status" = $1`;
+        query.values.push('ACTIVE');
+        let valueIndex = 2;
+
         // Dynamically build the WHERE clause based on query parameters targeting reciepients table
-        let whereClause = '';   
-        let valueIndex = 1;
         Object.keys(req.query).forEach((key) => {
-            if (key !== 'q' && ['fullname', 'accountnumber', 'bank', 'status'].includes(key)) {
-                if (whereClause) {
-                    whereClause += ` AND `;
-                } else {
-                    whereClause += ` WHERE `;
-                }
-                whereClause += `r."${key}" = $${valueIndex}`; 
+            if (key !== 'q' && ['id', 'fullname', 'accountnumber', 'bank', 'status'].includes(key)) {
+                whereClause += ` AND r."${key}" = $${valueIndex}`; 
                 query.values.push(req.query[key]);
                 valueIndex++;
             } 
@@ -30,11 +28,7 @@ const getRecipients = async (req, res) => {
         // Add search query if provided
         if (req.query.q) {
             const searchConditions = ['r.fullname', 'r.accountnumber', 'b.bank'].map(col => `${col}::text ILIKE $${valueIndex}`).join(' OR ');
-            if (whereClause) {
-                whereClause += ` AND (${searchConditions})`;
-            } else {
-                whereClause += ` WHERE (${searchConditions})`;
-            }
+            whereClause += ` AND (${searchConditions})`;
             query.values.push(`%${req.query.q}%`);
             valueIndex++;
         }

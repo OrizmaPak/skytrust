@@ -4,16 +4,18 @@ const { getBanks } = require('../controllers/bank/list/get');
 const { saveOrUpdateRecipient } = require('../controllers/bank/reciepients/manage');
 const { getRecipients } = require('../controllers/bank/reciepients/get');
 const { generateTransactions } = require('../controllers/bank/generatetransactions/generate');
+const { deleteRecipient } = require('../controllers/bank/reciepients/delete');
 const router = express.Router();
 
-// BRANCH MANAGEMENT
+// BRANCH MANAGEMENT 
 router.route('/list')
     .post(saveOrUpdateBank)
     .get(getBanks);
 
 router.route('/reciepients')
     .post(saveOrUpdateRecipient)
-    .get(getRecipients);
+    .get(getRecipients)
+    .delete(deleteRecipient);
 
 router.route('/generatetransactions')
     .post(generateTransactions);

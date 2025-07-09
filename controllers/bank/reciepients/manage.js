@@ -38,6 +38,26 @@ const saveOrUpdateRecipient = async (req, res) => {
     }
 
     try {
+        // Check if the account number already exists for the bank, only if it's not an edit
+        if (!id) {
+            const checkQuery = `
+                SELECT id FROM sky."reciepients"
+                WHERE accountnumber = $1 AND bank = $2
+            `;
+            const checkValues = [accountnumber, bank];
+            const { rows: existingRecipients } = await pg.query(checkQuery, checkValues);
+
+            if (existingRecipients.length > 0) {
+                return res.status(StatusCodes.CONFLICT).json({
+                    status: false,
+                    message: "Account number already exists for this bank",
+                    statuscode: StatusCodes.CONFLICT,
+                    data: null,
+                    errors: [{ field: 'Account Number', message: 'Account number already exists for this bank' }]
+                });
+            }
+        }
+
         let query;
         let values;
 

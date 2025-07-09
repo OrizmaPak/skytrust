@@ -415,7 +415,9 @@ const calculateTax = (transaction) => {
 
 // Example of generating a new reference
 const generateNewReference = async (client, accountnumber, req) => {
+
     // prefix|'L'link|timestamp|identifier
+    
     let prefix = '';
     let identifier = '';
     let link = '';
@@ -456,14 +458,23 @@ const generateNewReference = async (client, accountnumber, req) => {
                     identifier = '4L5N6';
                     req.body.whichaccount = 'LOAN';
                 } else {
-                    // If the account number can't be matched to anything, throw a response
-                    req.transactionError = {
-                        status: StatusCodes.BAD_REQUEST,
-                        message: 'Invalid account number.',
-                        errors: ['Account number does not match any known account types while trying to generate reference.']
-                    };
-                    req.body.transactiondesc += 'Invalid account number.|';
-                    return;
+                    // Check if the account number is in the recipients table
+                    const recipientsQuery = `SELECT * FROM sky."reciepients" WHERE accountnumber = $1`;
+                    const recipientsResult = await client.query(recipientsQuery, [accountnumber]);
+                    if (recipientsResult.rowCount !== 0) {
+                        prefix = req.orgSettings.recipients_transaction_prefix || '948';
+                        identifier = '5R6C7';
+                        req.body.whichaccount = 'SAVINGS';
+                    } else {
+                        // If the account number can't be matched to anything, throw a response
+                        // req.transactionError = {
+                        //     status: StatusCodes.BAD_REQUEST,
+                        //     message: 'Invalid account number.',
+                        //     errors: ['Account number does not match any known account types while trying to generate reference.']
+                        // };
+                        req.body.transactiondesc += '';
+                        return;
+                    }
                 }
             }
         }
