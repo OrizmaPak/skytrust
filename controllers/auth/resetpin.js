@@ -19,7 +19,7 @@ const resetPin = async (req, res) => {
         // Update the user's pin to an empty string
         const query = {
             text: `UPDATE sky."User" SET pin = '' WHERE id = $1`,
-            values: [userId]
+            values: [id]
         };
 
         const result = await pg.query(query);
@@ -34,7 +34,7 @@ const resetPin = async (req, res) => {
             });
         }
 
-        await activityMiddleware(req, userId, 'User PIN reset successfully', 'USER');
+        await activityMiddleware(req, id, 'User PIN reset successfully', 'USER');
 
         return res.status(StatusCodes.OK).json({
             status: true,
@@ -45,7 +45,7 @@ const resetPin = async (req, res) => {
         });
     } catch (error) {
         console.error('Unexpected Error:', error);
-        await activityMiddleware(req, userId, 'An unexpected error occurred resetting user PIN', 'USER');
+        await activityMiddleware(req, id, 'An unexpected error occurred resetting user PIN', 'USER');
 
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
             status: false,
