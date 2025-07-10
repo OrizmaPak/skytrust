@@ -3,7 +3,17 @@ const pg = require("../../db/pg");
 const { activityMiddleware } = require("../../middleware/activity");
 
 const resetPin = async (req, res) => {
-    const userId = req.body;
+    const {id} = req.body;
+
+    if (!id) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+            status: false,
+            message: "User ID is required",
+            statuscode: StatusCodes.BAD_REQUEST,
+            data: null,
+            errors: []
+        });
+    }
 
     try {
         // Update the user's pin to an empty string
