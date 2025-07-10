@@ -3,7 +3,7 @@ const pg = require("../../db/pg");
 const { activityMiddleware } = require("../../middleware/activity");
 
 const resetPin = async (req, res) => {
-    const userId = req.params.id;
+    const userId = req.body;
 
     try {
         // Update the user's pin to an empty string
