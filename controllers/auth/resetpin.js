@@ -18,7 +18,7 @@ const resetPin = async (req, res) => {
     try {
         // Update the user's pin to an empty string
         const query = {
-            text: `UPDATE sky."User" SET pin = '' WHERE id = $1`,
+            text: `UPDATE skyeu."User" SET pin = '' WHERE id = $1`,
             values: [id]
         };
 

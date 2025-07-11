@@ -7,7 +7,7 @@ const getBanks = async (req, res) => {
 
     try {
         let query = {
-            text: `SELECT * FROM sky."listofbanks"`,
+            text: `SELECT * FROM skyeu."listofbanks"`,
             values: []
         };
 

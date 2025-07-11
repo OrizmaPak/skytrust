@@ -22,7 +22,7 @@ const allocateExpenditure = async (req, res) => {
 
         const userExistQuery = `
             SELECT * 
-            FROM sky."User" 
+            FROM skyeu."User" 
             WHERE id = $1
         `;
         const userExistResult = await pg.query(userExistQuery, [userid]);
@@ -52,7 +52,7 @@ const allocateExpenditure = async (req, res) => {
         
 
         // Fetch organization settings
-        const orgSettingsQuery = `SELECT * FROM sky."Organisationsettings"`;
+        const orgSettingsQuery = `SELECT * FROM skyeu."Organisationsettings"`;
         const orgSettingsResult = await pg.query(orgSettingsQuery);
 
         if (orgSettingsResult.rows.length === 0) {
@@ -72,7 +72,7 @@ const allocateExpenditure = async (req, res) => {
         const balanceQuery = `
             SELECT 
                 COALESCE(SUM(credit), 0) - COALESCE(SUM(debit), 0) AS balance 
-            FROM sky."transaction" 
+            FROM skyeu."transaction" 
             WHERE accountnumber = $1
         `;
         const balanceResult = await pg.query(balanceQuery, [orgSettings.default_expense_account]);
@@ -91,7 +91,7 @@ const allocateExpenditure = async (req, res) => {
         // Fetch user details
         const userQuery = `
             SELECT firstname, lastname, othernames 
-            FROM sky."User" 
+            FROM skyeu."User" 
             WHERE id = $1
         `;
         const userResult = await pg.query(userQuery, [userid]);
@@ -156,7 +156,7 @@ const allocateExpenditure = async (req, res) => {
 
             // Update the status to PENDING for the 'to' transaction reference
             const updateStatusQuery = `
-                UPDATE sky."transaction"
+                UPDATE skyeu."transaction"
                 SET status = 'PENDING', createdby = $2
                 WHERE reference = $1
             `;
@@ -167,7 +167,7 @@ const allocateExpenditure = async (req, res) => {
             await pg.query(updateStatusQuery, [toReference, user.id]);
              
             const updateCreatedByQuery = `
-                UPDATE sky."transaction" 
+                UPDATE skyeu."transaction" 
                 SET createdby = $2
                 WHERE reference = $1
             `;

@@ -10,18 +10,18 @@ const getTask = async (req, res) => {
             SELECT t.*,
             (
                 SELECT json_agg(s)
-                FROM sky."Subtask" s
+                FROM skyeu."Subtask" s
                 WHERE s.task = t.id
             ) as subtasks,
             b.branch as branchname,
             (
                 SELECT string_agg(CONCAT(u.firstname, ' ', u.lastname), ', ')
-                FROM sky."User" u
+                FROM skyeu."User" u
                 WHERE u.id = ANY(string_to_array(t.assignedto, '||')::int[])
             ) as assignedtonames,
             t.assignedto
-            FROM sky."Task" t
-            LEFT JOIN sky."Branch" b ON t.branch = b.id::text
+            FROM skyeu."Task" t
+            LEFT JOIN skyeu."Branch" b ON t.branch = b.id::text
             WHERE 1=1
         `;
         let params = [];

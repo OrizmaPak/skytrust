@@ -9,7 +9,7 @@ const deleteQualification = async (req, res) => {
     try {
         // Check if the qualification exists
         const { rowCount } = await pg.query({
-            text: `SELECT * FROM sky."qualification" WHERE "id" = $1`,
+            text: `SELECT * FROM skyeu."qualification" WHERE "id" = $1`,
             values: [id]
         });
 
@@ -25,7 +25,7 @@ const deleteQualification = async (req, res) => {
 
         // Delete the qualification
         await pg.query({
-            text: `DELETE FROM sky."qualification" WHERE "id" = $1`,
+            text: `DELETE FROM skyeu."qualification" WHERE "id" = $1`,
             values: [id]
         });
 

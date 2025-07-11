@@ -7,12 +7,12 @@ const getAllPayables = async (req, res) => {
 
     try {
         // Fetch all suppliers
-        const { rows: suppliers } = await pg.query(`SELECT * FROM sky."Supplier"`);
+        const { rows: suppliers } = await pg.query(`SELECT * FROM skyeu."Supplier"`);
 
         const results = [];
 
         // Fetch organisation settings
-        const orgSettingsQuery = `SELECT * FROM sky."Organisationsettings" LIMIT 1`;
+        const orgSettingsQuery = `SELECT * FROM skyeu."Organisationsettings" LIMIT 1`;
         const { rows: [orgSettings] } = await pg.query(orgSettingsQuery);
 
         // Check if organisation settings were retrieved
@@ -34,7 +34,7 @@ const getAllPayables = async (req, res) => {
                 SELECT 
                     COALESCE(SUM(credit), 0) AS total_credit, 
                     COALESCE(SUM(debit), 0) AS total_debit
-                FROM sky."transaction"
+                FROM skyeu."transaction"
                 WHERE accountnumber = $1 AND status = 'ACTIVE'
             `;
             const { rows: [transactionSummary] } = await pg.query(transactionsQuery, [`${orgSettings.personal_account_prefix}${contactPhone}`]);

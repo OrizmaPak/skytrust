@@ -19,7 +19,7 @@ const approveDeclineAllocation = async (req, res) => {
 
         if (status === 'ACTIVE') {
             const updateStatusQuery = `
-                UPDATE sky."transaction"
+                UPDATE skyeu."transaction"
                 SET status = 'ACTIVE'
                 WHERE reference = $1
             `;
@@ -61,7 +61,7 @@ const approveDeclineAllocation = async (req, res) => {
 
             const searchValue = splitReference[1];
             const findTransactionsQuery = `
-                SELECT * FROM sky."transaction"
+                SELECT * FROM skyeu."transaction"
                 WHERE reference LIKE $1
             `;
             const transactionsResult = await pg.query(findTransactionsQuery, [`%|${searchValue}%`]);
@@ -99,7 +99,7 @@ const approveDeclineAllocation = async (req, res) => {
 
             for (const transaction of matchingTransactions) {
                 const updateTransactionStatusQuery = `
-                    UPDATE sky."transaction"
+                    UPDATE skyeu."transaction"
                     SET status = 'DECLINED'
                     WHERE reference = $1
                 `;

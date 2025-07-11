@@ -16,7 +16,7 @@ const manageReceiveService = async (req, res) => {
             errors: []
         });
     }
-    const supplierQuery = `SELECT * FROM sky."Supplier" WHERE id = $1 AND status = 'ACTIVE'`;
+    const supplierQuery = `SELECT * FROM skyeu."Supplier" WHERE id = $1 AND status = 'ACTIVE'`;
     const { rows: [validSupplier] } = await pg.query(supplierQuery, [supplier]);
 
     if (!validSupplier) {
@@ -28,7 +28,7 @@ const manageReceiveService = async (req, res) => {
             errors: []
         });
     }
-    const branchQuery = `SELECT * FROM sky."Branch" WHERE id = $1 AND status = 'ACTIVE'`;
+    const branchQuery = `SELECT * FROM skyeu."Branch" WHERE id = $1 AND status = 'ACTIVE'`;
     const { rows: [validbranch] } = await pg.query(branchQuery, [branch]);
 
     if (!validbranch) {
@@ -41,7 +41,7 @@ const manageReceiveService = async (req, res) => {
         });
     }
 
-    const referenceExistsQuery = `SELECT COUNT(*) FROM sky."Service" WHERE reference = $1`;
+    const referenceExistsQuery = `SELECT COUNT(*) FROM skyeu."Service" WHERE reference = $1`;
     const { rows: [{ count: referenceCount }] } = await pg.query(referenceExistsQuery, [req.body.reference]);
 
     if (referenceCount < 1) {
@@ -101,14 +101,14 @@ const manageReceiveService = async (req, res) => {
 
             // Insert new service
             const insertQuery = `
-                INSERT INTO sky."Service" (supplier, servicetype, description, otherdetails, amount, amountfrom, amountto, 
+                INSERT INTO skyeu."Service" (supplier, servicetype, description, otherdetails, amount, amountfrom, amountto, 
                     servicestartdate, serviceenddate, branch, dateadded, createdby, status, reference)
                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, NOW(), $11, $12, $13)
             `;
             await pg.query(insertQuery, [supplier, serviceType, description, otherdetails, req.body[`amount${i+1}`], req.body[`amountfrom${i+1}`], req.body[`amountto${i+1}`], servicestartdate, serviceenddate, branch, user.id, 'ACTIVE', reference.replaceAll('SO-', 'RS-')]);
         }
 
-        const organisationData = await pg.query('SELECT * FROM sky."Organisationsettings"');
+        const organisationData = await pg.query('SELECT * FROM skyeu."Organisationsettings"');
         
         if (organisationData.rows.length === 0) {
             return res.status(StatusCodes.NOT_FOUND).json({
@@ -124,7 +124,7 @@ const manageReceiveService = async (req, res) => {
 
         if (req.body.reference) {
             await pg.query(
-                `DELETE FROM sky."Service" WHERE reference = $1`,
+                `DELETE FROM skyeu."Service" WHERE reference = $1`,
                 [req.body.reference]
             );
         } 

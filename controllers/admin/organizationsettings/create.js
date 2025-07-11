@@ -192,7 +192,7 @@ const organizationsettings = async (req, res) => {
 
     for (const account of defaultAccounts.filter(a => a)) {
       const { rowCount } = await pg.query(
-        `SELECT 1 FROM sky."Accounts" WHERE accountnumber = $1`,
+        `SELECT 1 FROM skyeu."Accounts" WHERE accountnumber = $1`,
         [account]
       );
       if (rowCount === 0) {
@@ -298,7 +298,7 @@ const organizationsettings = async (req, res) => {
     };
 
     // Database operation
-    const { rows: existing } = await pg.query('SELECT * FROM sky."Organisationsettings"');
+    const { rows: existing } = await pg.query('SELECT * FROM skyeu."Organisationsettings"');
     
     if (existing.length === 0) {
       // Insert new settings
@@ -307,7 +307,7 @@ const organizationsettings = async (req, res) => {
       const placeholders = values.map((_, i) => `$${i+1}`).join(', ');
 
       const { rows } = await pg.query(
-        `INSERT INTO sky."Organisationsettings" (${columns}) 
+        `INSERT INTO skyeu."Organisationsettings" (${columns}) 
          VALUES (${placeholders}) RETURNING id`,
         values
       );
@@ -334,7 +334,7 @@ const organizationsettings = async (req, res) => {
       const idToUpdate = existing[0].id;
 
       await pg.query(
-        `UPDATE sky."Organisationsettings" 
+        `UPDATE skyeu."Organisationsettings" 
          SET ${updates} WHERE id = $${values.length + 1}`,
         [...values, idToUpdate]
       );

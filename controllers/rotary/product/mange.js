@@ -36,7 +36,7 @@ const saveOrUpdateRotaryProduct = async (req, res) => {
                 const trimmedMemberId = memberId.trim();
                 if (trimmedMemberId) {
                     const { rows } = await pg.query({
-                        text: `SELECT 1 FROM sky."DefineMember" WHERE id = $1`,
+                        text: `SELECT 1 FROM skyeu."DefineMember" WHERE id = $1`,
                         values: [trimmedMemberId]
                     });
                     if (rows.length === 0) {
@@ -55,7 +55,7 @@ const saveOrUpdateRotaryProduct = async (req, res) => {
         // Check if productofficer is provided and validate user role
         if (productofficer) {
             const { rows: userRoleRows } = await pg.query({
-                text: `SELECT role FROM sky."User" WHERE id = $1`,
+                text: `SELECT role FROM skyeu."User" WHERE id = $1`,
                 values: [user.id]
             });
 
@@ -73,7 +73,7 @@ const saveOrUpdateRotaryProduct = async (req, res) => {
         if (id) {
             // Update existing rotary product
             const updateQuery = {
-                text: `UPDATE sky."rotaryProduct" 
+                text: `UPDATE skyeu."rotaryProduct" 
                        SET product = $1, member = $2, useraccount = $3, registrationcharge = $4, productofficer = $5, currency = $6, description = $7, poolnumber = $8, rotaryschedule = $9, frequency = $10, frequencynumber = $11, status = 'ACTIVE'
                        WHERE id = $12`,
                 values: [product, member, useraccount || 1, registrationcharge, productofficer, currency || "USD", description, poolnumber, rotaryschedule || 'PRODUCT', frequency, frequencynumber, id]
@@ -93,7 +93,7 @@ const saveOrUpdateRotaryProduct = async (req, res) => {
         } else {
             // Insert new rotary product
             const insertQuery = {
-                text: `INSERT INTO sky."rotaryProduct" (product, member, useraccount, registrationcharge, createdby, productofficer, currency, description, poolnumber, rotaryschedule, frequency, frequencynumber, dateadded, status, registrationpoint) 
+                text: `INSERT INTO skyeu."rotaryProduct" (product, member, useraccount, registrationcharge, createdby, productofficer, currency, description, poolnumber, rotaryschedule, frequency, frequencynumber, dateadded, status, registrationpoint) 
                        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, NOW(), 'ACTIVE', $13)`,
                 values: [product, member, useraccount || 1, registrationcharge, user.id, productofficer, currency || "USD", description, poolnumber, rotaryschedule || 'PRODUCT', frequency, frequencynumber==''?0:frequencynumber, user.registrationpoint]
             };

@@ -86,7 +86,7 @@ async function addOrUpdateCollateral(req, res) {
             // **Update Operation**
 
             // First, check if the collateral with the given id exists
-            const existingCollateralQuery = `SELECT * FROM sky."collateral" WHERE id = $1`;
+            const existingCollateralQuery = `SELECT * FROM skyeu."collateral" WHERE id = $1`;
             const existingCollateralResult = await pg.query(existingCollateralQuery, [id]);
 
             if (existingCollateralResult.rows.length === 0) {
@@ -102,7 +102,7 @@ async function addOrUpdateCollateral(req, res) {
             // Optional: If updating document number with docposition 'ISSUED', ensure uniqueness
             if (documentnumber || docposition) {
                 const existingDocumentQuery = `
-                    SELECT * FROM sky."collateral" 
+                    SELECT * FROM skyeu."collateral" 
                     WHERE accountnumber = $1 
                       AND documentnumber = $2 
                       AND docposition = 'ISSUED'
@@ -123,7 +123,7 @@ async function addOrUpdateCollateral(req, res) {
 
             // Perform the update using COALESCE to retain existing values if new ones aren't provided
             const updateCollateralQuery = `
-                UPDATE sky."collateral" SET
+                UPDATE skyeu."collateral" SET
                     accountnumber = COALESCE($1, accountnumber),
                     documenttitle = COALESCE($2, documenttitle),
                     documentnumber = COALESCE($3, documentnumber),
@@ -175,7 +175,7 @@ async function addOrUpdateCollateral(req, res) {
 
             // Check if the document number already exists for the account number with the docposition of 'ISSUED'
             const existingDocumentQuery = `
-                SELECT * FROM sky."collateral" 
+                SELECT * FROM skyeu."collateral" 
                 WHERE accountnumber = $1 AND documentnumber = $2 AND docposition = 'ISSUED'
             `;
             const existingDocumentResult = await pg.query(existingDocumentQuery, [accountnumber, documentnumber]);
@@ -193,7 +193,7 @@ async function addOrUpdateCollateral(req, res) {
             // Optional: Verify that the account number exists in the loanaccounts table
             // Uncomment if needed
             /*
-            const accountCheck = await pg.query(`SELECT * FROM sky."loanaccounts" WHERE accountnumber = $1`, [accountnumber]);
+            const accountCheck = await pg.query(`SELECT * FROM skyeu."loanaccounts" WHERE accountnumber = $1`, [accountnumber]);
             if (accountCheck.rows.length === 0) {
                 return res.status(StatusCodes.NOT_FOUND).json({
                     status: false,
@@ -207,7 +207,7 @@ async function addOrUpdateCollateral(req, res) {
 
             // Insert the new collateral record
             const insertCollateralQuery = `
-                INSERT INTO sky."collateral" (
+                INSERT INTO skyeu."collateral" (
                     accountnumber, 
                     documenttitle, 
                     documentnumber, 

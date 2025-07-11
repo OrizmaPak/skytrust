@@ -25,7 +25,7 @@ const saveOrUpdateGuarantor = async (req, res) => {
         await pg.query('BEGIN');
 
         const { rows: userRows } = await pg.query(
-            `SELECT id FROM sky."User" WHERE id = $1`,
+            `SELECT id FROM skyeu."User" WHERE id = $1`,
             [userid]
         );
 
@@ -43,7 +43,7 @@ const saveOrUpdateGuarantor = async (req, res) => {
         if (id) {
             // Update existing guarantor
             await pg.query(
-                `UPDATE sky."guarantor" SET 
+                `UPDATE skyeu."guarantor" SET 
                     userid = COALESCE($1, userid), 
                     guarantorname = COALESCE($2, guarantorname), 
                     guarantorofficeaddress = COALESCE($3, guarantorofficeaddress), 
@@ -62,7 +62,7 @@ const saveOrUpdateGuarantor = async (req, res) => {
         } else {
             // Insert new guarantor
             const { rows } = await pg.query(
-                `INSERT INTO sky."guarantor" (userid, guarantorname, guarantorofficeaddress, guarantorresidentialaddress, guarantoroccupation, guarantorphone, yearsknown, imageone, imagetwo, dateadded, createdby, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW(), $10, 'ACTIVE') RETURNING id`,
+                `INSERT INTO skyeu."guarantor" (userid, guarantorname, guarantorofficeaddress, guarantorresidentialaddress, guarantoroccupation, guarantorphone, yearsknown, imageone, imagetwo, dateadded, createdby, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW(), $10, 'ACTIVE') RETURNING id`,
                 [userid, guarantorname, guarantorofficeaddress, guarantorresidentialaddress, guarantoroccupation, guarantorphone, yearsknown, imageone, imagetwo, user.id]
             );
             // id = rows[0].id;

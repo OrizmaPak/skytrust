@@ -21,7 +21,7 @@ const processCollection = async (req, res) => {
     try {
         // Validate branch
         const { rows: branchData } = await pg.query(`
-            SELECT * FROM sky."Branch" WHERE id = $1 AND status = 'ACTIVE'
+            SELECT * FROM skyeu."Branch" WHERE id = $1 AND status = 'ACTIVE'
         `, [branch]);
 
         if (branchData.length === 0) {
@@ -36,7 +36,7 @@ const processCollection = async (req, res) => {
 
         // Validate userid
         const { rows: userData } = await pg.query(`
-            SELECT * FROM sky."User" WHERE id = $1
+            SELECT * FROM skyeu."User" WHERE id = $1
         `, [userid]);
 
         if (userData.length === 0) {
@@ -51,7 +51,7 @@ const processCollection = async (req, res) => {
 
         // Check if the user has a registrationpoint and the role is not 'member'
         const { rows: userCheckData } = await pg.query(`
-            SELECT * FROM sky."User" WHERE id = $1
+            SELECT * FROM skyeu."User" WHERE id = $1
         `, [userid]);
 
         if (userCheckData.length === 0) {
@@ -86,7 +86,7 @@ const processCollection = async (req, res) => {
 
         // Check cashier limit
         const { rows: cashierLimitData } = await pg.query(`
-            SELECT depositlimit FROM sky."Cashierlimit" WHERE cashier = $1 AND status = 'ACTIVE'
+            SELECT depositlimit FROM skyeu."Cashierlimit" WHERE cashier = $1 AND status = 'ACTIVE'
         `, [userid]);
 
         // if (cashierLimitData.length === 0) {

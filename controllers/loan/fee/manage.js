@@ -83,7 +83,7 @@ const manageLoanFee = async (req, res) => {
     try {
         // Check if the provided glaccount exists in the Accounts table
         const accountExistsQuery = {
-            text: 'SELECT * FROM sky."Accounts" WHERE accountnumber = $1',
+            text: 'SELECT * FROM skyeu."Accounts" WHERE accountnumber = $1',
             values: [glaccount]
         };
         const { rows: accountExistsRows } = await pg.query(accountExistsQuery);
@@ -102,7 +102,7 @@ const manageLoanFee = async (req, res) => {
         if (id) {
             // Update existing loan fee
             const updateLoanFeeQuery = {
-                text: `UPDATE sky."loanfee" SET 
+                text: `UPDATE skyeu."loanfee" SET 
                         feename = COALESCE($1, feename), 
                         feemethod = COALESCE($2, feemethod), 
                         chargesbasedon = COALESCE($3, chargesbasedon), 
@@ -118,7 +118,7 @@ const manageLoanFee = async (req, res) => {
         } else {
             // Check if the provided feename already exists in the loanfee table
             const feenameExistsQuery = {
-                text: 'SELECT * FROM sky."loanfee" WHERE feename = $1',
+                text: 'SELECT * FROM skyeu."loanfee" WHERE feename = $1',
                 values: [feename]
             };
             const { rows: feenameExistsRows } = await pg.query(feenameExistsQuery);
@@ -134,7 +134,7 @@ const manageLoanFee = async (req, res) => {
             }
             // Create new loan fee
             const createLoanFeeQuery = {
-                text: `INSERT INTO sky."loanfee" (feename, feemethod, chargesbasedon, chargeamount, chargetype, glaccount, status, dateadded, createdby) VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), $8) RETURNING *`,
+                text: `INSERT INTO skyeu."loanfee" (feename, feemethod, chargesbasedon, chargeamount, chargetype, glaccount, status, dateadded, createdby) VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), $8) RETURNING *`,
                 values: [feename, feemethod, chargesbasedon, chargeamount, chargetype, glaccount, status, user.id]
             };
             const { rows: createdLoanFeeRows } = await pg.query(createLoanFeeQuery);

@@ -23,7 +23,7 @@ async function getuser(req, res) {
             });
         }
         // CHECK IF USER IS AUTHENTICATED
-        const {rows: users} = pg.query(`SELECT * FROM sky."User" WHERE status = ACTIVE AND id = $1`, [id])
+        const {rows: users} = pg.query(`SELECT * FROM skyeu."User" WHERE status = ACTIVE AND id = $1`, [id])
         console.log(users)
         if(users.length > 0){
             return res.status(StatusCodes.OK).json({

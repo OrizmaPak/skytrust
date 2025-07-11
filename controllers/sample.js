@@ -64,7 +64,7 @@ const testing = async (req, res) => {
 
     try {
         // Check if email already exists using raw query
-        const { rows: theuser } = await pg.query(`SELECT * FROM sky."User" WHERE email = $1`, [email]);
+        const { rows: theuser } = await pg.query(`SELECT * FROM skyeu."User" WHERE email = $1`, [email]);
 
         // CHECKING IF ITS AN ACTIVE USER IF HE EXISTS
         if (theuser.length > 0 && theuser[0].status != 'ACTIVE') {
@@ -90,7 +90,7 @@ const testing = async (req, res) => {
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
         // Insert new user using raw query
-        const { rows: [saveuser] } = await pg.query(`INSERT INTO sky."User" 
+        const { rows: [saveuser] } = await pg.query(`INSERT INTO skyeu."User" 
         (firstname, lastname, othernames, email, password, permissions, country, state, dateadded) 
         VALUES ($1, $2, $3, $4, $5, 'NEWUSER', $6, $7, $8) RETURNING id`, [firstname, lastname, othernames, email, hashedPassword, country, state, new Date()]);
         const userId = saveuser.id;
@@ -147,7 +147,7 @@ const testing = async (req, res) => {
             expiresIn: process.env.SESSION_EXPIRATION_HOUR + 'h',
         });
 
-        await pg.query(`INSERT INTO sky."Session" 
+        await pg.query(`INSERT INTO skyeu."Session" 
             (sessiontoken, userid, expires, device) 
             VALUES ($1, $2, $3, $4) 
             `, [token, userId, calculateExpiryDate(process.env.SESSION_EXPIRATION_HOUR), device])
@@ -158,7 +158,7 @@ const testing = async (req, res) => {
             return res.status(activity.status).json(activity.body); // Return the error response from middleware
         }
 
-        const { rows: [details] } = await pg.query(`SELECT * FROM sky."User" WHERE id= $1`, [userId])
+        const { rows: [details] } = await pg.query(`SELECT * FROM skyeu."User" WHERE id= $1`, [userId])
 
 
         let messagestatus
@@ -167,7 +167,7 @@ const testing = async (req, res) => {
             // create verification token
             const vtoken = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: process.env.VERIFICATION_EXPIRATION_HOUR + 'h' });
             // create a verification link and code
-            await pg.query(`INSERT INTO sky."VerificationToken" 
+            await pg.query(`INSERT INTO skyeu."VerificationToken" 
                                 (identifier, token, expires) 
                                 VALUES ($1, $2, $3)`, [user.id, vtoken, calculateExpiryDate(process.env.VERIFICATION_EXPIRATION_HOUR)])
 

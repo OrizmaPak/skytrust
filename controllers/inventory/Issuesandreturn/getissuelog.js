@@ -6,10 +6,10 @@ const getissuelog = async (req, res) => {
     const { startdate, enddate, branch, department, status = "ACTIVE" } = req.query;
     let query = `
         SELECT Inventory.*, Branch.branch AS branchname, Department.department AS departmentname, Issue.issuetype AS issuetypename
-        FROM sky."Inventory" AS Inventory
-        JOIN sky."Branch" AS Branch ON Inventory.branch::int = Branch.id
-        JOIN sky."Department" AS Department ON Inventory.department::int = Department.id
-        JOIN sky."issue" AS Issue ON Inventory.issuetype::int = Issue.id
+        FROM skyeu."Inventory" AS Inventory
+        JOIN skyeu."Branch" AS Branch ON Inventory.branch::int = Branch.id
+        JOIN skyeu."Department" AS Department ON Inventory.department::int = Department.id
+        JOIN skyeu."issue" AS Issue ON Inventory.issuetype::int = Issue.id
         WHERE Inventory.transactiondesc LIKE '%Issue%'
     `;
     let params = [];

@@ -17,12 +17,12 @@ const getMembershipMembers = async (req, res) => {
                     ub.branch AS userbranchname,
                     pb.branch AS positionbranchname,
                     row_to_json(u) AS user
-                    FROM sky."Membership" m
-                   LEFT JOIN sky."DefineMember" dm ON m.member = dm.id
-                   LEFT JOIN sky."User" u ON m.userid = u.id
-                   LEFT JOIN sky."Position" p ON m.member = p.member AND m.userid = p.userid
-                   LEFT JOIN sky."Branch" ub ON u.branch = ub.id
-                   LEFT JOIN sky."Branch" pb ON p.branch = pb.id`,
+                    FROM skyeu."Membership" m
+                   LEFT JOIN skyeu."DefineMember" dm ON m.member = dm.id
+                   LEFT JOIN skyeu."User" u ON m.userid = u.id
+                   LEFT JOIN skyeu."Position" p ON m.member = p.member AND m.userid = p.userid
+                   LEFT JOIN skyeu."Branch" ub ON u.branch = ub.id
+                   LEFT JOIN skyeu."Branch" pb ON p.branch = pb.id`,
             values: []
         };
 
@@ -104,7 +104,7 @@ const getMembershipMembers = async (req, res) => {
 
         // Get total count for pagination
         const countQuery = {
-            text: `SELECT COUNT(*) FROM sky."Membership" m ${whereClause}`,
+            text: `SELECT COUNT(*) FROM skyeu."Membership" m ${whereClause}`,
             values: query.values.slice(0, -2) // Exclude limit and offset
         };
         const { rows: [{ count: total }] } = await pg.query(countQuery);

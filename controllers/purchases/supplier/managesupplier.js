@@ -18,7 +18,7 @@ const manageSupplier = async (req, res) => {
   }
 
   // Check if contactpersonphone already exists in the User table
-  const phoneQuery = `SELECT * FROM sky."User" WHERE phone = $1`;
+  const phoneQuery = `SELECT * FROM skyeu."User" WHERE phone = $1`;
   const phoneParams = [contactpersonphone];
   try {
     const { rows: existingUser } = await pg.query(phoneQuery, phoneParams);
@@ -47,7 +47,7 @@ const manageSupplier = async (req, res) => {
     // Update
     if (status) {
       // Update only status
-      const query = `UPDATE sky."Supplier" SET status = $1 WHERE id = $2`;
+      const query = `UPDATE skyeu."Supplier" SET status = $1 WHERE id = $2`;
       const params = [status, id];
       try {
         await pg.query(query, params);
@@ -72,7 +72,7 @@ const manageSupplier = async (req, res) => {
       }
     } else {
       // Update everything
-      const query = `UPDATE sky."Supplier" SET supplier = $1, contactperson = $2, officeaddress = $3, nationality = $4, state = $5, contactpersonphone = $6, bank1 = $7, accountnumber1 = $8, bank2 = $9, accountnumber2 = $10, currency = $11 WHERE id = $12`;
+      const query = `UPDATE skyeu."Supplier" SET supplier = $1, contactperson = $2, officeaddress = $3, nationality = $4, state = $5, contactpersonphone = $6, bank1 = $7, accountnumber1 = $8, bank2 = $9, accountnumber2 = $10, currency = $11 WHERE id = $12`;
       const params = [supplier, contactperson, officeaddress, nationality, state, contactpersonphone, bank1, accountnumber1, bank2, accountnumber2, currency, id];
       try {
         await pg.query(query, params);
@@ -98,7 +98,7 @@ const manageSupplier = async (req, res) => {
     }
   } else {
     // Create
-    const query = `SELECT * FROM sky."Supplier" WHERE supplier = $1`;
+    const query = `SELECT * FROM skyeu."Supplier" WHERE supplier = $1`;
     const params = [supplier];
     try {
       const { rows: existingSupplier } = await pg.query(query, params);
@@ -111,7 +111,7 @@ const manageSupplier = async (req, res) => {
           errors: []
         });
       } else {
-        const query = `INSERT INTO sky."Supplier" (supplier, contactperson, officeaddress, nationality, state, contactpersonphone, bank1, accountnumber1, bank2, accountnumber2, status, dateadded, createdby, currency) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`;
+        const query = `INSERT INTO skyeu."Supplier" (supplier, contactperson, officeaddress, nationality, state, contactpersonphone, bank1, accountnumber1, bank2, accountnumber2, status, dateadded, createdby, currency) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`;
         const params = [supplier, contactperson, officeaddress, nationality, state, contactpersonphone, bank1, accountnumber1, bank2, accountnumber2, "ACTIVE", new Date(), req.user.id, currency];
         try {
           await pg.query(query, params);

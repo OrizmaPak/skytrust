@@ -13,7 +13,7 @@ const saveOrUpdateMonitoringEvaluation = async (req, res) => {
         if (id) {
             // Update existing record
             query = {
-                text: `UPDATE sky."monitoringevaluation" 
+                text: `UPDATE skyeu."monitoringevaluation" 
                        SET userid = COALESCE($1, userid), 
                            title = COALESCE($2, title), 
                            image = COALESCE($3, image), 
@@ -25,7 +25,7 @@ const saveOrUpdateMonitoringEvaluation = async (req, res) => {
         } else {
             // Insert new record
             query = {
-                text: `INSERT INTO sky."monitoringevaluation" (userid, title, image, createdby, status)
+                text: `INSERT INTO skyeu."monitoringevaluation" (userid, title, image, createdby, status)
                        VALUES ($1, $2, $3, $4, $5) RETURNING *`,
                 values: [userid, title, image, user.id, 'ACTIVE']
             };

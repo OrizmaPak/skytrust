@@ -31,7 +31,7 @@ const manageRegistrationPoint = async (req, res) => {
         });
     }
 
-    const branchExists = await pg.query(`SELECT * FROM sky."Branch" WHERE id = $1`, [branch]);
+    const branchExists = await pg.query(`SELECT * FROM skyeu."Branch" WHERE id = $1`, [branch]);
     if (branchExists.rowCount === 0) {
         return res.status(StatusCodes.BAD_REQUEST).json({
             status: false,
@@ -45,7 +45,7 @@ const manageRegistrationPoint = async (req, res) => {
     try {
         if (!id) { // Create new registration point
             // Check if registration point already exists for the branch
-            const registrationPointExists = await pg.query(`SELECT * FROM sky."Registrationpoint" WHERE registrationpoint = $1 AND branch = $2`, [registrationpoint, branch]);
+            const registrationPointExists = await pg.query(`SELECT * FROM skyeu."Registrationpoint" WHERE registrationpoint = $1 AND branch = $2`, [registrationpoint, branch]);
             if (registrationPointExists.rowCount > 0) {
                 return res.status(StatusCodes.BAD_REQUEST).json({
                     status: false,
@@ -57,7 +57,7 @@ const manageRegistrationPoint = async (req, res) => {
             }
 
             const { rows: [newRegistrationPoint] } = await pg.query(`
-                INSERT INTO sky."Registrationpoint" (registrationpoint, description, branch, datecreated, createdby)
+                INSERT INTO skyeu."Registrationpoint" (registrationpoint, description, branch, datecreated, createdby)
                 VALUES ($1, $2, $3, CURRENT_TIMESTAMP, $4)
                 RETURNING *
             `, [registrationpoint, description, branch, req.user.id]);
@@ -73,7 +73,7 @@ const manageRegistrationPoint = async (req, res) => {
         } else { // Update existing registration point
             if (status && status.toLowerCase() === 'deleted') {
                 const { rows: usersInRegistrationPoint } = await pg.query(`
-                    SELECT * FROM sky."User" WHERE registrationpoint = $1
+                    SELECT * FROM skyeu."User" WHERE registrationpoint = $1
                 `, [id]);
 
                 if (usersInRegistrationPoint.length > 0) {
@@ -87,7 +87,7 @@ const manageRegistrationPoint = async (req, res) => {
                 }
             }
             const { rows: [updatedRegistrationPoint] } = await pg.query(`
-                UPDATE sky."Registrationpoint"
+                UPDATE skyeu."Registrationpoint"
                 SET registrationpoint = COALESCE($1, registrationpoint),
                     description = COALESCE($2, description),
                     branch = COALESCE($3, branch),

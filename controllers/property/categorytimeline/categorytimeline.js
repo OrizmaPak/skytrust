@@ -22,7 +22,7 @@ const saveOrUpdateCategoryTimeline = async (req, res) => {
         if (id) {
             // Update existing categorytimeline
             query = {
-                text: `UPDATE sky."categorytimeline" 
+                text: `UPDATE skyeu."categorytimeline" 
                        SET valuefrom = $1, valueto = $2, numberofdays = $3, createdby = $4, dateadded = NOW(), status = $5
                        WHERE id = $6`,
                 values: [valuefrom, valueto, numberofdays, user.id, status, id]
@@ -30,7 +30,7 @@ const saveOrUpdateCategoryTimeline = async (req, res) => {
         } else {
             // Insert new categorytimeline
             query = {
-                text: `INSERT INTO sky."categorytimeline" (valuefrom, valueto, numberofdays, createdby, dateadded, status) 
+                text: `INSERT INTO skyeu."categorytimeline" (valuefrom, valueto, numberofdays, createdby, dateadded, status) 
                        VALUES ($1, $2, $3, $4, NOW(), $5)`,
                 values: [valuefrom, valueto, numberofdays, user.id, status]
             };

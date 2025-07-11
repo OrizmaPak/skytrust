@@ -31,7 +31,7 @@ const addStaffToRegistrationPoint = async (req, res) => {
     }
 
     try {
-        const { rows: [user] } = await pg.query(`SELECT * FROM sky."User" WHERE id = $1`, [id]);
+        const { rows: [user] } = await pg.query(`SELECT * FROM skyeu."User" WHERE id = $1`, [id]);
 
         if (!user) {
             return res.status(StatusCodes.NOT_FOUND).json({
@@ -54,7 +54,7 @@ const addStaffToRegistrationPoint = async (req, res) => {
                 });
             }
 
-            await pg.query(`UPDATE sky."User" SET registrationpoint = $1 WHERE id = $2`, [registrationpoint, id]);
+            await pg.query(`UPDATE skyeu."User" SET registrationpoint = $1 WHERE id = $2`, [registrationpoint, id]);
             await activityMiddleware(req, req.user.id, `User added to registration point ${registrationpoint}`, 'REGISTRATIONPOINT');
             return res.status(StatusCodes.OK).json({
                 status: true,
@@ -64,7 +64,7 @@ const addStaffToRegistrationPoint = async (req, res) => {
                 errors: []
             });
         } else {
-            await pg.query(`UPDATE sky."User" SET registrationpoint = 0 WHERE id = $1`, [id]);
+            await pg.query(`UPDATE skyeu."User" SET registrationpoint = 0 WHERE id = $1`, [id]);
             await activityMiddleware(req, req.user.id, `User removed from registration point`, 'REGISTRATIONPOINT');
             return res.status(StatusCodes.OK).json({
                 status: true,

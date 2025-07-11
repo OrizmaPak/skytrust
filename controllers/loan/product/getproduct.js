@@ -28,15 +28,15 @@ const getLoanProducts = async (req, res) => {
             WHEN lp.membership IS NOT NULL THEN
               CASE 
                 WHEN lp.membership ~ '^[0-9]+$' THEN
-                  (SELECT dm.member FROM sky."DefineMember" dm WHERE dm.id = lp.membership::int)
+                  (SELECT dm.member FROM skyeu."DefineMember" dm WHERE dm.id = lp.membership::int)
                 ELSE
                   (SELECT string_agg(dm.member, '||') 
-                   FROM sky."DefineMember" dm 
+                   FROM skyeu."DefineMember" dm 
                    WHERE dm.id = ANY(string_to_array(lp.membership, '||')::int[]))
               END
             ELSE NULL
           END AS membershipnames
-        FROM sky."loanproduct" lp
+        FROM skyeu."loanproduct" lp
       `,
       values: [],
     };
@@ -100,7 +100,7 @@ const getLoanProducts = async (req, res) => {
 
     if (penaltyIds.length > 0) {
       const penaltyQuery = {
-        text: `SELECT * FROM sky."loanfee" WHERE id = ANY($1::int[])`,
+        text: `SELECT * FROM skyeu."loanfee" WHERE id = ANY($1::int[])`,
         values: [penaltyIds],
       };
       const { rows: penaltyRows } = await pg.query(penaltyQuery);
@@ -119,7 +119,7 @@ const getLoanProducts = async (req, res) => {
     const countQuery = {
       text: `
         SELECT COUNT(*) 
-        FROM sky."loanproduct"
+        FROM skyeu."loanproduct"
         ${whereClauses.length > 0 ? `WHERE ${whereClauses.join(" AND ")}` : ""}
         ${q ? (whereClauses.length > 0 ? " AND" : " WHERE") : ""}
       `,

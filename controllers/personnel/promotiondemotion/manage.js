@@ -29,7 +29,7 @@ const saveOrUpdatePromotion = async (req, res) => {
     try {
         // Check if the level exists in the level table
         const { rowCount: levelCount } = await pg.query({
-            text: `SELECT * FROM sky."level" WHERE "id" = $1`,
+            text: `SELECT * FROM skyeu."level" WHERE "id" = $1`,
             values: [level]
         });
 
@@ -57,7 +57,7 @@ const saveOrUpdatePromotion = async (req, res) => {
         if (id) {
             // Update existing promotion
             const { rowCount } = await pg.query({
-                text: `UPDATE sky."promotiondemotion" 
+                text: `UPDATE skyeu."promotiondemotion" 
                        SET "userid" = COALESCE($1, "userid"), 
                            "title" = COALESCE($2, "title"), 
                            "level" = COALESCE($3, "level"), 
@@ -80,7 +80,7 @@ const saveOrUpdatePromotion = async (req, res) => {
 
             // Update the level for the given userid
             const { rowCount: levelUpdateCount } = await pg.query({
-                text: `UPDATE sky."promotiondemotion" 
+                text: `UPDATE skyeu."promotiondemotion" 
                     SET "level" = $1 
                     WHERE "userid" = $2 AND "status" = 'ACTIVE'`,
                 values: [level, userid]
@@ -108,7 +108,7 @@ const saveOrUpdatePromotion = async (req, res) => {
         } else {
             // Save new promotion
             await pg.query({
-                text: `INSERT INTO sky."promotiondemotion" ("userid", "title", "level", "type", "dateadded", "createdby", "status") 
+                text: `INSERT INTO skyeu."promotiondemotion" ("userid", "title", "level", "type", "dateadded", "createdby", "status") 
                        VALUES ($1, $2, $3, $4, NOW(), $5, 'ACTIVE')`,
                 values: [userid, title, level, type, user.id]
             });
@@ -117,7 +117,7 @@ const saveOrUpdatePromotion = async (req, res) => {
 
             // Update the level for the given userid
             const { rowCount: levelUpdateCount } = await pg.query({
-                text: `UPDATE sky."promotiondemotion" 
+                text: `UPDATE skyeu."promotiondemotion" 
                     SET "level" = $1 
                     WHERE "userid" = $2 AND "status" = 'ACTIVE'`,
                 values: [level, userid]
@@ -144,7 +144,7 @@ const saveOrUpdatePromotion = async (req, res) => {
 
         // Update the user's level in the user table
         const { rowCount: userLevelUpdateCount } = await pg.query({
-            text: `UPDATE sky."User" 
+            text: `UPDATE skyeu."User" 
                    SET "level" = $1 
                    WHERE "id" = $2 AND "status" = 'ACTIVE'`,
             values: [level, userid]

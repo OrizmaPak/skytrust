@@ -17,7 +17,7 @@ const getLoanAccountDetails = async (req, res) => {
     try {
         // Fetch loan account details
         const loanAccountQuery = {
-            text: `SELECT * FROM sky."loanaccounts" WHERE accountnumber = $1`,
+            text: `SELECT * FROM skyeu."loanaccounts" WHERE accountnumber = $1`,
             values: [accountnumber]
         };
         const loanAccountResult = await pg.query(loanAccountQuery);
@@ -36,7 +36,7 @@ const getLoanAccountDetails = async (req, res) => {
 
         // Fetch loan payment schedule
         const loanPaymentScheduleQuery = {
-            text: `SELECT * FROM sky."loanpaymentschedule" WHERE accountnumber = $1`,
+            text: `SELECT * FROM skyeu."loanpaymentschedule" WHERE accountnumber = $1`,
             values: [accountnumber]
         };
         const loanPaymentScheduleResult = await pg.query(loanPaymentScheduleQuery);
@@ -45,7 +45,7 @@ const getLoanAccountDetails = async (req, res) => {
 
         // Fetch all transactions for the accountnumber
         const transactionsQuery = {
-            text: `SELECT * FROM sky."transaction" WHERE accountnumber = $1 AND status = 'ACTIVE'`,
+            text: `SELECT * FROM skyeu."transaction" WHERE accountnumber = $1 AND status = 'ACTIVE'`,
             values: [accountnumber]
         };
         const transactionsResult = await pg.query(transactionsQuery);
@@ -97,7 +97,7 @@ const getLoanAccountDetails = async (req, res) => {
         let penalties = [];
         if (loanAccount.defaultpenaltyid) {
             const penaltyQuery = {
-                text: `SELECT * FROM sky."loanfee" WHERE id = $1`,
+                text: `SELECT * FROM skyeu."loanfee" WHERE id = $1`,
                 values: [loanAccount.defaultpenaltyid]
             };
             const penaltyResult = await pg.query(penaltyQuery);

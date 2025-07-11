@@ -9,7 +9,7 @@ const createPropertyAccount = async (req, res) => {
     try {
         if (accountnumber) {
             const accountCheckQuery = {
-                text: `SELECT * FROM sky."propertyaccount" WHERE accountnumber = $1`,
+                text: `SELECT * FROM skyeu."propertyaccount" WHERE accountnumber = $1`,
                 values: [accountnumber]
             };
             const { rows: accountCheckRows } = await pg.query(accountCheckQuery);
@@ -25,7 +25,7 @@ const createPropertyAccount = async (req, res) => {
         }
         // Check if product exists
         const productQuery = {
-            text: `SELECT * FROM sky."propertyproduct" WHERE id = $1`,
+            text: `SELECT * FROM skyeu."propertyproduct" WHERE id = $1`,
             values: [productid]
         };
         const { rows: productRows } = await pg.query(productQuery);
@@ -42,7 +42,7 @@ const createPropertyAccount = async (req, res) => {
         if(!accountnumber){
             // Check user's existing accounts for the product
             const memberAccountQuery = {
-                text: `SELECT COUNT(*) FROM sky."propertyaccount" WHERE member = $1 AND productid = $2 AND status = 'ACTIVE'`,
+                text: `SELECT COUNT(*) FROM skyeu."propertyaccount" WHERE member = $1 AND productid = $2 AND status = 'ACTIVE'`,
                 values: [member, productid]
             };
             const { rows: memberAccountRows } = await pg.query(memberAccountQuery);
@@ -63,7 +63,7 @@ const createPropertyAccount = async (req, res) => {
 
         // Check if registration point exists
         const registrationPointQuery = {
-            text: `SELECT * FROM sky."Registrationpoint" WHERE id = $1`,
+            text: `SELECT * FROM skyeu."Registrationpoint" WHERE id = $1`,
             values: [registrationpoint]
         };
         const { rows: registrationPointRows } = await pg.query(registrationPointQuery);
@@ -79,7 +79,7 @@ const createPropertyAccount = async (req, res) => {
 
         // Check if account officer is not a member
         const accountOfficerQuery = {
-            text: `SELECT * FROM sky."User" WHERE id = $1 AND role != 'member'`,
+            text: `SELECT * FROM skyeu."User" WHERE id = $1 AND role != 'member'`,
             values: [accountofficer]
         };
         const { rows: accountOfficerRows } = await pg.query(accountOfficerQuery);
@@ -118,7 +118,7 @@ const createPropertyAccount = async (req, res) => {
         if (accountnumber) {
             // If accountnumber is provided, update the existing property account
             const updateAccountQuery = {
-                text: `UPDATE sky."propertyaccount" SET productid = $1, registrationcharge = $2, registrationdate = $3, registrationpoint = $4, accountofficer = $5, createdby = $6, repaymentfrequency = $7, numberofrepayments = $8, percentagedelivery = $9, status = 'ACTIVE', dateadded = NOW() WHERE accountnumber = $10 RETURNING id`,
+                text: `UPDATE skyeu."propertyaccount" SET productid = $1, registrationcharge = $2, registrationdate = $3, registrationpoint = $4, accountofficer = $5, createdby = $6, repaymentfrequency = $7, numberofrepayments = $8, percentagedelivery = $9, status = 'ACTIVE', dateadded = NOW() WHERE accountnumber = $10 RETURNING id`,
                 values: [productid, registrationcharge, registrationdate, registrationpoint, accountofficer, userid, repaymentfrequency, numberofrepayments, percentagedelivery, accountnumber]
             };
             const { rows: updatedAccountRows } = await pg.query(updateAccountQuery);
@@ -135,7 +135,7 @@ const createPropertyAccount = async (req, res) => {
             const propertyAccountId = updatedAccountRows[0].id;
 
             const checkDeliveredItemsQuery = {
-                text: `SELECT COUNT(*) FROM sky."propertyitems" WHERE accountnumber = $1 AND status = 'ACTIVE' AND delivered = true`,
+                text: `SELECT COUNT(*) FROM skyeu."propertyitems" WHERE accountnumber = $1 AND status = 'ACTIVE' AND delivered = true`,
                 values: [accountnumber]
             };
             const { rows: deliveredItemsRows } = await pg.query(checkDeliveredItemsQuery);
@@ -154,7 +154,7 @@ const createPropertyAccount = async (req, res) => {
 
             // Delete existing items associated with the accountnumber
             const deleteItemsQuery = {
-                text: `DELETE FROM sky."propertyitems" WHERE accountnumber = $1`,
+                text: `DELETE FROM skyeu."propertyitems" WHERE accountnumber = $1`,
                 values: [accountnumber]
             };
             await pg.query(deleteItemsQuery);
@@ -174,7 +174,7 @@ const createPropertyAccount = async (req, res) => {
                     });
                 }
                 const propertyItemsQuery = {
-                    text: `INSERT INTO sky."propertyitems" (accountnumber, itemid, qty, price, userid, createdby, status, dateadded) VALUES ($1, $2, $3, $4, $5, $6, 'ACTIVE', NOW())`,
+                    text: `INSERT INTO skyeu."propertyitems" (accountnumber, itemid, qty, price, userid, createdby, status, dateadded) VALUES ($1, $2, $3, $4, $5, $6, 'ACTIVE', NOW())`,
                     values: [accountnumber, itemid, qty, 0, userid, userid] // Assuming price is 0 as it's not provided
                 };
                 await pg.query(propertyItemsQuery);
@@ -183,7 +183,7 @@ const createPropertyAccount = async (req, res) => {
             await activityMiddleware(req, userid, 'Property account updated successfully', 'PROPERTY_ACCOUNT');
 
             const deleteInstallmentsQuery = {
-                text: `DELETE FROM sky."propertyinstallments" WHERE accountnumber = $1 AND status = 'ACTIVE'`,
+                text: `DELETE FROM skyeu."propertyinstallments" WHERE accountnumber = $1 AND status = 'ACTIVE'`,
                 values: [accountnumber]
             };
             await pg.query(deleteInstallmentsQuery);
@@ -198,7 +198,7 @@ const createPropertyAccount = async (req, res) => {
             // });
         } else {
             // Generate a 10-digit account number
-            const orgSettingsQuery = `SELECT * FROM sky."Organisationsettings" LIMIT 1`;
+            const orgSettingsQuery = `SELECT * FROM skyeu."Organisationsettings" LIMIT 1`;
             const orgSettingsResult = await pg.query(orgSettingsQuery);
 
             if (orgSettingsResult.rowCount === 0) {
@@ -216,7 +216,7 @@ const createPropertyAccount = async (req, res) => {
                 throw new Error('Property account prefix not set in organisation settings.');
             }
 
-            const accountRowsQuery = `SELECT accountnumber FROM sky."propertyaccount" WHERE accountnumber::text LIKE $1 ORDER BY accountnumber DESC LIMIT 1`;
+            const accountRowsQuery = `SELECT accountnumber FROM skyeu."propertyaccount" WHERE accountnumber::text LIKE $1 ORDER BY accountnumber DESC LIMIT 1`;
             const { rows: accountRows } = await pg.query(accountRowsQuery, [`${accountNumberPrefix}%`]);
 
             if (accountRows.length === 0) {
@@ -237,7 +237,7 @@ const createPropertyAccount = async (req, res) => {
 
             // Save to propertyaccount table
             const propertyAccountQuery = {
-                text: `INSERT INTO sky."propertyaccount" (productid, accountnumber, userid, member, registrationcharge, registrationdate, registrationpoint, accountofficer, createdby, repaymentfrequency, numberofrepayments, percentagedelivery, status, dateadded) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, 'ACTIVE', NOW()) RETURNING id`,
+                text: `INSERT INTO skyeu."propertyaccount" (productid, accountnumber, userid, member, registrationcharge, registrationdate, registrationpoint, accountofficer, createdby, repaymentfrequency, numberofrepayments, percentagedelivery, status, dateadded) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, 'ACTIVE', NOW()) RETURNING id`,
                 values: [productid, accountnumber, userid, member, registrationcharge, registrationdate, registrationpoint, accountofficer, userid, repaymentfrequency, numberofrepayments, percentagedelivery]
             };
             const { rows: propertyAccountRows } = await pg.query(propertyAccountQuery);
@@ -248,7 +248,7 @@ const createPropertyAccount = async (req, res) => {
                 const itemid = req.body[`itemid${i+1}`];
                 const qty = req.body[`qty${i+1}`];
                 const propertyItemsQuery = {
-                    text: `INSERT INTO sky."propertyitems" (accountnumber, itemid, qty, price, userid, createdby, status, dateadded) VALUES ($1, $2, $3, $4, $5, $6, 'ACTIVE', NOW())`,
+                    text: `INSERT INTO skyeu."propertyitems" (accountnumber, itemid, qty, price, userid, createdby, status, dateadded) VALUES ($1, $2, $3, $4, $5, $6, 'ACTIVE', NOW())`,
                     values: [accountnumber, itemid, qty, 0, userid, userid] // Assuming price is 0 as it's not provided
                 };
                 await pg.query(propertyItemsQuery);
@@ -336,7 +336,7 @@ const createPropertyAccount = async (req, res) => {
 
             // Save the installment with the appropriate description
             const propertyInstallmentsQuery = {
-                text: `INSERT INTO sky."propertyinstallments" (accountnumber, amount, duedate, delivered, userid, description, createdby, status, dateadded) VALUES ($1, $2, $3, $4, $5, $6, $7, 'ACTIVE', NOW())`,
+                text: `INSERT INTO skyeu."propertyinstallments" (accountnumber, amount, duedate, delivered, userid, description, createdby, status, dateadded) VALUES ($1, $2, $3, $4, $5, $6, $7, 'ACTIVE', NOW())`,
                 values: [
                     accountnumber,
                     amountPerInstallment,

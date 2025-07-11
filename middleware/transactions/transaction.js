@@ -104,7 +104,7 @@ const saveTransactionMiddleware = async (req, res, next) => {
         await activityMiddleware(req, req.user.id, 'Attempting to save transaction', 'TRANSACTION');
         
         // Query to get organisation settings
-        const orgSettingsQuery = `SELECT * FROM sky."Organisationsettings" LIMIT 1`;
+        const orgSettingsQuery = `SELECT * FROM skyeu."Organisationsettings" LIMIT 1`;
         const orgSettingsResult = await client.query(orgSettingsQuery);
         if (orgSettingsResult.rowCount === 0) {
             // If organisation settings are not found, rollback the transaction
@@ -145,33 +145,33 @@ const saveTransactionMiddleware = async (req, res, next) => {
  
         //  if (savings_account_prefix && accountnumber.startsWith(savings_account_prefix)) {
         //      whichaccount = 'SAVINGS';
-        //      const savingsAccountQuery = `SELECT * FROM sky."savings" WHERE accountnumber = $1`;
+        //      const savingsAccountQuery = `SELECT * FROM skyeu."savings" WHERE accountnumber = $1`;
         //      accountResult = await client.query(savingsAccountQuery, [accountnumber]);
         //  } else if (loan_account_prefix && accountnumber.startsWith(loan_account_prefix)) {
         //      whichaccount = 'LOAN';
-        //      const loanAccountQuery = `SELECT * FROM sky."loanaccounts" WHERE accountnumber = $1`;
+        //      const loanAccountQuery = `SELECT * FROM skyeu."loanaccounts" WHERE accountnumber = $1`;
         //      accountResult = await client.query(loanAccountQuery, [accountnumber]);
         //  } else if (rotary_account_prefix && accountnumber.startsWith(rotary_account_prefix)) {
         //      whichaccount = 'ROTARY';
-        //      const rotaryAccountQuery = `SELECT * FROM sky."rotaryaccount" WHERE accountnumber = $1`;
+        //      const rotaryAccountQuery = `SELECT * FROM skyeu."rotaryaccount" WHERE accountnumber = $1`;
         //      accountResult = await client.query(rotaryAccountQuery, [accountnumber]);
         //  } else if (property_account_prefix && accountnumber.startsWith(property_account_prefix)) {
         //      whichaccount = 'PROPERTY';
-        //      const propertyAccountQuery = `SELECT * FROM sky."propertyaccount" WHERE accountnumber = $1`;
+        //      const propertyAccountQuery = `SELECT * FROM skyeu."propertyaccount" WHERE accountnumber = $1`;
         //      accountResult = await client.query(propertyAccountQuery, [accountnumber]);
         //  } else {
         //      // Default to GLACCOUNT if no prefix matches
         //      whichaccount = 'GLACCOUNT';
-        //      const glAccountQuery = `SELECT * FROM sky."Accounts" WHERE accountnumber = $1`;
+        //      const glAccountQuery = `SELECT * FROM skyeu."Accounts" WHERE accountnumber = $1`;
         //      accountResult = await client.query(glAccountQuery, [accountnumber]);
         //  }
 
         // Validate the account number and status
-        const savingsAccountQuery = `SELECT * FROM sky."savings" WHERE accountnumber = $1`;
-        const loanAccountQuery = `SELECT * FROM sky."loanaccounts" WHERE accountnumber = $1`;
-        const glAccountQuery = `SELECT * FROM sky."Accounts" WHERE accountnumber = $1`;
-        const rotaryAccountQuery = `SELECT * FROM sky."rotaryaccount" WHERE accountnumber = $1`;
-        const propertyAccountQuery = `SELECT * FROM sky."propertyaccount" WHERE accountnumber = $1`;
+        const savingsAccountQuery = `SELECT * FROM skyeu."savings" WHERE accountnumber = $1`;
+        const loanAccountQuery = `SELECT * FROM skyeu."loanaccounts" WHERE accountnumber = $1`;
+        const glAccountQuery = `SELECT * FROM skyeu."Accounts" WHERE accountnumber = $1`;
+        const rotaryAccountQuery = `SELECT * FROM skyeu."rotaryaccount" WHERE accountnumber = $1`;
+        const propertyAccountQuery = `SELECT * FROM skyeu."propertyaccount" WHERE accountnumber = $1`;
         let parsedAccountNumber = accountnumber;
         if (isNaN(accountnumber)) {
             parsedAccountNumber = parseInt(accountnumber, 10);
@@ -201,11 +201,11 @@ const saveTransactionMiddleware = async (req, res, next) => {
 
         } else if (accountnumber && accountnumber.toString().startsWith(orgSettings.personal_account_prefix)) {
             const phoneNumber = accountnumber.substring(orgSettings.personal_account_prefix.length);
-            const userQuery = `SELECT * FROM sky."User" WHERE phone = $1::text`;
+            const userQuery = `SELECT * FROM skyeu."User" WHERE phone = $1::text`;
             const userResult = await client.query(userQuery, [phoneNumber]);
             if (userResult.rowCount === 0) {
                 // If not found in User table, check the Supplier table
-                const supplierQuery = `SELECT * FROM sky."Supplier" WHERE contactpersonphone = $1`;
+                const supplierQuery = `SELECT * FROM skyeu."Supplier" WHERE contactpersonphone = $1`;
                 const supplierResult = await client.query(supplierQuery, [phoneNumber]);
                 if (supplierResult.rowCount === 0) {
                     // If personal account number is invalid, save the transaction as failed
@@ -256,7 +256,7 @@ const saveTransactionMiddleware = async (req, res, next) => {
         }
 
         if (accountResult.rowCount) {
-            const userQuery = `SELECT phone FROM sky."User" WHERE id = $1`;
+            const userQuery = `SELECT phone FROM skyeu."User" WHERE id = $1`;
             const userResult = await client.query(userQuery, [accountResult.rows[0].userid]);
             if (userResult.rowCount > 0) {
                 const phone = userResult.rows[0].phone;
@@ -266,7 +266,7 @@ const saveTransactionMiddleware = async (req, res, next) => {
         }
 
         if (loanAccountResult.rowCount) {
-            const loanUserQuery = `SELECT phone FROM sky."User" WHERE id = $1`;
+            const loanUserQuery = `SELECT phone FROM skyeu."User" WHERE id = $1`;
             const loanUserResult = await client.query(loanUserQuery, [loanAccountResult.rows[0].userid]);
             if (loanUserResult.rowCount > 0) {
                 const phone = loanUserResult.rows[0].phone;
@@ -276,7 +276,7 @@ const saveTransactionMiddleware = async (req, res, next) => {
         }
 
         if (propertyAccountResult.rowCount) {
-            const propertyUserQuery = `SELECT phone FROM sky."User" WHERE id = $1`;
+            const propertyUserQuery = `SELECT phone FROM skyeu."User" WHERE id = $1`;
             const propertyUserResult = await client.query(propertyUserQuery, [propertyAccountResult.rows[0].userid]);
             if (propertyUserResult.rowCount > 0) {
                 const phone = propertyUserResult.rows[0].phone;
@@ -286,7 +286,7 @@ const saveTransactionMiddleware = async (req, res, next) => {
         }
 
         if (rotaryAccountResult.rowCount) {
-            const rotaryUserQuery = `SELECT phone FROM sky."User" WHERE id = $1`;
+            const rotaryUserQuery = `SELECT phone FROM skyeu."User" WHERE id = $1`;
             const rotaryUserResult = await client.query(rotaryUserQuery, [rotaryAccountResult.rows[0].userid]);
             if (rotaryUserResult.rowCount > 0) {
                 const phone = rotaryUserResult.rows[0].phone;
@@ -361,7 +361,7 @@ const saveTransactionMiddleware = async (req, res, next) => {
             req.body.transactiondesc += 'Transaction failed due to future transaction.|';
             return next();
         }
-        const rejectTransactionDateQuery = `SELECT * FROM sky."Rejecttransactiondate" WHERE rejectiondate = $1`;
+        const rejectTransactionDateQuery = `SELECT * FROM skyeu."Rejecttransactiondate" WHERE rejectiondate = $1`;
         const rejectTransactionDateResult = await client.query(rejectTransactionDateQuery, [currentDate.toISOString().split('T')[0]]);
         if (rejectTransactionDateResult.rowCount > 0) {
             transactionStatus = 'FAILED';
@@ -402,7 +402,7 @@ const saveTransactionMiddleware = async (req, res, next) => {
             }
 
             // Validate the savings product
-            const savingsProductQuery = `SELECT * FROM sky."savingsproduct" WHERE id = $1`;
+            const savingsProductQuery = `SELECT * FROM skyeu."savingsproduct" WHERE id = $1`;
             const savingsProductResult = await client.query(savingsProductQuery, [account.savingsproductid]);
             if (savingsProductResult.rowCount === 0) {
                 // If savings product is invalid, save the transaction as failed
@@ -422,7 +422,7 @@ const saveTransactionMiddleware = async (req, res, next) => {
             req.savingsProduct = savingsProduct;
             // Check for frequency override
             const frequencyOverrideQuery = `
-                SELECT * FROM sky."frequencyoverride" 
+                SELECT * FROM skyeu."frequencyoverride" 
                 WHERE savingsproductid = $1 AND branch = $2 AND status = 'ACTIVE'
             `;
             const frequencyOverrideResult = await client.query(frequencyOverrideQuery, [savingsProduct.id, account.branch]);

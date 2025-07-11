@@ -19,7 +19,7 @@ const blockPin = async (req, res) => {
     try {
         // Update the User's pin to 'BLOCKED'
         const updateQuery = {
-            text: `UPDATE sky."User" SET pin = 'BLOCKED' WHERE id = $1`,
+            text: `UPDATE skyeu."User" SET pin = 'BLOCKED' WHERE id = $1`,
             values: [id]
         };
         await pg.query(updateQuery);

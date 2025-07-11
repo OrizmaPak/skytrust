@@ -29,21 +29,21 @@ const updateinventory = async (req, res) => {
         // Initialize departments array
         let departments = department && department.includes('||') ? department.split('||') : [department];
         if (!department) {
-            const { rows: itemDepartments } = await pg.query(`SELECT department FROM sky."Inventory" WHERE itemid = $1 GROUP BY department`, [itemid]);
+            const { rows: itemDepartments } = await pg.query(`SELECT department FROM skyeu."Inventory" WHERE itemid = $1 GROUP BY department`, [itemid]);
             departments = [...new Set(itemDepartments.map(d => d.department))];
         }
         // Fetch the department with the highest id for the itemid
-        let { rows: maxIdDepartment } = await pg.query(`SELECT * FROM sky."Inventory" WHERE itemid = $1 ORDER BY id DESC LIMIT 1`, [itemid]);
+        let { rows: maxIdDepartment } = await pg.query(`SELECT * FROM skyeu."Inventory" WHERE itemid = $1 ORDER BY id DESC LIMIT 1`, [itemid]);
 
         if(department){
-            maxIdDepartment = await pg.query(`SELECT * FROM sky."Inventory" WHERE itemid = $1 AND department = $2`, [itemid, department]);
+            maxIdDepartment = await pg.query(`SELECT * FROM skyeu."Inventory" WHERE itemid = $1 AND department = $2`, [itemid, department]);
             maxIdDepartment = maxIdDepartment.rows;
         }
 
         
         // If department is not provided, fetch all departments for the itemid
         // if (!department) {
-        //     const { rows: allDepartments } = await pg.query(`SELECT department FROM sky."Inventory" WHERE itemid = $1 GROUP BY department`, [itemid]);
+        //     const { rows: allDepartments } = await pg.query(`SELECT department FROM skyeu."Inventory" WHERE itemid = $1 GROUP BY department`, [itemid]);
         //     departments = allDepartments.map(d => d.department);
         // } 
 
@@ -57,7 +57,7 @@ const updateinventory = async (req, res) => {
         // Iterate over each department and fetch the corresponding branch
         if(!branch)for (let dept of departments) {
             console.log('dept:', dept);
-            const { rows } = await pg.query(`SELECT branch FROM sky."Department" WHERE id = $1`, [dept]);
+            const { rows } = await pg.query(`SELECT branch FROM skyeu."Department" WHERE id = $1`, [dept]);
             console.log('rows:', rows);
             if (rows.length > 0) {
                 branches.push(rows[0].branch);
@@ -103,14 +103,14 @@ const updateinventory = async (req, res) => {
             itmn = data.itemname;
 
             // Insert the data into the Inventory table
-            await pg.query(`INSERT INTO sky."Inventory" (itemid, branch, department, itemname, units, cost, price, pricetwo, beginbalance, qty, minimumbalance, "group", applyto, itemclass, composite, compositeid, description, imageone, imagetwo, imagethree, status, "reference", transactiondate, transactiondesc, dateadded, createdby) 
+            await pg.query(`INSERT INTO skyeu."Inventory" (itemid, branch, department, itemname, units, cost, price, pricetwo, beginbalance, qty, minimumbalance, "group", applyto, itemclass, composite, compositeid, description, imageone, imagetwo, imagethree, status, "reference", transactiondate, transactiondesc, dateadded, createdby) 
                                                     VALUES ($1,     $2,     $3,         $4,       $5,    $6,   $7,    $8,       $9,           $10, $11,            $12,     $13,     $14,       $15,       $16,         $17,         $18,      $19,      $20,        $21,    $22,         $23,             $24,             $25,       $26)`, 
                                                     [data.itemid, data.branch, data.department, data.itemname, data.units, data.cost, data.price, data.pricetwo, data.beginbalance, 0, data.minimumbalance, data.group, data.applyto, data.itemclass, data.composite, data.compositeid, data.description, data.imageone, data.imagetwo, data.imagethree, data.status, new Date().getTime().toString(), new Date, 'Update details of the item', new Date(), req.user.id]);
         }
 
         // Log activity
         if (branch) {
-            const { rows: branchName } = await pg.query(`SELECT branch FROM sky."Branch" WHERE id = $1`, [branch]);
+            const { rows: branchName } = await pg.query(`SELECT branch FROM skyeu."Branch" WHERE id = $1`, [branch]);
             await activityMiddleware(res, req.user.id, `Inventory for item ${itmn} in branch ${branchName[0].branch} updated successfully`, 'UPDATE_INVENTORY');
         }
 

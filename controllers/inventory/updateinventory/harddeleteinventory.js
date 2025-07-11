@@ -21,7 +21,7 @@ const harddeleteinventory = async (req, res) => {
 
     try {
         // Delete the inventory entry with the given id
-        const result = await pg.query(`DELETE FROM sky."Inventory" WHERE id = $1 RETURNING *`, [id]);
+        const result = await pg.query(`DELETE FROM skyeu."Inventory" WHERE id = $1 RETURNING *`, [id]);
 
         // Check if the entry was found and deleted
         if (result.rowCount === 0) {

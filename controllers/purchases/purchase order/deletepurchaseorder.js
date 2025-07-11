@@ -21,7 +21,7 @@ const deletePurchaseOrder = async (req, res) => {
     try {
         // Update the status of all inventory items with the given transactionref to 'DELETED'
         const updateQuery = {
-            text: `UPDATE sky."Inventory" SET status = 'DELETED' WHERE transactionref = $1`,
+            text: `UPDATE skyeu."Inventory" SET status = 'DELETED' WHERE transactionref = $1`,
             values: [transactionref]
         };
 

@@ -9,13 +9,13 @@ const getFrequencyOverrides = async (req, res) => {
 
     try {
         // Fetch all branches
-        const branchQuery = `SELECT id, branch FROM sky."Branch"`;
+        const branchQuery = `SELECT id, branch FROM skyeu."Branch"`;
         const branchResult = await pg.query(branchQuery);
         const branches = branchResult.rows;
 
         // Fetch frequency overrides
         let query = {
-            text: `SELECT * FROM sky."frequencyoverride"`,
+            text: `SELECT * FROM skyeu."frequencyoverride"`,
             values: []
         };
 
@@ -80,7 +80,7 @@ const getFrequencyOverrides = async (req, res) => {
 
         // Get total count for pagination
         const countQuery = {
-            text: `SELECT COUNT(*) FROM sky."frequencyoverride" ${whereClause}`,
+            text: `SELECT COUNT(*) FROM skyeu."frequencyoverride" ${whereClause}`,
             values: query.values.slice(0, -2) // Exclude limit and offset
         };
         const { rows: [{ count: total }] } = await pg.query(countQuery);

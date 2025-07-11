@@ -30,7 +30,7 @@ const openingStock = async (req, res) => {
             // Extract id from request body
             const id = req.body[`id${i}`];
             // Query to select inventory item by id
-            const inventory = await pg.query(`SELECT * FROM sky."Inventory" WHERE id = $1`, [id]);
+            const inventory = await pg.query(`SELECT * FROM skyeu."Inventory" WHERE id = $1`, [id]);
 
             // Check if inventory item is not found
             if (!inventory.rows[0]) {
@@ -64,7 +64,7 @@ const openingStock = async (req, res) => {
 
         // Insert cloned inventory items into the database
         for (const item of inventoryItems) {
-            await pg.query(`INSERT INTO sky."Inventory" (
+            await pg.query(`INSERT INTO skyeu."Inventory" (
                 itemid, itemname, department, branch, units, cost, price, pricetwo, 
                 beginbalance, qty, minimumbalance, "group", applyto, itemclass, 
                 composite, compositeid, description, imageone, imagetwo, imagethree, 
@@ -86,9 +86,9 @@ const openingStock = async (req, res) => {
 
             // Log activity for opening stock
             // Get the department from the department table
-            const { rows: department } = await pg.query(`SELECT department FROM sky."Department" WHERE id = $1`, [item.department]);
+            const { rows: department } = await pg.query(`SELECT department FROM skyeu."Department" WHERE id = $1`, [item.department]);
             // Get the branch from the branch table
-            const { rows: branch } = await pg.query(`SELECT branch FROM sky."Branch" WHERE id = $1`, [item.branch]);
+            const { rows: branch } = await pg.query(`SELECT branch FROM skyeu."Branch" WHERE id = $1`, [item.branch]);
             // Log activity for opening stock
             await activityMiddleware(res, req.user.id, `Opening stock added for item ${item.itemname} in department ${department[0].department} and branch ${branch[0].branch} with quantity ${item.qty}`, 'OPEN STOCK');
         }

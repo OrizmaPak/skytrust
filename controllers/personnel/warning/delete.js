@@ -18,7 +18,7 @@ const deleteWarning = async (req, res) => {
 
     try {
         const query = {
-            text: `UPDATE sky."warning" SET status = 'DELETED' WHERE id = $1 RETURNING *`,
+            text: `UPDATE skyeu."warning" SET status = 'DELETED' WHERE id = $1 RETURNING *`,
             values: [id]
         };
 

@@ -18,7 +18,7 @@ const processSupplierPayout = async (req, res) => {
 
     try {
         // Check if the supplier exists
-        const supplierQuery = `SELECT * FROM sky."Supplier" WHERE id = $1 AND status = 'ACTIVE'`;
+        const supplierQuery = `SELECT * FROM skyeu."Supplier" WHERE id = $1 AND status = 'ACTIVE'`;
         const { rows: [validSupplier] } = await pg.query(supplierQuery, [supplier]);
 
         if (!validSupplier) {
@@ -32,7 +32,7 @@ const processSupplierPayout = async (req, res) => {
         }
 
         // Further processing logic for supplier payout can be added here
-        const organisationQuery = `SELECT * FROM sky."Organisationsettings" WHERE status = 'ACTIVE'`;
+        const organisationQuery = `SELECT * FROM skyeu."Organisationsettings" WHERE status = 'ACTIVE'`;
         const { rows: [organisationData] } = await pg.query(organisationQuery);
 
         if (!organisationData) {
@@ -48,7 +48,7 @@ const processSupplierPayout = async (req, res) => {
         const transactionQuery = `
             SELECT 
                 COALESCE(SUM(credit), 0) - COALESCE(SUM(debit), 0) AS balance
-            FROM sky."transaction"
+            FROM skyeu."transaction"
             WHERE accountnumber = $1 AND userid = $2 AND tfrom = $3 AND status = 'ACTIVE'
         `;
         const { rows: [transactionData] } = await pg.query(transactionQuery, [organisationData.default_allocation_account, user.id, tfrom]);

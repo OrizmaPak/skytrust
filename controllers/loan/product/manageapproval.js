@@ -32,7 +32,7 @@ async function approveDeclineLoanProduct(req, res) {
     }
 
     try {
-        const existingLoanProductQuery = `SELECT * FROM sky."loanproduct" WHERE id = $1`;
+        const existingLoanProductQuery = `SELECT * FROM skyeu."loanproduct" WHERE id = $1`;
         const existingLoanProductResult = await pg.query(existingLoanProductQuery, [id]);
 
         if (existingLoanProductResult.rows.length === 0) {
@@ -46,7 +46,7 @@ async function approveDeclineLoanProduct(req, res) {
         }
 
         const updateLoanProductQuery = `
-            UPDATE sky."loanproduct" SET
+            UPDATE skyeu."loanproduct" SET
                 status = $1
             WHERE id = $2
             RETURNING *

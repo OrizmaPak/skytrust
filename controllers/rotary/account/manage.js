@@ -28,7 +28,7 @@
 
         // Check if the product ID exists in the rotaryProduct table
         console.log("Checking if product ID exists in rotaryProduct table");
-        const productQuery = `SELECT * FROM sky."rotaryProduct" WHERE id = $1`;
+        const productQuery = `SELECT * FROM skyeu."rotaryProduct" WHERE id = $1`;
         const productResult = await pg.query(productQuery, [productid]);
 
         if (productResult.rowCount === 0) {
@@ -51,7 +51,7 @@
             console.log("Checking number of rotary accounts for user, product, and member");
             const rotaryAccountQuery = `
                 SELECT COUNT(*) as count
-                FROM sky."rotaryaccount"
+                FROM skyeu."rotaryaccount"
                 WHERE userid = $1 AND productid = $2 AND member = $3
             `;
             const { rows: [{ count }] } = await pg.query(rotaryAccountQuery, [userid, productid, member]);
@@ -102,7 +102,7 @@
         try {
             // Fetch the organisation settings to get the account number prefix
             console.log("Fetching organisation settings for account number prefix");
-            const orgSettingsQuery = `SELECT * FROM sky."Organisationsettings" LIMIT 1`;
+            const orgSettingsQuery = `SELECT * FROM skyeu."Organisationsettings" LIMIT 1`;
             const orgSettingsResult = await pg.query(orgSettingsQuery);
 
             if (orgSettingsResult.rowCount === 0) {
@@ -138,7 +138,7 @@
             if (!accountnumber) {
                 // Generate a new account number if not provided
                 console.log("Generating new account number");
-                const accountRowsQuery = `SELECT accountnumber FROM sky."rotaryaccount" WHERE accountnumber::text LIKE $1 ORDER BY accountnumber DESC LIMIT 1`;
+                const accountRowsQuery = `SELECT accountnumber FROM skyeu."rotaryaccount" WHERE accountnumber::text LIKE $1 ORDER BY accountnumber DESC LIMIT 1`;
                 const { rows: accountRows } = await pg.query(accountRowsQuery, [`${accountNumberPrefix}%`]);
 
                 if (accountRows.length === 0) {
@@ -174,7 +174,7 @@
                 // Update existing rotary account
                 console.log("Updating existing rotary account");
                 query = {
-                    text: `UPDATE sky."rotaryaccount" 
+                    text: `UPDATE skyeu."rotaryaccount" 
                            SET productid = $1, amount = $2, frequency = $3, frequencynumber = $4, autorunnew = $5, userid = $6, member = $7, branch = $8, registrationcharge = $9, registrationpoint = $10, registrationdesc = $11, dateupdated = NOW() 
                            WHERE accountnumber = $12 RETURNING *`,
                     values: [productid, amount, frequency, frequencynumber, autorunnew, userid, member, branch || 0, registrationcharge || 0, user.registrationpoint || 0, registrationdesc || '', accountnumber]
@@ -183,7 +183,7 @@
                 // Insert new rotary account
                 console.log("Inserting new rotary account");
                 query = {
-                    text: `INSERT INTO sky."rotaryaccount" 
+                    text: `INSERT INTO skyeu."rotaryaccount" 
                            (accountnumber, productid, amount, frequency, frequencynumber, autorunnew, userid, member, branch, registrationcharge, registrationpoint, registrationdesc, dateadded, status) 
                            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, NOW(), 'ACTIVE') RETURNING *`,
                     values: [generatedAccountNumber, productid, amount, frequency, frequencynumber, autorunnew, userid, member, branch || 0, registrationcharge || 0, user.registrationpoint || 0, registrationdesc || '']
@@ -196,7 +196,7 @@
             // Check the rotaryschedule table for existing schedules with the generated account number
             console.log("Checking rotaryschedule table for existing schedules");
             const scheduleQuery = {
-                text: `SELECT * FROM sky."rotaryschedule" WHERE accountnumber = $1 AND currentschedule = 'YES'`,
+                text: `SELECT * FROM skyeu."rotaryschedule" WHERE accountnumber = $1 AND currentschedule = 'YES'`,
                 values: [generatedAccountNumber]
             };
             const { rows: existingSchedules } = await pg.query(scheduleQuery);
@@ -206,7 +206,7 @@
                 // Current schedule exists, delete them
                 console.log("Deleting existing schedules with currentschedule as YES");
                 const deleteScheduleQuery = {
-                    text: `DELETE FROM sky."rotaryschedule" 
+                    text: `DELETE FROM skyeu."rotaryschedule" 
                            WHERE accountnumber = $1 AND currentschedule = 'YES'`,
                     values: [generatedAccountNumber]
                 };
@@ -222,7 +222,7 @@
                 for (const date of nextDates) {
                     console.log("Inserting new schedule for date:", date);
                     const insertScheduleQuery = {
-                        text: `INSERT INTO sky."rotaryschedule" 
+                        text: `INSERT INTO skyeu."rotaryschedule" 
                                (accountnumber, amount, duedate, dateadded, currentschedule, status, createdby) 
                                VALUES ($1, $2, $3, NOW(), 'YES', 'ACTIVE', $4)`,
                         values: [generatedAccountNumber, amount, date, user.id]
@@ -235,18 +235,18 @@
             if (poolNumber === 'SEQUENCE') {
                 console.log("Handling SEQUENCE poolnumber logic");
                 const maxScheduleQuery = {
-                    text: `SELECT MAX(duedate) as maxduedate FROM sky."rotaryschedule" WHERE accountnumber = $1`,
+                    text: `SELECT MAX(duedate) as maxduedate FROM skyeu."rotaryschedule" WHERE accountnumber = $1`,
                     values: [generatedAccountNumber]
                 };
                 const { rows: [{ maxduedate }] } = await pg.query(maxScheduleQuery);
                 const totalAmountQuery = {
-                    text: `SELECT SUM(amount) as totalamount FROM sky."rotaryschedule" WHERE accountnumber = $1`,
+                    text: `SELECT SUM(amount) as totalamount FROM skyeu."rotaryschedule" WHERE accountnumber = $1`,
                     values: [generatedAccountNumber]
                 };
                 const { rows: [{ totalamount }] } = await pg.query(totalAmountQuery);
 
                 const insertSequenceScheduleQuery = {
-                    text: `INSERT INTO sky."rotaryschedule" 
+                    text: `INSERT INTO skyeu."rotaryschedule" 
                            (accountnumber, amount, duedate, dateadded, currentschedule, status, createdby, payout) 
                            VALUES ($1, $2, $3, NOW(), 'YES', 'ACTIVE', $4, 'YES')`,
                     values: [generatedAccountNumber, totalamount, maxduedate, user.id]
@@ -255,18 +255,18 @@
             } else if (poolNumber === 'RANDOM') {
                 console.log("Handling RANDOM poolnumber logic");
                 const randomScheduleQuery = {
-                    text: `SELECT duedate FROM sky."rotaryschedule" WHERE accountnumber = $1 ORDER BY RANDOM() LIMIT 1`,
+                    text: `SELECT duedate FROM skyeu."rotaryschedule" WHERE accountnumber = $1 ORDER BY RANDOM() LIMIT 1`,
                     values: [generatedAccountNumber]
                 };
                 const { rows: [{ duedate: randomDuedate }] } = await pg.query(randomScheduleQuery);
                 const totalAmountQuery = {
-                    text: `SELECT SUM(amount) as totalamount FROM sky."rotaryschedule" WHERE accountnumber = $1`,
+                    text: `SELECT SUM(amount) as totalamount FROM skyeu."rotaryschedule" WHERE accountnumber = $1`,
                     values: [generatedAccountNumber]
                 };
                 const { rows: [{ totalamount }] } = await pg.query(totalAmountQuery);
 
                 const insertRandomScheduleQuery = {
-                    text: `INSERT INTO sky."rotaryschedule" 
+                    text: `INSERT INTO skyeu."rotaryschedule" 
                            (accountnumber, amount, duedate, dateadded, currentschedule, status, createdby, payout) 
                            VALUES ($1, $2, $3, NOW(), 'YES', 'ACTIVE', $4, 'YES')`,
                     values: [generatedAccountNumber, totalamount, randomDuedate, user.id]

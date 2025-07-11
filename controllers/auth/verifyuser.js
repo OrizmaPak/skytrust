@@ -35,11 +35,11 @@ async function verifyuser(req, res) {
         await activityMiddleware(req, null, 'Verify User Attempt', 'AUTH');
 
         // CHECK IF ITS IN THE TOKEN TABLE
-        const {rows:[user]} = await pg.query(`SELECT * FROM sky."VerificationToken" WHERE token = $1`, [token] )
+        const {rows:[user]} = await pg.query(`SELECT * FROM skyeu."VerificationToken" WHERE token = $1`, [token] )
         console.log(user)
         if(user && user.token == token && user.expires > new Date()){
-            await pg.query(`DELETE FROM sky."VerificationToken" WHERE token = $1`, [token])
-            await pg.query(`UPDATE sky."User" SET emailverified = $1 WHERE id = $2`, [new Date(), user.id])
+            await pg.query(`DELETE FROM skyeu."VerificationToken" WHERE token = $1`, [token])
+            await pg.query(`UPDATE skyeu."User" SET emailverified = $1 WHERE id = $2`, [new Date(), user.id])
             const responseData = {
                 error: false,
                 message: `Email verified`,

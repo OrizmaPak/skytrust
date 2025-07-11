@@ -45,7 +45,7 @@ async function verifypasswordaccess(req, res) {
 
     try {
         // Check if email already exists using raw query
-        const { rows: [existingUser] } = await pg.query(`SELECT * FROM sky."User" WHERE email = $1`, [email]);
+        const { rows: [existingUser] } = await pg.query(`SELECT * FROM skyeu."User" WHERE email = $1`, [email]);
 
         if (!existingUser) {
             return res.status(StatusCodes.BAD_REQUEST).json({

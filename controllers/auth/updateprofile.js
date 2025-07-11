@@ -64,12 +64,12 @@ async function updateuser(req, res) {
 
     try {  
         if (status) {
-            await pg.query(`UPDATE sky."User" 
+            await pg.query(`UPDATE skyeu."User" 
                              SET status = $1, 
                              lastupdated = $2
                              WHERE id = $3`, [status, new Date(), userid]);
         } else if (id) {
-            await pg.query(`UPDATE sky."User" 
+            await pg.query(`UPDATE skyeu."User" 
                              SET firstname = COALESCE($1, firstname), 
                                  lastname = COALESCE($2, lastname), 
                                  othernames = COALESCE($3, othernames), 
@@ -104,7 +104,7 @@ async function updateuser(req, res) {
                 firstname, lastname, othernames, image, image2, role, new Date(), state, country, address, officeaddress, branch, permissions, userpermissions, gender, occupation, lga, town, maritalstatus, spousename, stateofresidence, lgaofresidence, nextofkinfullname, nextofkinphone, nextofkinrelationship, nextofkinaddress, nextofkinofficeaddress, nextofkinoccupation, dateofbirth, registrationpoint, userid
             ]);
         } else if (!id && email) {
-            await pg.query(`UPDATE sky."User" 
+            await pg.query(`UPDATE skyeu."User" 
                              SET firstname = COALESCE($1, firstname), 
                                  lastname = COALESCE($2, lastname), 
                                  othernames = COALESCE($3, othernames), 
@@ -139,7 +139,7 @@ async function updateuser(req, res) {
             ]);
         }
         await activityMiddleware(req, user.id, `Updated Profile`, 'AUTH');
-        const updatedUser = await pg.query(`SELECT * FROM sky."User" WHERE id = $1`, [userid]);
+        const updatedUser = await pg.query(`SELECT * FROM skyeu."User" WHERE id = $1`, [userid]);
         return res.status(StatusCodes.OK).json({
             status: true,
             message: 'Profile Update Successful',

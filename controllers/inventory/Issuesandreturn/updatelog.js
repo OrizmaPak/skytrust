@@ -18,7 +18,7 @@ const updateLogQty = async (req, res) => {
 
     try {
         // Check if the item exists in the inventory
-        const { rows: itemExists } = await pg.query(`SELECT * FROM sky."Inventory" WHERE id = $1 AND status = 'ACTIVE'`, [id]);
+        const { rows: itemExists } = await pg.query(`SELECT * FROM skyeu."Inventory" WHERE id = $1 AND status = 'ACTIVE'`, [id]);
         if (itemExists.length === 0) {
             return res.status(StatusCodes.NOT_FOUND).json({
                 status: false,
@@ -31,14 +31,14 @@ const updateLogQty = async (req, res) => {
 
         // Update the quantity of the item in the inventory if qty is provided
         if (qty !== undefined) {
-            await pg.query(`UPDATE sky."Inventory" SET qty = $1 WHERE id = $2`, [-qty, id]);
+            await pg.query(`UPDATE skyeu."Inventory" SET qty = $1 WHERE id = $2`, [-qty, id]);
             // Log activity for quantity update
             await activityMiddleware(req, req.user.id, `Quantity for item ID ${id} updated to ${qty}`, 'UPDATE_LOG_QTY');
         }
 
         // If status is sent and it's 'DELETED', update the status to 'DELETED'
         if (status === 'DELETED') {
-            await pg.query(`UPDATE sky."Inventory" SET status = 'DELETED' WHERE id = $1`, [id]);
+            await pg.query(`UPDATE skyeu."Inventory" SET status = 'DELETED' WHERE id = $1`, [id]);
             // Log activity for status update
             await activityMiddleware(req, req.user.id, `Status for item ID ${id} updated to DELETED`, 'UPDATE_LOG_QTY');
         }

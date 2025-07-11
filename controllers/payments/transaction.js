@@ -51,7 +51,7 @@ const handleTransaction = async (req, res) => {
     }
 
     try {
-        const queryResult = await pg.query('SELECT * FROM sky."transaction" WHERE reference = $1', [req.body.reference]);
+        const queryResult = await pg.query('SELECT * FROM skyeu."transaction" WHERE reference = $1', [req.body.reference]);
         if (queryResult.rowCount === 0) {
             return respondWithError(StatusCodes.NOT_FOUND, 'Transaction Failed.');
         }

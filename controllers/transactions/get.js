@@ -8,7 +8,7 @@ const getTransactions = async (req, res) => {
 
     try {
         let query = {
-            text: `SELECT * FROM sky."transaction"`,
+            text: `SELECT * FROM skyeu."transaction"`,
             values: []
         };
 
@@ -114,56 +114,56 @@ const getTransactions = async (req, res) => {
             const { whichaccount, accountnumber } = transaction;
 
             if (whichaccount === 'PERSONAL') {
-                const { rows: orgSettings } = await pg.query(`SELECT personal_account_prefix FROM sky."Organisationsettings"`);
+                const { rows: orgSettings } = await pg.query(`SELECT personal_account_prefix FROM skyeu."Organisationsettings"`);
                 const personalAccountPrefix = orgSettings[0].personal_account_prefix;
                 const phone = accountnumber.replace(personalAccountPrefix, '');
-                const { rows: users } = await pg.query(`SELECT firstname, lastname, othernames FROM sky."User" WHERE phone = $1`, [phone]);
+                const { rows: users } = await pg.query(`SELECT firstname, lastname, othernames FROM skyeu."User" WHERE phone = $1`, [phone]);
                 if (users.length > 0) {
                     const { firstname, lastname, othernames } = users[0];
                     accountName = `${firstname} ${lastname} ${othernames}`.trim();
                 }
             } else if (whichaccount === 'SAVINGS') {
-                const { rows: savings } = await pg.query(`SELECT userid FROM sky."savings" WHERE accountnumber = $1`, [accountnumber]);
+                const { rows: savings } = await pg.query(`SELECT userid FROM skyeu."savings" WHERE accountnumber = $1`, [accountnumber]);
                 if (savings.length > 0) {
                     const { userid } = savings[0];
-                    const { rows: users } = await pg.query(`SELECT firstname, lastname, othernames FROM sky."User" WHERE id = $1`, [userid]);
+                    const { rows: users } = await pg.query(`SELECT firstname, lastname, othernames FROM skyeu."User" WHERE id = $1`, [userid]);
                     if (users.length > 0) {
                         const { firstname, lastname, othernames } = users[0];
                         accountName = `${firstname} ${lastname} ${othernames}`.trim();
                     }
                 }
             } else if (whichaccount === 'LOAN') {
-                const { rows: loans } = await pg.query(`SELECT userid FROM sky."loanaccounts" WHERE accountnumber = $1`, [accountnumber]);
+                const { rows: loans } = await pg.query(`SELECT userid FROM skyeu."loanaccounts" WHERE accountnumber = $1`, [accountnumber]);
                 if (loans.length > 0) {
                     const { userid } = loans[0];
-                    const { rows: users } = await pg.query(`SELECT firstname, lastname, othernames FROM sky."User" WHERE id = $1`, [userid]);
+                    const { rows: users } = await pg.query(`SELECT firstname, lastname, othernames FROM skyeu."User" WHERE id = $1`, [userid]);
                     if (users.length > 0) {
                         const { firstname, lastname, othernames } = users[0];
                         accountName = `${firstname} ${lastname} ${othernames}`.trim();
                     }
                 }
             } else if (whichaccount == 'PROPERTY') {
-                const { rows: propertyAccounts } = await pg.query(`SELECT productid FROM sky."propertyaccount" WHERE accountnumber = $1`, [accountnumber]);
+                const { rows: propertyAccounts } = await pg.query(`SELECT productid FROM skyeu."propertyaccount" WHERE accountnumber = $1`, [accountnumber]);
                 if (propertyAccounts.length > 0) {
                     const { userid } = propertyAccounts[0];
-                    const { rows: theuser } = await pg.query(`SELECT firstname, lastname, othernames FROM sky."User" WHERE id = $1`, [userid]);
+                    const { rows: theuser } = await pg.query(`SELECT firstname, lastname, othernames FROM skyeu."User" WHERE id = $1`, [userid]);
                     if (theuser.length > 0) {
                         const { firstname, lastname, othernames } = theuser[0];
                         accountName = `${firstname} ${lastname} ${othernames}`.trim();
                     }
                 }
             } else if (whichaccount == 'ROTARY') {
-                const { rows: rotaryAccounts } = await pg.query(`SELECT userid FROM sky."rotaryaccount" WHERE accountnumber = $1`, [accountnumber]);
+                const { rows: rotaryAccounts } = await pg.query(`SELECT userid FROM skyeu."rotaryaccount" WHERE accountnumber = $1`, [accountnumber]);
                 if (rotaryAccounts.length > 0) {
                     const { userid } = rotaryAccounts[0];
-                    const { rows: theuser } = await pg.query(`SELECT firstname, lastname, othernames FROM sky."User" WHERE id = $1`, [userid]);
+                    const { rows: theuser } = await pg.query(`SELECT firstname, lastname, othernames FROM skyeu."User" WHERE id = $1`, [userid]);
                     if (theuser.length > 0) {
                         const { firstname, lastname, othernames } = theuser[0];
                         accountName = `${firstname} ${lastname} ${othernames}`.trim();
                     }
                 }
             } else if (whichaccount == 'GLACCOUNT') {
-                const { rows: glAccounts } = await pg.query(`SELECT accountnumber FROM sky."Accounts" WHERE accountnumber = $1`, [accountnumber]);
+                const { rows: glAccounts } = await pg.query(`SELECT accountnumber FROM skyeu."Accounts" WHERE accountnumber = $1`, [accountnumber]);
                 if (glAccounts.length > 0) {
                     accountName = glAccounts[0].groupname;
                 }
@@ -174,7 +174,7 @@ const getTransactions = async (req, res) => {
 
         // Get total count for pagination
         const countQuery = {
-            text: `SELECT COUNT(*) FROM sky."transaction" ${whereClause}`,
+            text: `SELECT COUNT(*) FROM skyeu."transaction" ${whereClause}`,
             values: query.values.slice(0, -2) // Exclude limit and offset
         };
         const { rows: [{ count: total }] } = await pg.query(countQuery);

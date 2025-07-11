@@ -17,7 +17,7 @@ const deleteServiceOrder = async (req, res) => {
     }
 
     try {
-        const updateQuery = `UPDATE sky."Service" SET status = 'DELETED' WHERE reference = $1`;
+        const updateQuery = `UPDATE skyeu."Service" SET status = 'DELETED' WHERE reference = $1`;
         const result = await pg.query(updateQuery, [reference]);
 
         if (result.rowCount === 0) {

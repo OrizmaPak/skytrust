@@ -47,9 +47,9 @@ const defineDepartment = async (req, res) => {
     try {
         // Check if department exists for the branch or if another department in the branch has the name
         const { rows: thedepartment } = await pg.query(
-            `SELECT * FROM sky."Department" 
+            `SELECT * FROM skyeu."Department" 
             WHERE (department = $1 AND branch = $2) 
-            OR (branch = $2 AND department = $1 AND (sky."Department".id != $3 OR $3 = '0'))`, 
+            OR (branch = $2 AND department = $1 AND (skyeu."Department".id != $3 OR $3 = '0'))`, 
             [department, branch, id === '' ? '0' : id]
         );
 
@@ -70,14 +70,14 @@ const defineDepartment = async (req, res) => {
         if (id) {
             if (id && status) {
                 // Update the department status
-                query = await pg.query(`UPDATE sky."Department" SET 
+                query = await pg.query(`UPDATE skyeu."Department" SET 
                     status = COALESCE($1, status),
                     lastupdated = COALESCE($2, lastupdated),
                     userid = COALESCE($3, userid)
                     WHERE id = $4`, [status, new Date(), userid, id]);
             } else {
                 // Update the department details
-                query = await pg.query(`UPDATE sky."Department" SET 
+                query = await pg.query(`UPDATE skyeu."Department" SET 
                     department = COALESCE($1, department), 
                     branch = COALESCE($2, branch), 
                     category = COALESCE($3, category),
@@ -88,7 +88,7 @@ const defineDepartment = async (req, res) => {
             }
         } else {
             // Insert a new department
-            query = await pg.query(`INSERT INTO sky."Department" 
+            query = await pg.query(`INSERT INTO skyeu."Department" 
                 (department, branch, category, applyforsales, createdby, userid) 
                 VALUES ($1, $2, $3, $4, $5, $6)`, [department, branch, category, applyforsales, user.id, userIdInt]);
         }

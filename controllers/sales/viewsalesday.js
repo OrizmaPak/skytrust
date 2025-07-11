@@ -19,9 +19,9 @@ const viewSalesByDay = async (req, res) => {
         let inventoryQuery = {
             text: `
                 SELECT I.*
-                FROM sky."Inventory" I
-                JOIN sky."transaction" T ON I."reference" = T."transactionref"
-                JOIN sky."User" U ON T."userid" = U."id"
+                FROM skyeu."Inventory" I
+                JOIN skyeu."transaction" T ON I."reference" = T."transactionref"
+                JOIN skyeu."User" U ON T."userid" = U."id"
                 WHERE I."transactiondesc" = 'DEP-SALES'
                 AND I."transactiondate"::date = $1
             `,
@@ -53,7 +53,7 @@ const viewSalesByDay = async (req, res) => {
         let branchName = 'Unknown Branch';
         if (branch) {
             const branchRes = await pg.query({
-                text: `SELECT branch FROM sky."Branch" WHERE id = $1`,
+                text: `SELECT branch FROM skyeu."Branch" WHERE id = $1`,
                 values: [branch]
             });
             branchName = branchRes.rows[0]?.branch || branchName;
@@ -61,8 +61,8 @@ const viewSalesByDay = async (req, res) => {
             const branchRes = await pg.query({
                 text: `
                     SELECT B.branch 
-                    FROM sky."Branch" B
-                    JOIN sky."User" U ON B.id = U.branch
+                    FROM skyeu."Branch" B
+                    JOIN skyeu."User" U ON B.id = U.branch
                     WHERE U.id = $1
                 `,
                 values: [userid]
@@ -75,7 +75,7 @@ const viewSalesByDay = async (req, res) => {
             try {
                 // Get all transactions for this reference
                 const transactionRes = await pg.query({
-                    text: `SELECT * FROM sky."transaction" WHERE transactionref = $1`,
+                    text: `SELECT * FROM skyeu."transaction" WHERE transactionref = $1`,
                     values: [reference]
                 });
 
@@ -95,7 +95,7 @@ const viewSalesByDay = async (req, res) => {
 
                 // Get cashier details
                 const userRes = await pg.query({
-                    text: `SELECT firstname, lastname, othernames FROM sky."User" WHERE id = $1`,
+                    text: `SELECT firstname, lastname, othernames FROM skyeu."User" WHERE id = $1`,
                     values: [baseTransaction.userid]
                 });
                 

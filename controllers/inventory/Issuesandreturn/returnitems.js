@@ -23,7 +23,7 @@ const managereturnitems = async (req, res) => {
     }
 
     // Validate that the branch exists
-    const branchExists = await pg.query(`SELECT * FROM sky."Branch" WHERE id = $1`, [branch]);
+    const branchExists = await pg.query(`SELECT * FROM skyeu."Branch" WHERE id = $1`, [branch]);
     if (branchExists.rows.length === 0) {
         await activityMiddleware(res, req.user.id, 'Branch does not exist, cannot return items', 'RETURNED ITEMS');
         return res.status(StatusCodes.BAD_REQUEST).json({
@@ -36,7 +36,7 @@ const managereturnitems = async (req, res) => {
     }
 
     // Validate that the department exists in the branch
-    const departmentExists = await pg.query(`SELECT * FROM sky."Department" WHERE id = $1 AND branch = $2`, [department, branch]);
+    const departmentExists = await pg.query(`SELECT * FROM skyeu."Department" WHERE id = $1 AND branch = $2`, [department, branch]);
     if (departmentExists.rows.length === 0) {
         await activityMiddleware(res, req.user.id, 'Department does not exist in the branch, cannot return items', 'RETURNED ITEMS');
         return res.status(StatusCodes.BAD_REQUEST).json({
@@ -49,7 +49,7 @@ const managereturnitems = async (req, res) => {
     }
 
     // Validate that the supplier exists
-    const supplierExists = await pg.query(`SELECT * FROM sky."Supplier" WHERE id = $1`, [itemDetails.supplier]);
+    const supplierExists = await pg.query(`SELECT * FROM skyeu."Supplier" WHERE id = $1`, [itemDetails.supplier]);
     if (supplierExists.rows.length === 0) {
         await activityMiddleware(res, req.user.id, 'Supplier does not exist, cannot return items', 'RETURNED ITEMS');
         return res.status(StatusCodes.BAD_REQUEST).json({
@@ -95,7 +95,7 @@ const managereturnitems = async (req, res) => {
         // Process each item
         for (let i = 0; i < rowsize; i++) {
             // Validate that the itemid exists in the department of the branch
-            const itemExists = await pg.query(`SELECT * FROM sky."Inventory" WHERE itemid = $1 AND department = $2 AND branch = $3 AND status = 'ACTIVE'`, [itemids[i], department, branch]);
+            const itemExists = await pg.query(`SELECT * FROM skyeu."Inventory" WHERE itemid = $1 AND department = $2 AND branch = $3 AND status = 'ACTIVE'`, [itemids[i], department, branch]);
             if (itemExists.rows.length === 0) {
                 await pg.query('ROLLBACK');
                 // await pg.end(); // Close the transaction
@@ -141,7 +141,7 @@ const managereturnitems = async (req, res) => {
             }
 
             // Check if the quantity is more than the qty that has issues
-            const qtyWithIssues = await pg.query(`SELECT SUM(qty) FROM sky."Inventory" WHERE itemid = $1 AND department = $2 AND branch = $3 AND status = 'ACTIVE' AND transactiondesc LIKE '%Issue%'`, [itemids[i], department, branch]);
+            const qtyWithIssues = await pg.query(`SELECT SUM(qty) FROM skyeu."Inventory" WHERE itemid = $1 AND department = $2 AND branch = $3 AND status = 'ACTIVE' AND transactiondesc LIKE '%Issue%'`, [itemids[i], department, branch]);
             if (qtyWithIssues.rows[0].sum && qtys[i] > qtyWithIssues.rows[0].sum) {
                 await pg.query('ROLLBACK');
                 // await pg.end(); // Close the transaction
@@ -191,11 +191,11 @@ const managereturnitems = async (req, res) => {
 
             // If reference is provided, delete all inventory with that reference
             if (reference) {
-                await pg.query(`DELETE FROM sky."Inventory" WHERE reference = $1`, [reference]);
+                await pg.query(`DELETE FROM skyeu."Inventory" WHERE reference = $1`, [reference]);
             }
 
             // Insert the data into the Inventory table
-            await pg.query(`INSERT INTO sky."Inventory" (itemid, branch, department, qty, status, transactiondesc, dateadded, createdby, itemname, units, cost, price, pricetwo, beginbalance, minimumbalance, "group", applyto, itemclass, composite, compositeid, description, imageone, imagetwo, imagethree, sellingprice, reference, transactiondate, issue, issuetype, supplier) 
+            await pg.query(`INSERT INTO skyeu."Inventory" (itemid, branch, department, qty, status, transactiondesc, dateadded, createdby, itemname, units, cost, price, pricetwo, beginbalance, minimumbalance, "group", applyto, itemclass, composite, compositeid, description, imageone, imagetwo, imagethree, sellingprice, reference, transactiondate, issue, issuetype, supplier) 
                                              VALUES ($1,     $2,     $3,       $4,     $5,     $6,             $7,       $8,       $9,       $10,    $11,   $12,    $13,       $14,       $15,     $16,     $17,       $18,       $19,       $20,       $21,       $22,       $23,       $24,       $25,       $26,       $27,  $28, $29, $30)`, 
                                             [fallbackData.itemid, fallbackData.branch, fallbackData.department, fallbackData.qty, fallbackData.status, fallbackData.transactiondesc, fallbackData.dateadded, fallbackData.createdby, fallbackData.itemname, fallbackData.units, fallbackData.cost, fallbackData.price, fallbackData.pricetwo, fallbackData.beginbalance, fallbackData.minimumbalance, fallbackData.group, fallbackData.applyto, fallbackData.itemclass, fallbackData.composite, fallbackData.compositeid, fallbackData.description, fallbackData.imageone, fallbackData.imagetwo, fallbackData.imagethree, fallbackData.sellingprice, fallbackData.reference, fallbackData.transactiondate, fallbackData.issue, fallbackData.issuetype, fallbackData.supplier]);
 

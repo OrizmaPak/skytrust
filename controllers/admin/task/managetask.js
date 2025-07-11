@@ -34,7 +34,7 @@ const manageTask = async (req, res) => {
 
         // Check if the branch exists
         if(!id){
-            const { rows: [branchExists] } = await pg.query(`SELECT * FROM sky."Branch" WHERE id = $1`, [branch]);
+            const { rows: [branchExists] } = await pg.query(`SELECT * FROM skyeu."Branch" WHERE id = $1`, [branch]);
             if (!branchExists) {
                 return res.status(StatusCodes.NOT_FOUND).json({
                     status: false,
@@ -94,13 +94,13 @@ const manageTask = async (req, res) => {
         }
         
     }
-    const { rows: [branchName] } = await pg.query(`SELECT branch FROM sky."Branch" WHERE id = $1`, [branch]);
+    const { rows: [branchName] } = await pg.query(`SELECT branch FROM skyeu."Branch" WHERE id = $1`, [branch]);
         // If task ID is provided, update the task
         if (id) {
             // If status is provided, update only the status
             if (status) {
                 const { rows: [updatedTask] } = await pg.query(`
-                    UPDATE sky."Task"
+                    UPDATE skyeu."Task"
                     SET status = $1
                     WHERE id = $2
                     RETURNING *
@@ -129,7 +129,7 @@ const manageTask = async (req, res) => {
             } else { 
                 // Update task details
                 const { rows: [updatedTask] } = await pg.query(`
-                    UPDATE sky."Task"
+                    UPDATE skyeu."Task"
                     SET title = COALESCE($1, title),
                     description = COALESCE($2, description),
                     priority = COALESCE($3, priority),
@@ -170,7 +170,7 @@ const manageTask = async (req, res) => {
                 if (assignedto) {
                     const assignedUsers = assignedto.split('||');
                     for (let user of assignedUsers) {
-                        const { rows: [assignedUser] } = await pg.query(`SELECT email FROM sky."User" WHERE id = $1`, [user]);
+                        const { rows: [assignedUser] } = await pg.query(`SELECT email FROM skyeu."User" WHERE id = $1`, [user]);
                         if (assignedUser) {
                             await sendEmail({
                                 to: assignedUser.email,
@@ -193,7 +193,7 @@ const manageTask = async (req, res) => {
         } else {
             // Check if a task with the same title already exists for the branch
             const { rows: taskExists } = await pg.query(`
-                SELECT * FROM sky."Task"
+                SELECT * FROM skyeu."Task"
                 WHERE title = $1 AND branch = $2
             `, [title, branch]);
 
@@ -209,13 +209,13 @@ const manageTask = async (req, res) => {
 
             // Create a new task
             const { rows: [newTask] } = await pg.query(`
-                INSERT INTO sky."Task" (title, description, priority, assignedto, branch, startdate, enddate, taskstatus, status, createdby)
+                INSERT INTO skyeu."Task" (title, description, priority, assignedto, branch, startdate, enddate, taskstatus, status, createdby)
                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
                 RETURNING *
             `, [title, description, priority, assignedto, branch, startdate, enddate, taskstatus, 'ACTIVE', req.user.id]);
 
             // Log activity for task creation
-            const { rows: [branchName] } = await pg.query(`SELECT branch FROM sky."Branch" WHERE id = $1`, [branch]);
+            const { rows: [branchName] } = await pg.query(`SELECT branch FROM skyeu."Branch" WHERE id = $1`, [branch]);
             await activityMiddleware(req, req.user.id, `Task created successfully for branch ${branchName.branch}`, 'TASK');
 
             // Send email to the creator
@@ -230,7 +230,7 @@ const manageTask = async (req, res) => {
             if (assignedto) {
                 const assignedUsers = assignedto.split('||');
                 for (let user of assignedUsers) {
-                    const { rows: [assignedUser] } = await pg.query(`SELECT email FROM sky."User" WHERE id = $1`, [user.id]);
+                    const { rows: [assignedUser] } = await pg.query(`SELECT email FROM skyeu."User" WHERE id = $1`, [user.id]);
                     if (assignedUser) {
                         await sendEmail({
                             to: assignedUser.email,

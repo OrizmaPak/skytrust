@@ -20,8 +20,8 @@ const getHistory = async (req, res) => {
         // Fetch user data, level, allowances, and deductions
         const userQuery = {
             text: `SELECT u.*, l.level as levelname
-                   FROM sky."User" u
-                   LEFT JOIN sky."level" l ON u.level = l.id
+                   FROM skyeu."User" u
+                   LEFT JOIN skyeu."level" l ON u.level = l.id
                    WHERE u.id = $1`,
             values: [userid]
         };
@@ -45,15 +45,15 @@ const getHistory = async (req, res) => {
             if (table === 'level') {
                 query = {
                     text: `SELECT l.*, 
-                                  (SELECT json_agg(a) FROM sky."allowances" a WHERE a.level = l.id AND a.status = 'ACTIVE') as allowances,
-                                  (SELECT json_agg(d) FROM sky."deductions" d WHERE d.level = l.id AND d.status = 'ACTIVE') as deductions
-                           FROM sky."level" l
+                                  (SELECT json_agg(a) FROM skyeu."allowances" a WHERE a.level = l.id AND a.status = 'ACTIVE') as allowances,
+                                  (SELECT json_agg(d) FROM skyeu."deductions" d WHERE d.level = l.id AND d.status = 'ACTIVE') as deductions
+                           FROM skyeu."level" l
                            WHERE l.id = $1 AND l.status = 'ACTIVE'`,
                     values: [userData.level]
                 };
             } else {
                 query = {
-                    text: `SELECT * FROM sky."${table}" WHERE userid = $1 AND status = 'ACTIVE'`,
+                    text: `SELECT * FROM skyeu."${table}" WHERE userid = $1 AND status = 'ACTIVE'`,
                     values: [userid]
                 };
             }

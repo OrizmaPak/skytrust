@@ -22,7 +22,7 @@ const updateReturnItem = async (req, res) => {
 
     try {
         // Check if the item exists in the inventory
-        const { rows: itemExists } = await pg.query(`SELECT * FROM sky."Inventory" WHERE id = $1 AND status = 'ACTIVE'`, [id]);
+        const { rows: itemExists } = await pg.query(`SELECT * FROM skyeu."Inventory" WHERE id = $1 AND status = 'ACTIVE'`, [id]);
         if (itemExists.length === 0) {
             return res.status(StatusCodes.NOT_FOUND).json({
                 status: false,
@@ -37,7 +37,7 @@ const updateReturnItem = async (req, res) => {
 
         if (supplier) {
             // Check if the supplier exists in the database
-            const { rows: [supplierExists] } = await pg.query(`SELECT * FROM sky."Supplier" WHERE id = $1`, [supplier]);
+            const { rows: [supplierExists] } = await pg.query(`SELECT * FROM skyeu."Supplier" WHERE id = $1`, [supplier]);
             if (!supplierExists) {
                 await activityMiddleware(res, req.user.id, 'Supplier does not exist, cannot update return item', 'UPDATE_RETURN_ITEM');
                 return res.status(StatusCodes.BAD_REQUEST).json({
@@ -52,7 +52,7 @@ const updateReturnItem = async (req, res) => {
             transactionEntityType = 'supplier';
         } else {
             // Check if the staff exists in the user table
-            const { rows: [staffExists] } = await pg.query(`SELECT * FROM sky."User" WHERE id = $1`, [staff]);
+            const { rows: [staffExists] } = await pg.query(`SELECT * FROM skyeu."User" WHERE id = $1`, [staff]);
             if (!staffExists) {
                 await activityMiddleware(res, req.user.id, 'Staff does not exist, cannot update return item', 'UPDATE_RETURN_ITEM');
                 return res.status(StatusCodes.BAD_REQUEST).json({
@@ -81,7 +81,7 @@ const updateReturnItem = async (req, res) => {
         }
 
         // Get the organisation setting data
-        const { rows: [organisationSettings] } = await pg.query(`SELECT * FROM sky."Organisationsettings"`);
+        const { rows: [organisationSettings] } = await pg.query(`SELECT * FROM skyeu."Organisationsettings"`);
         if (!organisationSettings) {
             await activityMiddleware(res, req.user.id, 'Organisation settings not found', 'UPDATE_RETURN_ITEM');
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -133,7 +133,7 @@ const updateReturnItem = async (req, res) => {
         // Update the status and supplier of the item in the inventory
         // Update the inventory item with the new status and supplier information
         const updateResult = await pg.query(
-            `UPDATE sky."Inventory" 
+            `UPDATE skyeu."Inventory" 
              SET transactiondesc = $1, 
                  supplier = $2, 
                  staff = $4 

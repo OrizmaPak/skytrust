@@ -25,7 +25,7 @@ const saveOrUpdatePropertyProduct = async (req, res) => {
                 const trimmedMemberId = memberId.trim();
                 if (trimmedMemberId) {
                     const { rows } = await pg.query({
-                        text: `SELECT 1 FROM sky."DefineMember" WHERE id = $1`,
+                        text: `SELECT 1 FROM skyeu."DefineMember" WHERE id = $1`,
                         values: [trimmedMemberId]
                     });
                     if (rows.length === 0) {
@@ -44,7 +44,7 @@ const saveOrUpdatePropertyProduct = async (req, res) => {
         // Check if productofficer is provided and validate user role
         if (productofficer) {
             const { rows: userRoleRows } = await pg.query({
-                text: `SELECT role FROM sky."User" WHERE id = $1`,
+                text: `SELECT role FROM skyeu."User" WHERE id = $1`,
                 values: [user.id]
             });
 
@@ -62,7 +62,7 @@ const saveOrUpdatePropertyProduct = async (req, res) => {
         if (id) {
             // Update existing property product
             const updateQuery = {
-                text: `UPDATE sky."propertyproduct" 
+                text: `UPDATE skyeu."propertyproduct" 
                        SET product = $1, member = $2, useraccount = $3, registrationcharge = $4, productofficer = $5, currency = $6, description = $7, status = 'ACTIVE'
                        WHERE id = $8`,
                 values: [product, member, useraccount || 1, registrationcharge, productofficer, currency || "USD", description, id]
@@ -82,7 +82,7 @@ const saveOrUpdatePropertyProduct = async (req, res) => {
         } else {
             // Insert new property product
             const insertQuery = {
-                text: `INSERT INTO sky."propertyproduct" (product, member, useraccount, registrationcharge, createdby, productofficer, currency, description, dateadded, status) 
+                text: `INSERT INTO skyeu."propertyproduct" (product, member, useraccount, registrationcharge, createdby, productofficer, currency, description, dateadded, status) 
                        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), 'ACTIVE')`,
                 values: [product, member, useraccount || 1, registrationcharge, user.id, productofficer, currency || "USD", description]
             };

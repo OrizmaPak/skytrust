@@ -9,7 +9,7 @@ const deleteLevel = async (req, res) => {
     try {
         // Check if the level exists
         const { rows: levelRows } = await pg.query(
-            `SELECT * FROM sky."level" WHERE id = $1 AND status = 'ACTIVE'`,
+            `SELECT * FROM skyeu."level" WHERE id = $1 AND status = 'ACTIVE'`,
             [id]
         );
 
@@ -25,7 +25,7 @@ const deleteLevel = async (req, res) => {
   
         // Check if any user is associated with this level
         const { rows: userRows } = await pg.query(
-            `SELECT * FROM sky."User" WHERE level = $1 AND status = 'ACTIVE'`,
+            `SELECT * FROM skyeu."User" WHERE level = $1 AND status = 'ACTIVE'`,
             [id]
         );
 
@@ -41,7 +41,7 @@ const deleteLevel = async (req, res) => {
 
         // Update the level status to DELETED
         await pg.query(
-            `UPDATE sky."level" SET status = 'DELETED' WHERE id = $1`,
+            `UPDATE skyeu."level" SET status = 'DELETED' WHERE id = $1`,
             [id]
         );
 

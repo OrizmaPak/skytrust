@@ -9,7 +9,7 @@ const rejectService = async (req, res) => {
 
     try {
         // Fetch the service using the provided id
-        const serviceQuery = `SELECT * FROM sky."Service" WHERE id = $1`;
+        const serviceQuery = `SELECT * FROM skyeu."Service" WHERE id = $1`;
         const { rows: [service] } = await pg.query(serviceQuery, [id]);
 
         if (!service) {
@@ -54,7 +54,7 @@ const rejectService = async (req, res) => {
         // Check if staff is provided and exists in the User table
         let staffphone;
         if (staff) {
-            const staffQuery = `SELECT * FROM sky."User" WHERE id = $1`;
+            const staffQuery = `SELECT * FROM skyeu."User" WHERE id = $1`;
             const { rows: [staffMember] } = await pg.query(staffQuery, [staff]);
             
             if (!staffMember) {
@@ -73,7 +73,7 @@ const rejectService = async (req, res) => {
         }
 
         // Get the organisation settings
-        const { rows: [organisationSettings] } = await pg.query(`SELECT * FROM sky."Organisationsettings"`);
+        const { rows: [organisationSettings] } = await pg.query(`SELECT * FROM skyeu."Organisationsettings"`);
         if (!organisationSettings) {
             await activityMiddleware(req, user.id, 'Organisation settings not found', 'SERVICE_REJECTION');
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -119,7 +119,7 @@ const rejectService = async (req, res) => {
 
         // Insert the cloned service into the database
         const insertQuery = `
-            INSERT INTO sky."Service" (serviceid, supplier, staff, servicetype, description, amount, amountfrom, amountto, servicestartdate, serviceenddate, branch, dateadded, createdby, issue, reference, status)
+            INSERT INTO skyeu."Service" (serviceid, supplier, staff, servicetype, description, amount, amountfrom, amountto, servicestartdate, serviceenddate, branch, dateadded, createdby, issue, reference, status)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
             RETURNING *;
         `;

@@ -29,12 +29,12 @@ const updateItemStatus = async (req, res) => {
         let query;
         if (key === 'deliveryrequested') {
             query = {
-                text: `UPDATE sky."propertyitems" SET "${key}" = $1, "deliveryrequestdate" = NOW() WHERE id = $2 RETURNING *`,
+                text: `UPDATE skyeu."propertyitems" SET "${key}" = $1, "deliveryrequestdate" = NOW() WHERE id = $2 RETURNING *`,
                 values: [value, id]
             };
         } else {
             query = {
-                text: `UPDATE sky."propertyitems" SET "${key}" = $1 WHERE id = $2 RETURNING *`,
+                text: `UPDATE skyeu."propertyitems" SET "${key}" = $1 WHERE id = $2 RETURNING *`,
                 values: [value, id]
             };
         }

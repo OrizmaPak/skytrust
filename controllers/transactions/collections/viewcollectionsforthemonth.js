@@ -42,7 +42,7 @@ const getUserMonthlyviewCollection = async (req, res) => {
     try {
         // Fetch the default cash account
         const defaultCashAccountQuery = `
-            SELECT default_cash_account FROM sky."Organisationsettings"
+            SELECT default_cash_account FROM skyeu."Organisationsettings"
         `;
         const { rows: defaultCashAccountRows } = await pg.query(defaultCashAccountQuery);
         const defaultCashAccount = defaultCashAccountRows.length
@@ -72,7 +72,7 @@ const getUserMonthlyviewCollection = async (req, res) => {
         }
 
         const monthDataQuery = `
-            SELECT * FROM sky."transaction"
+            SELECT * FROM skyeu."transaction"
             WHERE transactiondate >= $1
             AND transactiondate < $2
             AND "cashref" IS NOT NULL
@@ -93,7 +93,7 @@ const getUserMonthlyviewCollection = async (req, res) => {
             const userId = tx.userid;
             if (!userBranchRegPointMap[userId]) {
                 const userQuery = `
-                    SELECT branch, registrationpoint FROM sky."User"
+                    SELECT branch, registrationpoint FROM skyeu."User"
                     WHERE id = $1
                 `;
                 const { rows: userRows } = await pg.query(userQuery, [userId]);
@@ -147,7 +147,7 @@ const getUserMonthlyviewCollection = async (req, res) => {
 
             if (transactionRefs.length > 0) {
                 const bankTxQuery = `
-                    SELECT credit, debit FROM sky."banktransaction"
+                    SELECT credit, debit FROM skyeu."banktransaction"
                     WHERE transactionref = ANY($1) AND status = 'ACTIVE'
                 `;
                 const bankTxResult = await pg.query(bankTxQuery, [transactionRefs]);
@@ -166,7 +166,7 @@ const getUserMonthlyviewCollection = async (req, res) => {
 
             if (penaltyRefs.length > 0) {
                 const penaltyQuery = `
-                    SELECT debit, credit FROM sky."transaction"
+                    SELECT debit, credit FROM skyeu."transaction"
                     WHERE cashref = ANY($1) AND status = 'ACTIVE'
                 `;
                 const penaltyResult = await pg.query(penaltyQuery, [penaltyRefs]);

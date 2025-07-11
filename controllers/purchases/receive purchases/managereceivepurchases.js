@@ -51,7 +51,7 @@ const manageReceivePurchases = async (req, res) => {
         const tfrom = req.body.tfrom;
 
         // Confirm that the supplier exists
-        const supplierQuery = await pg.query(`SELECT * FROM sky."Supplier" WHERE id = $1`, [req.body[`supplier`]]);
+        const supplierQuery = await pg.query(`SELECT * FROM skyeu."Supplier" WHERE id = $1`, [req.body[`supplier`]]);
         if (!supplierQuery.rows[0]) {
             return res.status(StatusCodes.BAD_REQUEST).json({
                 status: false,
@@ -69,7 +69,7 @@ const manageReceivePurchases = async (req, res) => {
             // Extract id from request body
             const itemid = req.body[`itemid${i}`];
             // Query to select inventory item by itemid
-            const inventory = await pg.query(`SELECT * FROM sky."Inventory" WHERE itemid = $1 AND status = 'ACTIVE'`, [itemid]);
+            const inventory = await pg.query(`SELECT * FROM skyeu."Inventory" WHERE itemid = $1 AND status = 'ACTIVE'`, [itemid]);
 
             console.log('inventory', inventory.rows)
             // Check if inventory item is not found
@@ -131,7 +131,7 @@ const manageReceivePurchases = async (req, res) => {
             }
 
             // Confirm that the branch exists
-            const branchQuery = await pg.query(`SELECT * FROM sky."Branch" WHERE id = $1`, [req.body[`branch`]]);
+            const branchQuery = await pg.query(`SELECT * FROM skyeu."Branch" WHERE id = $1`, [req.body[`branch`]]);
             if (!branchQuery.rows[0]) {
                 return res.status(StatusCodes.BAD_REQUEST).json({
                     status: false,
@@ -162,7 +162,7 @@ const manageReceivePurchases = async (req, res) => {
         try {
             // Insert cloned inventory items into the database
             for (const item of inventoryItems) {
-                await pg.query(`INSERT INTO sky."Inventory" (
+                await pg.query(`INSERT INTO skyeu."Inventory" (
                     itemid, itemname, department, branch, units, cost, price, pricetwo, 
                     beginbalance, qty, minimumbalance, "group", applyto, itemclass, 
                     composite, compositeid, description, imageone, imagetwo, imagethree, 
@@ -184,9 +184,9 @@ const manageReceivePurchases = async (req, res) => {
 
                 // Log activity for opening stock
                 // Get the department from the department table
-                const { rows: department } = await pg.query(`SELECT department FROM sky."Department" WHERE id = $1`, [item.department]);
+                const { rows: department } = await pg.query(`SELECT department FROM skyeu."Department" WHERE id = $1`, [item.department]);
                 // Get the branch from the branch table
-                const { rows: branch } = await pg.query(`SELECT branch FROM sky."Branch" WHERE id = $1`, [item.branch]);
+                const { rows: branch } = await pg.query(`SELECT branch FROM skyeu."Branch" WHERE id = $1`, [item.branch]);
                 // Log activity for opening stock
                 await activityMiddleware(res, req.user.id, `Opening stock added for item ${item.itemname} in department ${department[0].department} and branch ${branch[0].branch} with quantity ${item.qty}`, 'OPEN STOCK');
             }
@@ -197,14 +197,14 @@ const manageReceivePurchases = async (req, res) => {
             // get the supplier
             
             // get the organisation settings
-            const orgSettings = (await pg.query(`SELECT * FROM sky."Organisationsettings" LIMIT 1`)).rows[0];
+            const orgSettings = (await pg.query(`SELECT * FROM skyeu."Organisationsettings" LIMIT 1`)).rows[0];
 
             const reqbody = req.body;
 
             
             const userAllocationBalanceQuery = `
                 SELECT COALESCE(SUM(credit), 0) - COALESCE(SUM(debit), 0) AS balance 
-                FROM sky."transaction" 
+                FROM skyeu."transaction" 
                 WHERE accountnumber = $1 AND userid = $2 AND status = 'ACTIVE' AND tfrom = $3
             `;
             
@@ -293,7 +293,7 @@ const manageReceivePurchases = async (req, res) => {
             if (reference) {
                 try {
                     await pg.query(
-                        `DELETE FROM sky."Inventory" WHERE reference = $1`,
+                        `DELETE FROM skyeu."Inventory" WHERE reference = $1`,
                         [reference]
                     );
                 } catch (error) {

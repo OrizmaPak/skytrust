@@ -207,7 +207,7 @@ const manageLoanAccount = async (req, res) => {
     try {
         // Check if the user exists and get the branch from the user table
         const userQuery = {
-            text: 'SELECT * FROM sky."User" WHERE id = $1',
+            text: 'SELECT * FROM skyeu."User" WHERE id = $1',
             values: [userid]
         };
         const { rows: userRows } = await pg.query(userQuery);
@@ -226,7 +226,7 @@ const manageLoanAccount = async (req, res) => {
 
         // Check if the loan product exists
         const loanProductQuery = {
-            text: 'SELECT * FROM sky."loanproduct" WHERE id = $1 AND ($2::text = ANY(string_to_array(membership, \'||\')) OR membership = $2::text)',
+            text: 'SELECT * FROM skyeu."loanproduct" WHERE id = $1 AND ($2::text = ANY(string_to_array(membership, \'||\')) OR membership = $2::text)',
             values: [loanproduct, member]
         };
         const { rows: loanProductRows } = await pg.query(loanProductQuery);
@@ -243,7 +243,7 @@ const manageLoanAccount = async (req, res) => {
       
         // Check if the branch exists
         const branchQuery = {
-            text: 'SELECT * FROM sky."Branch" WHERE id = $1',
+            text: 'SELECT * FROM skyeu."Branch" WHERE id = $1',
             values: [branch]
         };
         const { rows: branchRows } = await pg.query(branchQuery);
@@ -275,7 +275,7 @@ const manageLoanAccount = async (req, res) => {
         if(!accountnumber){
             // Check if the user already has an account for this loan product
             const userAccountsQuery = {
-                text: 'SELECT COUNT(*) FROM sky."loanaccounts" WHERE userid = $1 AND loanproduct = $2 AND member = $3 AND (dateclosed IS NULL)',
+                text: 'SELECT COUNT(*) FROM skyeu."loanaccounts" WHERE userid = $1 AND loanproduct = $2 AND member = $3 AND (dateclosed IS NULL)',
                 values: [userid, loanproduct, member]
             };
             const { rows: userAccountsRows } = await pg.query(userAccountsQuery);
@@ -296,7 +296,7 @@ const manageLoanAccount = async (req, res) => {
         // Check if the account officer exists
         if (accountofficer) {
             const officerQuery = {
-                text: 'SELECT * FROM sky."User" WHERE id = $1',
+                text: 'SELECT * FROM skyeu."User" WHERE id = $1',
                 values: [accountofficer]
             };
             const { rows: officerRows } = await pg.query(officerQuery);
@@ -312,7 +312,7 @@ const manageLoanAccount = async (req, res) => {
         }
 
         // Fetch the organisation settings
-        const orgSettingsQuery = `SELECT * FROM sky."Organisationsettings" LIMIT 1`;
+        const orgSettingsQuery = `SELECT * FROM skyeu."Organisationsettings" LIMIT 1`;
         const orgSettingsResult = await pg.query(orgSettingsQuery);
 
         if (orgSettingsResult.rowCount === 0) {
@@ -341,7 +341,7 @@ const manageLoanAccount = async (req, res) => {
         }
 
         // Fetch the highest account number with the given prefix
-        const accountRowsQuery = `SELECT accountnumber FROM sky."loanaccounts" WHERE accountnumber::text LIKE $1 ORDER BY accountnumber DESC LIMIT 1`;
+        const accountRowsQuery = `SELECT accountnumber FROM skyeu."loanaccounts" WHERE accountnumber::text LIKE $1 ORDER BY accountnumber DESC LIMIT 1`;
         const { rows: accountRows } = await pg.query(accountRowsQuery, [`${accountNumberPrefix}%`]);
 
         
@@ -495,7 +495,7 @@ const manageLoanAccount = async (req, res) => {
                 const accountNumberQuery = {
                     text: `
                         SELECT accountnumber, dateadded 
-                        FROM sky."savings" 
+                        FROM skyeu."savings" 
                         WHERE userid = $1 AND savingsproductid = $2 AND member = $3
                     `,
                     values: [userid, loanProduct.eligibilityproduct, member]
@@ -520,7 +520,7 @@ const manageLoanAccount = async (req, res) => {
                     const balanceQuery = {
                         text: `
                             SELECT SUM(credit) - SUM(debit) AS balance 
-                            FROM sky."transaction" 
+                            FROM skyeu."transaction" 
                             WHERE accountnumber = $1
                         `,
                         values: [accountnumber]
@@ -557,7 +557,7 @@ const manageLoanAccount = async (req, res) => {
                         const creditQuery = {
                             text: `
                                 SELECT SUM(credit) AS totalCredit 
-                                FROM sky."transaction" 
+                                FROM skyeu."transaction" 
                                 WHERE accountnumber = $1
                             `,
                             values: [accountnumber]
@@ -578,7 +578,7 @@ const manageLoanAccount = async (req, res) => {
                         const debitQuery = {
                             text: `
                                 SELECT SUM(debit) AS totalDebit 
-                                FROM sky."transaction" 
+                                FROM skyeu."transaction" 
                                 WHERE accountnumber = $1
                             `,
                             values: [accountnumber]
@@ -623,7 +623,7 @@ const manageLoanAccount = async (req, res) => {
             if (loanProduct.eligibilityproductcategory == 'LOAN') {
                 // Fetch loan account details
                 const loanAccountQuery = {
-                    text: 'SELECT * FROM sky."loanaccounts" WHERE userid = $1 AND loanproduct = $2 AND member = $3',
+                    text: 'SELECT * FROM skyeu."loanaccounts" WHERE userid = $1 AND loanproduct = $2 AND member = $3',
                     values: [userid, loanProduct.eligibilityproduct, member]
                 };
                 const { rows: loanAccountRows } = await pg.query(loanAccountQuery);
@@ -645,7 +645,7 @@ const manageLoanAccount = async (req, res) => {
                                 SELECT 
                                     COALESCE(SUM(closeamount), 0) AS totalClosedAmount,
                                     COUNT(*) FILTER (WHERE closeamount > 0) AS closedAccountsCount
-                                FROM sky."loanaccounts"
+                                FROM skyeu."loanaccounts"
                                 WHERE userid = $1 AND loanproduct = $2
                             `,
                             values: [userid, loanProduct.eligibilityproduct]
@@ -711,7 +711,7 @@ const manageLoanAccount = async (req, res) => {
         if(accountnumber)generatedAccountNumber = accountnumber;
         if(accountnumber){
             const deleteScheduleQuery = {
-                text: `DELETE FROM sky."loanpaymentschedule" WHERE accountnumber = $1`,
+                text: `DELETE FROM skyeu."loanpaymentschedule" WHERE accountnumber = $1`,
                 values: [accountnumber]
             };
             await pg.query(deleteScheduleQuery);
@@ -783,7 +783,7 @@ const manageLoanAccount = async (req, res) => {
             // Insert repayment schedule into the database
             for (const schedule of repaymentSchedule) {
                 const insertScheduleQuery = {
-                    text: `INSERT INTO sky."loanpaymentschedule" (accountnumber, scheduledpaymentdate, scheduleamount, interestamount, status, createdby, dateadded) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+                    text: `INSERT INTO skyeu."loanpaymentschedule" (accountnumber, scheduledpaymentdate, scheduleamount, interestamount, status, createdby, dateadded) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
                     values: [schedule.accountnumber, schedule.scheduledpaymentdate, schedule.scheduleamount, schedule.interestamount, schedule.status, schedule.createdby, schedule.dateadded]
                 };
                 await pg.query(insertScheduleQuery);
@@ -857,7 +857,7 @@ const manageLoanAccount = async (req, res) => {
             // Insert repayment schedule into the database
             for (const schedule of repaymentSchedule) {
                 const insertScheduleQuery = {
-                    text: `INSERT INTO sky."loanpaymentschedule" (accountnumber, scheduledpaymentdate, scheduleamount, interestamount, status, createdby, dateadded) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+                    text: `INSERT INTO skyeu."loanpaymentschedule" (accountnumber, scheduledpaymentdate, scheduleamount, interestamount, status, createdby, dateadded) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
                     values: [schedule.accountnumber, schedule.scheduledpaymentdate, schedule.scheduleamount, schedule.interestamount, schedule.status, schedule.createdby, schedule.dateadded]
                 };
                 await pg.query(insertScheduleQuery);
@@ -868,7 +868,7 @@ const manageLoanAccount = async (req, res) => {
         let loandata
         if (accountnumber) {
             // Check if the account number already exists
-            const accountNumberExistsQuery = `SELECT * FROM sky."loanaccounts" WHERE accountnumber = $1`;
+            const accountNumberExistsQuery = `SELECT * FROM skyeu."loanaccounts" WHERE accountnumber = $1`;
             const accountNumberExistsResult = await pg.query(accountNumberExistsQuery, [accountnumber]);
 
             if (accountNumberExistsResult.rowCount === 0) {
@@ -884,7 +884,7 @@ const manageLoanAccount = async (req, res) => {
 
             // Check if the branch exists in the branch table if branch is sent
             if (branch) {
-                const branchExistsQuery = `SELECT * FROM sky."Branch" WHERE id = $1`;
+                const branchExistsQuery = `SELECT * FROM skyeu."Branch" WHERE id = $1`;
                 const branchExistsResult = await pg.query(branchExistsQuery, [branch]);
 
                 if (branchExistsResult.rowCount === 0) {
@@ -902,7 +902,7 @@ const manageLoanAccount = async (req, res) => {
 
             // Update existing loan account
             const updateaccountnumberQuery = {
-                text: `UPDATE sky."loanaccounts" SET 
+                text: `UPDATE skyeu."loanaccounts" SET 
                         accountnumber = COALESCE($1, accountnumber), 
                         userid = COALESCE($2, userid),
                         branch = COALESCE($3, branch), 
@@ -942,7 +942,7 @@ const manageLoanAccount = async (req, res) => {
         } else {
             // Create new loan account
             const createaccountnumberQuery = {
-                text: `INSERT INTO sky."loanaccounts" 
+                text: `INSERT INTO skyeu."loanaccounts" 
                         (accountnumber, userid, branch, registrationpoint, registrationcharge, registrationdate, registrationdesc, bankname1, bankaccountname1, bankaccountnumber1, bankname2, bankaccountname2, bankaccountnumber2, accountofficer, loanproduct, repaymentfrequency, numberofrepayments, duration, durationcategory, interestmethod, interestrate, defaultpenaltyid, loanamount, status, dateadded, createdby, dateclosed, closeamount, seperateinterest, member, interestratetype) 
                    VALUES ($1, $2, $3, $4, $5, NOW(), $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30) RETURNING *`,
                 values: [generatedAccountNumber, userid, branch, registrationpoint, registrationcharge, registrationdesc, bankname1, bankaccountname1, bankaccountnumber1, bankname2, bankaccountname2, bankaccountnumber2, accountofficer, loanproduct, repaymentfrequency, numberofrepayments =="" ? 0 : numberofrepayments, duration, durationcategory, interestmethod, interestrate == "" ? 0 : interestrate, defaultpenaltyid == "" ? null : defaultpenaltyid, loanamount == "" ? 0 : loanamount, 'PENDING APPROVAL', new Date(), user.id, null, null, seperateinterest, member, interestratetype]
@@ -955,7 +955,7 @@ const manageLoanAccount = async (req, res) => {
         await activityMiddleware(req, user.id, id ? 'Loan account updated successfully' : 'Loan account created successfully', 'LOAN_ACCOUNT');
 
         const installmentsQuery = {
-            text: `SELECT * FROM sky."loanpaymentschedule" WHERE accountnumber = $1`,
+            text: `SELECT * FROM skyeu."loanpaymentschedule" WHERE accountnumber = $1`,
             values: [loandata.accountnumber]
         };
         const { rows: installments } = await pg.query(installmentsQuery);

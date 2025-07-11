@@ -18,7 +18,7 @@ const updateDisbursementRef = async (req, res) => {
     try {
         // // Fetch the loan product and registration charge using the account number
         // const loanAccountQuery = {
-        //     text: `SELECT loanproduct, registrationcharge FROM sky."loanaccounts" WHERE accountnumber = $1`,
+        //     text: `SELECT loanproduct, registrationcharge FROM skyeu."loanaccounts" WHERE accountnumber = $1`,
         //     values: [accountnumber]
         // };
         // const loanAccountResult = await pg.query(loanAccountQuery);
@@ -38,7 +38,7 @@ const updateDisbursementRef = async (req, res) => {
 
         // // Fetch the administration setting for additional loan registration charge
         // const adminSettingQuery = {
-        //     text: `SELECT addition_loan_registration_charge FROM sky."Organisationsettings" WHERE loanproduct = $1`,
+        //     text: `SELECT addition_loan_registration_charge FROM skyeu."Organisationsettings" WHERE loanproduct = $1`,
         //     values: [loanproduct]
         // };
         // const adminSettingResult = await pg.query(adminSettingQuery);
@@ -57,7 +57,7 @@ const updateDisbursementRef = async (req, res) => {
 
         // Update the disbursement reference for the given loan account
         const updateQuery = {
-            text: `UPDATE sky."loanaccounts" SET disbursementref = $1, disbursementdate = NOW() WHERE accountnumber = $2`,
+            text: `UPDATE skyeu."loanaccounts" SET disbursementref = $1, disbursementdate = NOW() WHERE accountnumber = $2`,
             values: [disbursementref, accountnumber]
         };
         await pg.query(updateQuery);

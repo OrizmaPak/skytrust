@@ -37,7 +37,7 @@ async function forgotpassword(req, res) {
 
     try {
         // Check if email already exists using raw query
-        const { rows: [existingUser] } = await pg.query(`SELECT * FROM sky."User" WHERE email = $1`, [email]);
+        const { rows: [existingUser] } = await pg.query(`SELECT * FROM skyeu."User" WHERE email = $1`, [email]);
 
         if (!existingUser) {
             return res.status(StatusCodes.BAD_REQUEST).json({
@@ -57,7 +57,7 @@ async function forgotpassword(req, res) {
         const signedPassword = jwt.sign({ password: newPassword }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
         // Update the user's password in the database
-        await pg.query(`UPDATE sky."User" SET password = $1 WHERE id = $2`, [hashedPassword, existingUser.id]);
+        await pg.query(`UPDATE skyeu."User" SET password = $1 WHERE id = $2`, [hashedPassword, existingUser.id]);
 
         // Send the new password via email
         await sendEmail({

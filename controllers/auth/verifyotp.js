@@ -18,7 +18,7 @@ const verifyOtp = async (req, res) => {
 
     try {
         // Check if the OTP exists in the database
-        const { rows: [otpRecord] } = await pg.query(`SELECT * FROM sky."otp" WHERE userid = $1 AND otp = $2`, [user.id, otp]);
+        const { rows: [otpRecord] } = await pg.query(`SELECT * FROM skyeu."otp" WHERE userid = $1 AND otp = $2`, [user.id, otp]);
 
         if (!otpRecord) {
             return res.status(StatusCodes.UNAUTHORIZED).json({
@@ -49,7 +49,7 @@ const verifyOtp = async (req, res) => {
         // }
 
         // Delete the OTP from the database
-        await pg.query(`DELETE FROM sky."otp" WHERE id = $1`, [otpRecord.id]);
+        await pg.query(`DELETE FROM skyeu."otp" WHERE id = $1`, [otpRecord.id]);
 
         return res.status(StatusCodes.OK).json({
             status: true,

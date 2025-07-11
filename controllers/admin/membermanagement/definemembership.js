@@ -28,7 +28,7 @@ const definemembership = async (req, res) => {
 
     try {
         if(!id){// Check if branch already exists using raw query
-            const { rows: themember } = await pg.query(`SELECT * FROM sky."DefineMember" WHERE member = $1`, [member]);
+            const { rows: themember } = await pg.query(`SELECT * FROM skyeu."DefineMember" WHERE member = $1`, [member]);
 
             // WHEN THE ACCOUNT IS ALREADY IN USE
             if (themember.length > 0) {
@@ -47,20 +47,20 @@ const definemembership = async (req, res) => {
 
         if (id) {
             if(status){
-                query = await pg.query(`UPDATE sky."DefineMember" SET 
+                query = await pg.query(`UPDATE skyeu."DefineMember" SET 
                     status = $1,
                     lastupdated = $2,
                     addmember = $3
                     WHERE id = $4`, [status, new Date(), addmember, id]);
             }else{
-                query = await pg.query(`UPDATE sky."DefineMember" SET 
+                query = await pg.query(`UPDATE skyeu."DefineMember" SET 
                     member = $1, 
                     lastupdated = $2,
                     addmember = $3
                     WHERE id = $4`, [member, new Date(), addmember, id]);
             }
         } else {
-            query = await pg.query(`INSERT INTO sky."DefineMember" 
+            query = await pg.query(`INSERT INTO skyeu."DefineMember" 
                 (member, createdby, addmember) 
                 VALUES ($1, $2, $3)`, [member, user.id, addmember]);
         }

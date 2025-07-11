@@ -29,7 +29,7 @@ const getStockValuation = async (req, res) => {
         // }
 
         // Fetch all inventories for the given date
-        let query = `SELECT * FROM sky."Inventory" WHERE transactiondate <= $1 AND status = 'ACTIVE'`;
+        let query = `SELECT * FROM skyeu."Inventory" WHERE transactiondate <= $1 AND status = 'ACTIVE'`;
         const params = [date];
         if (branch) {
             query += ` AND branch = $${params.length + 1}`;

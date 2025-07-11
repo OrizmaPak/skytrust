@@ -23,12 +23,12 @@ const loanCredit = async (client, req, res, next, loanAccountNumber, credit, des
 
         // Get all the installments of the loan 
         const getInstallmentsQuery = {
-            text: `SELECT * FROM sky."loanpaymentschedule" WHERE accountnumber = $1 ORDER BY scheduledpaymentdate ASC`,
+            text: `SELECT * FROM skyeu."loanpaymentschedule" WHERE accountnumber = $1 ORDER BY scheduledpaymentdate ASC`,
             values: [loanAccountNumber]
         };
         // Fetch the sum of credits and debits for the loan account to calculate the balance
         const balanceQuery = {
-            text: `SELECT SUM(credit) - SUM(debit) as balance FROM sky."transaction" WHERE accountnumber = $1 AND status = 'ACTIVE'`,
+            text: `SELECT SUM(credit) - SUM(debit) as balance FROM skyeu."transaction" WHERE accountnumber = $1 AND status = 'ACTIVE'`,
             values: [loanAccountNumber]
         };
         const balanceResult = await client.query(balanceQuery);

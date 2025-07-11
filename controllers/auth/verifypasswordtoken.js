@@ -34,11 +34,11 @@ async function verifypasswordtoken(req, res) {
     try {
 
             // CHECK IF ITS IN THE TOKEN TABLE
-            const {rows:[user]} = await pg.query(`SELECT * FROM sky."VerificationToken" WHERE token = $1`, [token] )
+            const {rows:[user]} = await pg.query(`SELECT * FROM skyeu."VerificationToken" WHERE token = $1`, [token] )
 
             if(user && user.token == token && user.expires > new Date()){
                 // WE WILL ONLY DELETE WHEN THE USER WANTS TO CHANGE PASSWORD
-                // await pg.query(`DELETE FROM sky."VerificationToken" WHERE token = $1`, [token])
+                // await pg.query(`DELETE FROM skyeu."VerificationToken" WHERE token = $1`, [token])
                 const responseData = {
                     status: true,
                     message: `Token verified`,

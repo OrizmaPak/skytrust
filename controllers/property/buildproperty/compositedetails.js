@@ -20,20 +20,20 @@ const saveCompositeDetails = async (req, res) => {
 
         // Check if compositeid exists
         const { rowCount: existingCount } = await pg.query({
-            text: `SELECT 1 FROM sky."compositedetails" WHERE compositeid = $1`,
+            text: `SELECT 1 FROM skyeu."compositedetails" WHERE compositeid = $1`,
             values: [compositeid]
         });
 
         // If exists, delete all rows with the compositeid
         if (existingCount > 0) {
             await pg.query({
-                text: `DELETE FROM sky."compositedetails" WHERE compositeid = $1`,
+                text: `DELETE FROM skyeu."compositedetails" WHERE compositeid = $1`,
                 values: [compositeid]
             });
         }
 
         // Prepare insert query
-        let insertQuery = `INSERT INTO sky."compositedetails" (compositeid, itemid, qty, createdby, dateadded, status) VALUES `;
+        let insertQuery = `INSERT INTO skyeu."compositedetails" (compositeid, itemid, qty, createdby, dateadded, status) VALUES `;
         const values = [];
         let valueIndex = 1;
 

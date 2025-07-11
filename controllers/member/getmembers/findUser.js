@@ -9,7 +9,7 @@
     
         try {
             let query = {
-                text: `SELECT * FROM sky."User"`,
+                text: `SELECT * FROM skyeu."User"`,
                 values: []
             };
     
@@ -67,13 +67,13 @@
 
             // Fetch branch names for each user
             for (let user of users) {
-                const { rows: [branch] } = await pg.query(`SELECT branch FROM sky."Branch" WHERE id = $1`, [user.branch]);
+                const { rows: [branch] } = await pg.query(`SELECT branch FROM skyeu."Branch" WHERE id = $1`, [user.branch]);
                 user.branchname = branch ? branch.branch : null;
             }
     
             // Get total count for pagination
             const countQuery = {
-                text: `SELECT COUNT(*) FROM sky."User" ${whereClause}`,
+                text: `SELECT COUNT(*) FROM skyeu."User" ${whereClause}`,
                 values: query.values.slice(0, -2) // Exclude limit and offset
             };
             const { rows: [{ count: total }] } = await pg.query(countQuery);

@@ -73,7 +73,7 @@ const signup = async (req, res) => {
 
     try {
         // Check if the branch exists in the branch table
-        const branchExistsQuery = `SELECT * FROM sky."Branch" WHERE id = $1`;
+        const branchExistsQuery = `SELECT * FROM skyeu."Branch" WHERE id = $1`;
         const { rows: branchExistsResult } = await pg.query(branchExistsQuery, [branch]);
 
         if (branchExistsResult.length === 0) {
@@ -87,10 +87,10 @@ const signup = async (req, res) => {
         }
 
         // Check if email already exists using raw query
-        const { rows: theuser } = await pg.query(`SELECT * FROM sky."User" WHERE email = $1`, [email]);
+        const { rows: theuser } = await pg.query(`SELECT * FROM skyeu."User" WHERE email = $1`, [email]);
 
         // Check if phone number already exists using raw query
-        const { rows: phoneUser } = await pg.query(`SELECT * FROM sky."User" WHERE phone = $1`, [phone]);
+        const { rows: phoneUser } = await pg.query(`SELECT * FROM skyeu."User" WHERE phone = $1`, [phone]);
 
         // CHECKING IF ITS AN ACTIVE USER IF HE EXISTS
         if (theuser.length > 0 && theuser[0].status != 'ACTIVE') {
@@ -128,7 +128,7 @@ const signup = async (req, res) => {
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
         // Insert new user using raw query
-        const { rows: [saveuser] } = await pg.query(`INSERT INTO sky."User" 
+        const { rows: [saveuser] } = await pg.query(`INSERT INTO skyeu."User" 
         (firstname, lastname, othernames, email, password, permissions, country, state, phone, dateadded) 
         VALUES ($1, $2, $3, $4, $5, 'NEWUSER', $6, $7, $8, $9) RETURNING id`, [firstname, lastname, othernames, email, hashedPassword, country, state, phone, new Date()]);
         const userId = saveuser.id;
@@ -189,7 +189,7 @@ const signup = async (req, res) => {
             expiresIn: process.env.SESSION_EXPIRATION_HOUR + 'h',
         });
 
-        await pg.query(`INSERT INTO sky."Session" 
+        await pg.query(`INSERT INTO skyeu."Session" 
             (sessiontoken, userid, expires, device) 
             VALUES ($1, $2, $3, $4) 
             `, [token, userId, calculateExpiryDate(process.env.SESSION_EXPIRATION_HOUR), device])
@@ -197,7 +197,7 @@ const signup = async (req, res) => {
             // RECORD THE ACTIVITY
         await activityMiddleware(res, user.id, `Registered and Logged in Successfully ${user.permissions == 'NEWUSER' ? 'and its the first login after registering' : ''} on a ${device} device`, 'AUTH')
 
-        const { rows: [details] } = await pg.query(`SELECT * FROM sky."User" WHERE id= $1`, [userId])
+        const { rows: [details] } = await pg.query(`SELECT * FROM skyeu."User" WHERE id= $1`, [userId])
 
 
         let messagestatus
@@ -206,7 +206,7 @@ const signup = async (req, res) => {
             // create verification token
             const vtoken = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: process.env.VERIFICATION_EXPIRATION_HOUR + 'h' });
             // create a verification link and code
-            await pg.query(`INSERT INTO sky."VerificationToken" 
+            await pg.query(`INSERT INTO skyeu."VerificationToken" 
                                 (identifier, token, expires) 
                                 VALUES ($1, $2, $3)`, [user.id, vtoken, calculateExpiryDate(process.env.VERIFICATION_EXPIRATION_HOUR)])
 
@@ -270,13 +270,13 @@ const signup = async (req, res) => {
 
         // Fetch DefineMember records with addmember set to 'YES'
         const { rows: defineMembers } = await pg.query(`
-            SELECT id FROM sky."DefineMember" WHERE addmember = 'YES'
+            SELECT id FROM skyeu."DefineMember" WHERE addmember = 'YES'
         `);
 
         // Iterate over each DefineMember and create a Membership record
         for (const defineMember of defineMembers) {
             await pg.query(`
-                INSERT INTO sky."Membership" (member, userid, createdby, dateadded, status)
+                INSERT INTO skyeu."Membership" (member, userid, createdby, dateadded, status)
                 VALUES ($1, $2, $3, NOW(), 'ACTIVE')
             `, [defineMember.id, userId, userId]);
         }

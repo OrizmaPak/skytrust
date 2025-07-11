@@ -43,7 +43,7 @@ const updateinRequisitionStatus = async (req, res) => {
 
             // Fetch inventories with the given itemid and reference
             const { rows: inventories } = await pg.query(
-                `SELECT * FROM sky."Inventory" WHERE itemid = $1 AND reference = $2`,
+                `SELECT * FROM skyeu."Inventory" WHERE itemid = $1 AND reference = $2`,
                 [itemid, reference]
             );
 
@@ -72,7 +72,7 @@ const updateinRequisitionStatus = async (req, res) => {
 
             // Update the status of the pending requisition inventory
             await pg.query(
-                `UPDATE sky."Inventory" SET status = $1 WHERE id = $2`,
+                `UPDATE skyeu."Inventory" SET status = $1 WHERE id = $2`,
                 [newStatus, pendingRequisitionInventory.id]
             );
         }

@@ -18,7 +18,7 @@ const requisition = async (req, res) => {
     }
 
     // Detailed validation for branch existence
-    const { rows: branchFromRows } = await pg.query(`SELECT * FROM sky."Branch" WHERE id = $1`, [branchfrom]);
+    const { rows: branchFromRows } = await pg.query(`SELECT * FROM skyeu."Branch" WHERE id = $1`, [branchfrom]);
     if (branchFromRows.length === 0) {
         return res.status(StatusCodes.BAD_REQUEST).json({
             status: false,
@@ -29,7 +29,7 @@ const requisition = async (req, res) => {
         });
     }
 
-    const { rows: branchToRows } = await pg.query(`SELECT * FROM sky."Branch" WHERE id = $1`, [branchto]);
+    const { rows: branchToRows } = await pg.query(`SELECT * FROM skyeu."Branch" WHERE id = $1`, [branchto]);
     if (branchToRows.length === 0) {
         return res.status(StatusCodes.BAD_REQUEST).json({
             status: false,
@@ -41,7 +41,7 @@ const requisition = async (req, res) => {
     }
 
     // Detailed validation for department existence in their respective branches
-    const { rows: departmentFromRows } = await pg.query(`SELECT * FROM sky."Department" WHERE id = $1 AND branch = $2`, [departmentfrom, branchfrom]);
+    const { rows: departmentFromRows } = await pg.query(`SELECT * FROM skyeu."Department" WHERE id = $1 AND branch = $2`, [departmentfrom, branchfrom]);
     if (departmentFromRows.length === 0) {
         return res.status(StatusCodes.BAD_REQUEST).json({
             status: false,
@@ -52,7 +52,7 @@ const requisition = async (req, res) => {
         });
     }
 
-    const { rows: departmentToRows } = await pg.query(`SELECT * FROM sky."Department" WHERE id = $1 AND branch = $2`, [departmentto, branchto]);
+    const { rows: departmentToRows } = await pg.query(`SELECT * FROM skyeu."Department" WHERE id = $1 AND branch = $2`, [departmentto, branchto]);
     if (departmentToRows.length === 0) {
         return res.status(StatusCodes.BAD_REQUEST).json({
             status: false,
@@ -94,7 +94,7 @@ const requisition = async (req, res) => {
     try {
         // Check if the quantity requested is greater than available stock for each itemid
         for (let i = 0; i < itemids.length; i++) {
-            const { rows: inventoryRows } = await pg.query(`SELECT SUM(qty) AS totalQty FROM sky."Inventory" WHERE itemid = $1 AND branch = $2 AND department = $3`, [itemids[i], branchfrom, departmentfrom]);
+            const { rows: inventoryRows } = await pg.query(`SELECT SUM(qty) AS totalQty FROM skyeu."Inventory" WHERE itemid = $1 AND branch = $2 AND department = $3`, [itemids[i], branchfrom, departmentfrom]);
             console.log('inventoryRows:', inventoryRows, itemids[i], branchfrom, departmentfrom);
             const totalQty = inventoryRows[0].totalqty??0;
             if (qtys[i] > totalQty) {
@@ -113,11 +113,11 @@ const requisition = async (req, res) => {
         // Process each itemid
         for (let i = 0; i < itemids.length; i++) {
             // Fetch fallback data for branchfrom and departmentfrom
-            const { rows: fallbackRowsFrom } = await pg.query(`SELECT * FROM sky."Inventory" WHERE itemid = $1 AND branch = $2 AND department = $3 ORDER BY id DESC LIMIT 1`, [itemids[i], branchfrom, departmentfrom]);
+            const { rows: fallbackRowsFrom } = await pg.query(`SELECT * FROM skyeu."Inventory" WHERE itemid = $1 AND branch = $2 AND department = $3 ORDER BY id DESC LIMIT 1`, [itemids[i], branchfrom, departmentfrom]);
             const fallbackDataFrom = fallbackRowsFrom.length > 0 ? fallbackRowsFrom[0] : {};
 
             // Update the qty to negative in branchfrom and departmentfrom
-            const { rowCount: insertResult } = await pg.query(`INSERT INTO sky."Inventory" (itemid, itemname, department, branch, units, cost, price, pricetwo, beginbalance, qty, minimumbalance, "group", applyto, itemclass, composite, compositeid, description, imageone, imagetwo, imagethree, status, "reference", transactiondate, transactiondesc, dateadded, createdby, sellingprice) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27)`, [itemids[i], fallbackDataFrom.itemname, departmentfrom, branchfrom, fallbackDataFrom.units, fallbackDataFrom.cost, fallbackDataFrom.price, fallbackDataFrom.pricetwo, fallbackDataFrom.beginbalance, -qtys[i], fallbackDataFrom.minimumbalance, fallbackDataFrom.group, fallbackDataFrom.applyto, fallbackDataFrom.itemclass, fallbackDataFrom.composite, fallbackDataFrom.compositeid, fallbackDataFrom.description, fallbackDataFrom.imageone, fallbackDataFrom.imagetwo, fallbackDataFrom.imagethree, 'ACTIVE', uniformReference, transactiondates[i]??new Date(), 'Requisition to departmentto in branchto'+'||'+descriptions[i], new Date(), req.user.id, prices[i]]);
+            const { rowCount: insertResult } = await pg.query(`INSERT INTO skyeu."Inventory" (itemid, itemname, department, branch, units, cost, price, pricetwo, beginbalance, qty, minimumbalance, "group", applyto, itemclass, composite, compositeid, description, imageone, imagetwo, imagethree, status, "reference", transactiondate, transactiondesc, dateadded, createdby, sellingprice) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27)`, [itemids[i], fallbackDataFrom.itemname, departmentfrom, branchfrom, fallbackDataFrom.units, fallbackDataFrom.cost, fallbackDataFrom.price, fallbackDataFrom.pricetwo, fallbackDataFrom.beginbalance, -qtys[i], fallbackDataFrom.minimumbalance, fallbackDataFrom.group, fallbackDataFrom.applyto, fallbackDataFrom.itemclass, fallbackDataFrom.composite, fallbackDataFrom.compositeid, fallbackDataFrom.description, fallbackDataFrom.imageone, fallbackDataFrom.imagetwo, fallbackDataFrom.imagethree, 'ACTIVE', uniformReference, transactiondates[i]??new Date(), 'Requisition to departmentto in branchto'+'||'+descriptions[i], new Date(), req.user.id, prices[i]]);
             if (insertResult === 0) {
                 // Log activity for failed requisition
                 await activityMiddleware(res, req.user.id, `Failed requisition for itemid ${itemids[i]}`, 'FAILED REQUISITION');
@@ -130,11 +130,11 @@ const requisition = async (req, res) => {
                 });
             }
             // Fetch fallback data for branchto and departmentto
-            const { rows: fallbackRowsTo } = await pg.query(`SELECT * FROM sky."Inventory" WHERE itemid = $1 AND branch = $2 AND department = $3 ORDER BY id DESC LIMIT 1`, [itemids[i], branchto, departmentto]);
+            const { rows: fallbackRowsTo } = await pg.query(`SELECT * FROM skyeu."Inventory" WHERE itemid = $1 AND branch = $2 AND department = $3 ORDER BY id DESC LIMIT 1`, [itemids[i], branchto, departmentto]);
             const fallbackDataTo = fallbackRowsTo.length > 0 ? fallbackRowsTo[0] : fallbackDataFrom; // Use fallbackDataFrom if fallbackRowsTo is empty
 
             // Insert or update the qty to positive in branchto and departmentto
-            const result = await pg.query(`INSERT INTO sky."Inventory" (itemid, itemname, department, branch, units, cost, price, pricetwo, beginbalance, qty, minimumbalance, "group", applyto, itemclass, composite, compositeid, description, imageone, imagetwo, imagethree, status, "reference", transactiondate, transactiondesc, dateadded, createdby, sellingprice) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27) RETURNING *`, [itemids[i], fallbackDataTo.itemname, departmentto, branchto, fallbackDataTo.units, prices[i], fallbackDataTo.price, fallbackDataTo.pricetwo, fallbackDataTo.beginbalance, qtys[i], fallbackDataTo.minimumbalance, fallbackDataTo.group, fallbackDataTo.applyto, fallbackDataTo.itemclass, fallbackDataTo.composite, fallbackDataTo.compositeid, fallbackDataTo.description, fallbackDataTo.imageone, fallbackDataTo.imagetwo, fallbackDataTo.imagethree, 'PENDING REQUISITION', uniformReference, transactiondates[i]??new Date(), 'Requisition from departmentfrom in branchfrom'+'||'+descriptions[i], new Date(), req.user.id, prices[i]]);
+            const result = await pg.query(`INSERT INTO skyeu."Inventory" (itemid, itemname, department, branch, units, cost, price, pricetwo, beginbalance, qty, minimumbalance, "group", applyto, itemclass, composite, compositeid, description, imageone, imagetwo, imagethree, status, "reference", transactiondate, transactiondesc, dateadded, createdby, sellingprice) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27) RETURNING *`, [itemids[i], fallbackDataTo.itemname, departmentto, branchto, fallbackDataTo.units, prices[i], fallbackDataTo.price, fallbackDataTo.pricetwo, fallbackDataTo.beginbalance, qtys[i], fallbackDataTo.minimumbalance, fallbackDataTo.group, fallbackDataTo.applyto, fallbackDataTo.itemclass, fallbackDataTo.composite, fallbackDataTo.compositeid, fallbackDataTo.description, fallbackDataTo.imageone, fallbackDataTo.imagetwo, fallbackDataTo.imagethree, 'PENDING REQUISITION', uniformReference, transactiondates[i]??new Date(), 'Requisition from departmentfrom in branchfrom'+'||'+descriptions[i], new Date(), req.user.id, prices[i]]);
             if (result.rowCount === 0) {
                 console.error(`Failed to insert inventory for itemid ${itemids[i]} in branchto and departmentto`);
                 // Log activity for failed requisition

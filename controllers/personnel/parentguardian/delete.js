@@ -18,7 +18,7 @@ const deleteParentGuardian = async (req, res) => {
 
     try {
         const { rowCount } = await pg.query({
-            text: `UPDATE sky."parentguardians" SET "status" = 'DELETED' WHERE "id" = $1 AND "status" = 'ACTIVE'`,
+            text: `UPDATE skyeu."parentguardians" SET "status" = 'DELETED' WHERE "id" = $1 AND "status" = 'ACTIVE'`,
             values: [id]
         });
 

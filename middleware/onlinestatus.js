@@ -9,7 +9,7 @@ const manageOnlineUser = async (req, res, next) => {
     try {
         const queryString = `
             SELECT *
-            FROM sky."Lastseen"
+            FROM skyeu."Lastseen"
             WHERE userid = $1
         `;
 
@@ -17,7 +17,7 @@ const manageOnlineUser = async (req, res, next) => {
 
         if (existingUser.length > 0) {
             const updateQueryString = `
-                UPDATE sky."Lastseen"
+                UPDATE skyeu."Lastseen"
                 SET date = NOW()
                 WHERE userid = $1
             `;
@@ -25,7 +25,7 @@ const manageOnlineUser = async (req, res, next) => {
             await pg.query(updateQueryString, [userid]);
         } else {
             const insertQueryString = `
-                INSERT INTO sky."Lastseen" (userid, date)
+                INSERT INTO skyeu."Lastseen" (userid, date)
                 VALUES ($1, NOW())
             `;
 

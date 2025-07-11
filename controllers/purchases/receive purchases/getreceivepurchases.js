@@ -16,10 +16,10 @@ const getReceivePurchases = async (req, res) => {
                     MAX(d.department) as departmentname,
                     i.transactionref, 
                     JSON_AGG(ROW_TO_JSON(i)) as items
-                FROM sky."Inventory" i
-                LEFT JOIN sky."Supplier" s ON i.supplier::text = s.id::text
-                LEFT JOIN sky."Branch" b ON i.branch::text = b.id::text
-                LEFT JOIN sky."Department" d ON i.department::text = d.id::text
+                FROM skyeu."Inventory" i
+                LEFT JOIN skyeu."Supplier" s ON i.supplier::text = s.id::text
+                LEFT JOIN skyeu."Branch" b ON i.branch::text = b.id::text
+                LEFT JOIN skyeu."Department" d ON i.department::text = d.id::text
                 WHERE i.reference LIKE 'RP-%'
             `,
             values: []
@@ -71,7 +71,7 @@ const getReceivePurchases = async (req, res) => {
 
         // Get total count for pagination
         const countQuery = {
-            text: `SELECT COUNT(DISTINCT reference) FROM sky."Inventory" WHERE reference LIKE 'RP-%'`,
+            text: `SELECT COUNT(DISTINCT reference) FROM skyeu."Inventory" WHERE reference LIKE 'RP-%'`,
             values: []
         };
         const { rows: [{ count: total }] } = await pg.query(countQuery);

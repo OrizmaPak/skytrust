@@ -30,14 +30,14 @@ const sendOtp = async (req, res) => {
 
         // Delete all OTPs associated with the user.id
         const deleteOtpQuery = {
-            text: `DELETE FROM sky."otp" WHERE userid = $1`,
+            text: `DELETE FROM skyeu."otp" WHERE userid = $1`,
             values: [user.id]
         };
         await pg.query(deleteOtpQuery);   
 
         // Add OTP to the database
         const otpQuery = {
-            text: `INSERT INTO sky."otp" (userid, otp) VALUES ($1, $2)`,
+            text: `INSERT INTO skyeu."otp" (userid, otp) VALUES ($1, $2)`,
             values: [user.id, otp]
         };
         await pg.query(otpQuery);

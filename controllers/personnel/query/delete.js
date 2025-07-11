@@ -18,7 +18,7 @@ const deleteQuery = async (req, res) => {
 
     try {
         const { rowCount } = await pg.query({
-            text: `UPDATE sky."query" SET "status" = 'DELETED' WHERE "id" = $1 AND "status" = 'ACTIVE'`,
+            text: `UPDATE skyeu."query" SET "status" = 'DELETED' WHERE "id" = $1 AND "status" = 'ACTIVE'`,
             values: [id]
         });
 

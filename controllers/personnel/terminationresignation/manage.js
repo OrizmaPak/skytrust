@@ -13,7 +13,7 @@ const saveOrUpdateTerminationResignation = async (req, res) => {
         if (id) {
             // Update existing record
             query = {
-                text: `UPDATE sky."terminationresignation" 
+                text: `UPDATE skyeu."terminationresignation" 
                        SET userid = COALESCE($1, userid), 
                            title = COALESCE($2, title), 
                            type = COALESCE($3, type), 
@@ -26,7 +26,7 @@ const saveOrUpdateTerminationResignation = async (req, res) => {
         } else {
             // Insert new record
             query = {
-                text: `INSERT INTO sky."terminationresignation" (userid, title, type, image, createdby, status)
+                text: `INSERT INTO skyeu."terminationresignation" (userid, title, type, image, createdby, status)
                        VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
                 values: [userid, title, type, image, user.id, 'ACTIVE']
             };
@@ -36,7 +36,7 @@ const saveOrUpdateTerminationResignation = async (req, res) => {
         const terminationResignation = result.rows[0];
 
         const updateUserRoleQuery = {
-            text: `UPDATE sky."User" SET role = $1 WHERE id = $2`,
+            text: `UPDATE skyeu."User" SET role = $1 WHERE id = $2`,
             values: ['MEMBER', userid]
         };
 

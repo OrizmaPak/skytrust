@@ -25,7 +25,7 @@ const deleteinventory = async (req, res) => {
 
         // Update the status of inventory entries with the given itemids, branch, and department
         const result = await pg.query(
-            `UPDATE sky."Inventory" 
+            `UPDATE skyeu."Inventory" 
              SET status = 'DELETED' 
              WHERE itemid = ANY($1) AND branch = $2 AND department = $3 RETURNING *`,
             [itemids, branch, department]

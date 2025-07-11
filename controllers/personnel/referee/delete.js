@@ -11,7 +11,7 @@ const deleteReferee = async (req, res) => {
 
         // Check if the referee exists
         const { rows: refereeRows } = await pg.query(
-            `SELECT id FROM sky."referee" WHERE id = $1 AND status = 'ACTIVE'`,
+            `SELECT id FROM skyeu."referee" WHERE id = $1 AND status = 'ACTIVE'`,
             [id]
         );
 
@@ -28,7 +28,7 @@ const deleteReferee = async (req, res) => {
 
         // Update the status to DELETED
         await pg.query(
-            `UPDATE sky."referee" SET status = 'DELETED' WHERE id = $1`,
+            `UPDATE skyeu."referee" SET status = 'DELETED' WHERE id = $1`,
             [id]
         );
 

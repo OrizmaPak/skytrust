@@ -8,7 +8,7 @@ const fixmembershipforallusers = async (req, res) => {
 
     try {
         // Fetch all users
-        const { rows: users } = await pg.query(`SELECT * FROM sky."User"`);
+        const { rows: users } = await pg.query(`SELECT * FROM skyeu."User"`);
 
         // Loop through each user and call the necessary membership function
         for (const user of users) {

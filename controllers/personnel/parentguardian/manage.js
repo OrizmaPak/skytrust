@@ -36,7 +36,7 @@ const manageParentGuardian = async (req, res) => {
 
     // Check if the user exists in the User table
     const { rowCount: userExists } = await pg.query({
-        text: `SELECT 1 FROM sky."User" WHERE "id" = $1`,
+        text: `SELECT 1 FROM skyeu."User" WHERE "id" = $1`,
         values: [userid]
     });
 
@@ -54,7 +54,7 @@ const manageParentGuardian = async (req, res) => {
         if (id) {
             // Update existing parentguardian
             const { rowCount } = await pg.query({
-                text: `UPDATE sky."parentguardians" SET 
+                text: `UPDATE skyeu."parentguardians" SET 
                         "userid" = COALESCE($1, "userid"),
                         "parentonename" = COALESCE($2, "parentonename"),
                         "parentoneoccupation" = COALESCE($3, "parentoneoccupation"),
@@ -111,7 +111,7 @@ const manageParentGuardian = async (req, res) => {
         } else {
             // Create new parentguardian
             const { rows } = await pg.query({
-                text: `INSERT INTO sky."parentguardians" (
+                text: `INSERT INTO skyeu."parentguardians" (
                         "userid",
                         "parentonename",
                         "parentoneoccupation",

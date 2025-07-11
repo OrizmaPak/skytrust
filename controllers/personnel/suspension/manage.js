@@ -13,7 +13,7 @@ const saveOrUpdateSuspension = async (req, res) => {
         if (id) {
             // Update existing record
             query = {
-                text: `UPDATE sky."suspension" 
+                text: `UPDATE skyeu."suspension" 
                        SET userid = COALESCE($1, userid), 
                            title = COALESCE($2, title), 
                            image = COALESCE($3, image), 
@@ -25,7 +25,7 @@ const saveOrUpdateSuspension = async (req, res) => {
         } else {
             // Insert new record
             query = {
-                text: `INSERT INTO sky."suspension" (userid, title, image, createdby, status)
+                text: `INSERT INTO skyeu."suspension" (userid, title, image, createdby, status)
                        VALUES ($1, $2, $3, $4, $5) RETURNING *`,
                 values: [userid, title, image, user.id, 'ACTIVE']
             };
@@ -37,7 +37,7 @@ const saveOrUpdateSuspension = async (req, res) => {
         await activityMiddleware(req, user.id, 'Suspension saved or updated successfully', 'SUSPENSION');
 
         const updateUserRoleQuery = {
-            text: `UPDATE sky."User" SET role = $1 WHERE id = $2`,
+            text: `UPDATE skyeu."User" SET role = $1 WHERE id = $2`,
             values: ['MEMBER', userid]
         };
 

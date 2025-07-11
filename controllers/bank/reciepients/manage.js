@@ -41,7 +41,7 @@ const saveOrUpdateRecipient = async (req, res) => {
         // Check if the account number already exists for the bank, only if it's not an edit
         if (!id) {
             const checkQuery = `
-                SELECT id FROM sky."reciepients"
+                SELECT id FROM skyeu."reciepients"
                 WHERE accountnumber = $1 AND bank = $2
             `;
             const checkValues = [accountnumber, bank];
@@ -64,7 +64,7 @@ const saveOrUpdateRecipient = async (req, res) => {
         if (id) {
             // Update existing recipient
             query = `
-                UPDATE sky."reciepients"
+                UPDATE skyeu."reciepients"
                 SET fullname = COALESCE($1, fullname), 
                     bank = COALESCE($2, bank), 
                     accountnumber = COALESCE($3, accountnumber), 
@@ -77,7 +77,7 @@ const saveOrUpdateRecipient = async (req, res) => {
         } else {
             // Insert new recipient
             query = `
-                INSERT INTO sky."reciepients" (fullname, bank, accountnumber, status, createdby)
+                INSERT INTO skyeu."reciepients" (fullname, bank, accountnumber, status, createdby)
                 VALUES ($1, $2, $3, $4, $5)
                 RETURNING *
             `;

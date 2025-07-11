@@ -14,17 +14,17 @@ async function getroles(req, res) {
         let query;
         if (id) {
             query = {
-                text: `SELECT * FROM sky."Roles" WHERE id = $1`,
+                text: `SELECT * FROM skyeu."Roles" WHERE id = $1`,
                 values: [id]
             };
         } else if (role) {
             query = {
-                text: `SELECT * FROM sky."Roles" WHERE role = $1`,
+                text: `SELECT * FROM skyeu."Roles" WHERE role = $1`,
                 values: [role]
             };
         } else {
             query = {
-                text: `SELECT * FROM sky."Roles" WHERE role ILIKE $1 OR permissions ILIKE $1 OR description ILIKE $1 ORDER BY role LIMIT $2 OFFSET $3`,
+                text: `SELECT * FROM skyeu."Roles" WHERE role ILIKE $1 OR permissions ILIKE $1 OR description ILIKE $1 ORDER BY role LIMIT $2 OFFSET $3`,
                 values: [`%${q}%`, limit, offset]
             };
         }

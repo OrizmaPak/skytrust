@@ -62,7 +62,7 @@ async function savingsCredit(client, req, res, next, accountnumber, credit, desc
             // Get the current balance
             const balanceQuery = `
                 SELECT COALESCE(SUM(credit), 0) - COALESCE(SUM(debit), 0) AS balance
-                FROM sky."transaction"
+                FROM skyeu."transaction"
                 WHERE accountnumber = $1 AND status = 'ACTIVE'
             `;
             const balanceResult = await client.query(balanceQuery, [accountnumber]);
@@ -140,7 +140,7 @@ async function savingsCredit(client, req, res, next, accountnumber, credit, desc
         
             // Get the last transaction on the account
             const lastTransactionQuery = `
-                SELECT * FROM sky."transaction"
+                SELECT * FROM skyeu."transaction"
                 WHERE accountnumber = $1 AND status = 'ACTIVE'
                 ORDER BY transactiondate DESC
                 LIMIT 1
@@ -410,7 +410,7 @@ async function savingsCredit(client, req, res, next, accountnumber, credit, desc
 
         // Credit transaction logic
         // const creditTransactionInsertQuery = `
-        //     INSERT INTO sky."transaction" (accountnumber, credit, reference, description, ttype, status, valuedate, whichaccount) 
+        //     INSERT INTO skyeu."transaction" (accountnumber, credit, reference, description, ttype, status, valuedate, whichaccount) 
         //     VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`;
         // const creditTransactionResult = await client.query(creditTransactionInsertQuery, [
         //     accountnumber,
@@ -428,7 +428,7 @@ async function savingsCredit(client, req, res, next, accountnumber, credit, desc
         //  if (credit > 0 && savingsProduct.depositcharge) {
         //     const chargeAmount = calculateCharge(savingsProduct, credit);
         //     await client.query(
-        //         `INSERT INTO sky."transaction" (accountnumber, debit, description, reference, status, whichaccount) VALUES ($1, $2, $3, $4, 'PENDING', $5)`,
+        //         `INSERT INTO skyeu."transaction" (accountnumber, debit, description, reference, status, whichaccount) VALUES ($1, $2, $3, $4, 'PENDING', $5)`,
         //         [accountnumber, chargeAmount, 'Deposit Charge', generateNewReference(client, accountnumber, req, res), whichaccount]
         //     );
         // }
@@ -440,7 +440,7 @@ async function savingsCredit(client, req, res, next, accountnumber, credit, desc
         // if (creditTransaction.status === 'ACTIVE') {
         //     const taxAmount = calculateTax(creditTransaction);
         //     await client.query(
-        //         `UPDATE sky."transaction" SET tax = $1 WHERE reference = $2`,
+        //         `UPDATE skyeu."transaction" SET tax = $1 WHERE reference = $2`,
         //         [taxAmount, transactionReference]
         //     );
         //     await sendNotification(account.user, creditTransaction); // Assume this function exists

@@ -72,7 +72,7 @@ async function applySavingsCharge(client, req, res, accountnumber, credit, which
 async function takeCharges(client, req, res) {
     try {
         if (req.body.whichaccount === 'SAVINGS') {
-            // const savingsProductQuery = `SELECT * FROM sky."savingsproduct" WHERE id = $1`;
+            // const savingsProductQuery = `SELECT * FROM skyeu."savingsproduct" WHERE id = $1`;
             // const savingsProductResult = await client.query(savingsProductQuery, [req.body.savingsproductid]);
 
             if ( req.body.ttype !== 'CHARGE' && req.body.ttype !== 'PENALTY') {
@@ -126,7 +126,7 @@ const saveFailedTransaction = async (client, req, res, reasonForRejection, trans
             if(!req.body.transactionref)req.body.transactionref = '';
             if(!req.body.cashref)req.body.cashref = '';
             await client.query(
-                `INSERT INTO sky."transaction" (accountnumber, credit, debit, reference, description, ttype, status, transactiondesc, whichaccount, dateadded, createdby, currency, userid, transactiondate, tfrom, transactionref, cashref, branch) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, now(), $10, $11, $12, now(), $13, $14, $15, $16)`,
+                `INSERT INTO skyeu."transaction" (accountnumber, credit, debit, reference, description, ttype, status, transactiondesc, whichaccount, dateadded, createdby, currency, userid, transactiondate, tfrom, transactionref, cashref, branch) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, now(), $10, $11, $12, now(), $13, $14, $15, $16)`,
                 [req.body.accountnumber, req.body.credit, req.body.debit, transactionReference, req.body.description, req.body.ttype, status, reasonForRejection, req.body.whichaccount, createdBy, req.body.currency, userid, req.body.tfrom, req.body.transactionref??'', req.body.cashref??'', req.body.branch]
             );
             req.transactionError = {
@@ -163,7 +163,7 @@ const savePendingTransaction = async (client, accountnumber, credit, debit, tran
     let userid = req.user.id;
 
     // if (whichaccount !== 'GLACCOUNT') {
-    //     const accountQuery = `SELECT userid FROM sky."${whichaccount.toLowerCase()}" WHERE accountnumber = $1`;
+    //     const accountQuery = `SELECT userid FROM skyeu."${whichaccount.toLowerCase()}" WHERE accountnumber = $1`;
     //     const accountResult = await client.query(accountQuery, [accountnumber]);
     //     if (accountResult.rowCount !== 0) {
     //         userid = accountResult.rows[0].userid;
@@ -202,7 +202,7 @@ const savePendingTransaction = async (client, accountnumber, credit, debit, tran
     }
 
     // await client.query(
-    //     `INSERT INTO sky."transaction" (accountnumber, credit, debit, reference, description, ttype, status, transactiondesc, whichaccount, dateadded, createdby, currency, userid, transactiondate, valuedate, tfrom) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, now(), $10, $11, $12, now(), $13, $14)`,
+    //     `INSERT INTO skyeu."transaction" (accountnumber, credit, debit, reference, description, ttype, status, transactiondesc, whichaccount, dateadded, createdby, currency, userid, transactiondate, valuedate, tfrom) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, now(), $10, $11, $12, now(), $13, $14)`,
     //     [accountnumber, credit, debit, newReference, description, ttype, status, reasonForRejection, req.body.whichaccount, createdBy, req.body.currency, userid, valuedate, req.body.tfrom]
     // );
 
@@ -210,7 +210,7 @@ const savePendingTransaction = async (client, accountnumber, credit, debit, tran
 
     // if (req && req.reference && ttype !== 'CHARGE') {
     //     await client.query(
-    //         `UPDATE sky."transaction" SET status = 'FAILED' WHERE reference LIKE $1`,
+    //         `UPDATE skyeu."transaction" SET status = 'FAILED' WHERE reference LIKE $1`,
     //         [req.reference + '%']
     //     );
     // }
@@ -242,7 +242,7 @@ const saveTransaction = async (client, res, transactionData, req) => {
         let userid = req.user.id;
 
         // if (whichaccount !== 'GLACCOUNT') {
-        //     const accountQuery = `SELECT userid FROM sky."${whichaccount.toLowerCase()}" WHERE accountnumber = $1`;
+        //     const accountQuery = `SELECT userid FROM skyeu."${whichaccount.toLowerCase()}" WHERE accountnumber = $1`;
         //     const accountResult = await client.query(accountQuery, [accountnumber]);
         //     if (accountResult.rowCount !== 0) {
         //         userid = accountResult.rows[0].userid;
@@ -252,27 +252,27 @@ const saveTransaction = async (client, res, transactionData, req) => {
         const finalValuedate = status === 'ACTIVE' ? new Date() : null;
         const newReference = await generateNewReference(client, accountnumber, req);
         await client.query(
-            `INSERT INTO sky."transaction" (accountnumber, credit, debit, reference, description, ttype, status, transactiondate, whichaccount, valuedate, transactiondesc, dateadded, createdby, currency, userid, tfrom, transactionref, cashref, branch) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, now(), $12, $13, $14, $15, $16, $17, $18)`,
+            `INSERT INTO skyeu."transaction" (accountnumber, credit, debit, reference, description, ttype, status, transactiondate, whichaccount, valuedate, transactiondesc, dateadded, createdby, currency, userid, tfrom, transactionref, cashref, branch) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, now(), $12, $13, $14, $15, $16, $17, $18)`,
             [accountnumber, credit, debit, newReference, description, ttype, status, transactiondate, req.body.whichaccount, finalValuedate, transactiondesc, createdBy, currency, userid, tfrom, transactionref, cashref, req.body.branch]
         );
         req.body.transactiondesc += 'Transaction saved successfully.|';
 
         // Send notification email to the user of the transaction with comprehensive details
-        const userQuery = `SELECT userid FROM sky."savings" WHERE accountnumber = $1`;
+        const userQuery = `SELECT userid FROM skyeu."savings" WHERE accountnumber = $1`;
         const userResult = await client.query(userQuery, [accountnumber]);
 
         if (userResult.rowCount > 0) {
             const userid = userResult.rows[0].userid;
 
             // Fetch user email
-            const emailQuery = `SELECT email, firstname FROM sky."User" WHERE id = $1`;
+            const emailQuery = `SELECT email, firstname FROM skyeu."User" WHERE id = $1`;
             const emailResult = await client.query(emailQuery, [userid]);
 
             if (emailResult.rowCount > 0) {
                 const userEmail = emailResult.rows[0].email;
 
                 // Fetch the new balance
-                const balanceQuery = `SELECT SUM(credit) - SUM(debit) as balance FROM sky."transaction" WHERE accountnumber = $1 AND status = 'ACTIVE'`;
+                const balanceQuery = `SELECT SUM(credit) - SUM(debit) as balance FROM skyeu."transaction" WHERE accountnumber = $1 AND status = 'ACTIVE'`;
                 const balanceResult = await client.query(balanceQuery, [accountnumber]);
                 const newBalance = balanceResult.rows[0].balance;
 
@@ -342,11 +342,11 @@ const applyMinimumCreditAmountPenalty = async (client, req, res, orgSettings) =>
     if (req.body.credit < orgSettings.minimum_credit_amount && req.body.ttype != 'CHARGE') {
         const penaltyAmount = orgSettings.minimum_credit_amount_penalty;
         const defaultIncomeAccountNumber = orgSettings.default_income_account;
-        const incomeAccountQuery = `SELECT * FROM sky."Accounts" WHERE accountnumber = $1`;
+        const incomeAccountQuery = `SELECT * FROM skyeu."Accounts" WHERE accountnumber = $1`;
         const incomeAccountResult = await client.query(incomeAccountQuery, [defaultIncomeAccountNumber]);
         let continued = true
         if (req.body.whichaccount == 'PERSONAL') {
-            const userQuery = `SELECT id FROM sky."User" WHERE phone = $1`;
+            const userQuery = `SELECT id FROM skyeu."User" WHERE phone = $1`;
             const userResult = await client.query(userQuery, [req.body.accountnumber.toString().replace(orgSettings.personal_account_prefix, '')]);
 
             if (userResult.rowCount === 0) {
@@ -433,7 +433,7 @@ const generateNewReference = async (client, accountnumber, req) => {
     } 
     // Check if the account number is in the savings table
     if(!prefix && !identifier){
-        const savingsQuery = `SELECT * FROM sky."savings" WHERE accountnumber = $1`;
+        const savingsQuery = `SELECT * FROM skyeu."savings" WHERE accountnumber = $1`;
         const savingsResult = await client.query(savingsQuery, [accountnumber]);
         if (savingsResult.rowCount !== 0) {
             console.log('orgSettings savings_transaction_prefix', req.orgSettings.savings_transaction_prefix) 
@@ -442,7 +442,7 @@ const generateNewReference = async (client, accountnumber, req) => {
             req.body.whichaccount = 'SAVINGS';
         } else {
             // Check if the account number is in the Accounts table
-            const accountsQuery = `SELECT * FROM sky."Accounts" WHERE accountnumber = $1`;
+            const accountsQuery = `SELECT * FROM skyeu."Accounts" WHERE accountnumber = $1`;
             const accountsResult = await client.query(accountsQuery, [accountnumber]);
             if (accountsResult.rowCount !== 0) {
                 console.log('orgSettings gl_transaction_prefix', req.orgSettings.gl_transaction_prefix) 
@@ -451,7 +451,7 @@ const generateNewReference = async (client, accountnumber, req) => {
                 req.body.whichaccount = 'GLACCOUNT';
             } else {
                 // Check if the account number is in the loan table
-                const loanQuery = `SELECT * FROM sky."loanaccounts" WHERE accountnumber = $1`;
+                const loanQuery = `SELECT * FROM skyeu."loanaccounts" WHERE accountnumber = $1`;
                 const loanResult = await client.query(loanQuery, [accountnumber]);
                 if (loanResult.rowCount !== 0) {
                     prefix = req.orgSettings.loan_transaction_prefix;
@@ -459,7 +459,7 @@ const generateNewReference = async (client, accountnumber, req) => {
                     req.body.whichaccount = 'LOAN';
                 } else {
                     // Check if the account number is in the recipients table
-                    const recipientsQuery = `SELECT * FROM sky."reciepients" WHERE accountnumber = $1`;
+                    const recipientsQuery = `SELECT * FROM skyeu."reciepients" WHERE accountnumber = $1`;
                     const recipientsResult = await client.query(recipientsQuery, [accountnumber]);
                     if (recipientsResult.rowCount !== 0) {
                         prefix = req.orgSettings.recipients_transaction_prefix || '948';
@@ -525,7 +525,7 @@ const handleCreditRedirectToPersonnalAccount = async (client, req, res, accountu
     let userid = req.user.id;
 
     // if (whichaccount !== 'GLACCOUNT') {
-    //     const accountQuery = `SELECT userid FROM sky."${whichaccount.toLowerCase()}" WHERE accountnumber = $1`;
+    //     const accountQuery = `SELECT userid FROM skyeu."${whichaccount.toLowerCase()}" WHERE accountnumber = $1`;
     //     const accountResult = await client.query(accountQuery, [req.body.accountnumber]);
     //     if (accountResult.rowCount !== 0) {
     //         userid = accountResult.rows[0].userid;
@@ -539,7 +539,7 @@ const handleCreditRedirectToPersonnalAccount = async (client, req, res, accountu
     if (!req.body.transactionref) req.body.transactionref = '';
     if (!req.body.cashref) req.body.cashref = '';
     await client.query(
-        `INSERT INTO sky."transaction" (accountnumber, credit, debit, reference, description, ttype, status, transactiondesc, whichaccount, dateadded, createdby, currency, userid, transactiondate, tfrom, transactionref, cashref, branch) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, now(), $10, $11, $12, now(), $13, $14, $15, $16)`,
+        `INSERT INTO skyeu."transaction" (accountnumber, credit, debit, reference, description, ttype, status, transactiondesc, whichaccount, dateadded, createdby, currency, userid, transactiondate, tfrom, transactionref, cashref, branch) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, now(), $10, $11, $12, now(), $13, $14, $15, $16)`,
         [req.body.accountnumber, credit ? credit : req.body.credit, 0, newReference, req.body.description, req.body.ttype, 'REDIRECTED', transactiondesc, req.body.whichaccount, createdBy, req.body.currency, userid, req.body.tfrom, req.body.transactionref ?? '', req.body.cashref ?? '', req.body.branch]
     );
     req.body.transactiondesc += `Credit redirected from ${req.body.accountnumber} to personal account.|`;
@@ -547,7 +547,7 @@ const handleCreditRedirectToPersonnalAccount = async (client, req, res, accountu
     // Check if phone number is provided in the request body
     if (req.body.phone) {
         // Query the user table to find the user with the provided phone number
-        const userQuery = `SELECT id, phone FROM sky."User" WHERE phone = $1`;
+        const userQuery = `SELECT id, phone FROM skyeu."User" WHERE phone = $1`;
         const userResult = await client.query(userQuery, [req.body.phone]);
 
         if (userResult.rowCount > 0) {
@@ -568,7 +568,7 @@ const handleCreditRedirectToPersonnalAccount = async (client, req, res, accountu
     if (!req.body.transactionref) req.body.transactionref = '';
     if (!req.body.cashref) req.body.cashref = '';
     await client.query(
-        `INSERT INTO sky."transaction" (accountnumber, credit, debit, reference, description, ttype, status, transactiondesc, whichaccount, dateadded, createdby, currency, userid, transactiondate, valuedate, tfrom, transactionref, cashref, branch) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, now(), $10, $11, $12, now(), now(), $13, $14, $15, $16)`,
+        `INSERT INTO skyeu."transaction" (accountnumber, credit, debit, reference, description, ttype, status, transactiondesc, whichaccount, dateadded, createdby, currency, userid, transactiondate, valuedate, tfrom, transactionref, cashref, branch) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, now(), $10, $11, $12, now(), now(), $13, $14, $15, $16)`,
         [req.body.personalaccountnumber, credit ? credit : req.body.credit, 0, newPersonalReference, req.body.description, req.body.ttype, status, `hcrCredit was to ${req.body.accountnumber}`, req.body.whichaccount, createdBy, req.body.currency, userid, req.body.tfrom, req.body.transactionref ?? '', req.body.cashref ?? '', req.body.branch]
     );
     
@@ -587,7 +587,7 @@ const handleRedirection = async (client, req, res, accountuser, reference, trans
     if (!req.body.transactionref) req.body.transactionref = '';
     if (!req.body.cashref) req.body.cashref = '';
     await client.query(
-        `INSERT INTO sky."transaction" (accountnumber, credit, debit, reference, description, ttype, status, transactiondesc, whichaccount, dateadded, createdby, currency, userid, transactiondate, tfrom, transactionref, cashref, branch) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, now(), $10, $11, $12, now(), $13, $14, $15, $16)`,
+        `INSERT INTO skyeu."transaction" (accountnumber, credit, debit, reference, description, ttype, status, transactiondesc, whichaccount, dateadded, createdby, currency, userid, transactiondate, tfrom, transactionref, cashref, branch) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, now(), $10, $11, $12, now(), $13, $14, $15, $16)`,
         [req.body.accountnumber, credit ? credit : req.body.credit, debit ? debit : req.body.debit, newReference, req.body.description, req.body.ttype, 'REDIRECTED', transactiondesc, whichaccount, createdBy, req.body.currency, userid, req.body.tfrom, req.body.transactionref ?? '', req.body.cashref ?? '', req.body.branch]
     );
 
@@ -600,7 +600,7 @@ const handleRedirection = async (client, req, res, accountuser, reference, trans
     // Check if phone number is provided in the request body
     if (req.body.phone) {
         // Query the user table to find the user with the provided phone number
-        const userQuery = `SELECT id, phone FROM sky."User" WHERE phone = $1`;
+        const userQuery = `SELECT id, phone FROM skyeu."User" WHERE phone = $1`;
         const userResult = await client.query(userQuery, [req.body.phone]);
 
         if (userResult.rowCount > 0) {
@@ -634,7 +634,7 @@ const handleRedirection = async (client, req, res, accountuser, reference, trans
     if (!req.body.transactionref) req.body.transactionref = '';
     if (!req.body.cashref) req.body.cashref = '';
     await client.query(
-        `INSERT INTO sky."transaction" (accountnumber, credit, debit, reference, description, ttype, status, transactiondesc, whichaccount, dateadded, createdby, currency, userid, transactiondate, valuedate, tfrom, transactionref, cashref, branch) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, now(), $10, $11, $12, now(), now(), $13, $14, $15, $16)`,
+        `INSERT INTO skyeu."transaction" (accountnumber, credit, debit, reference, description, ttype, status, transactiondesc, whichaccount, dateadded, createdby, currency, userid, transactiondate, valuedate, tfrom, transactionref, cashref, branch) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, now(), $10, $11, $12, now(), now(), $13, $14, $15, $16)`,
         [req.body.personalaccountnumber, credit ? credit : req.body.credit, debit ? debit : req.body.debit, newPersonalReference, `Transaction redirected from ${req.body.accountnumber}`, req.body.ttype, status, transactiondesc, req.body.whichaccount, createdBy, req.body.currency, userid, req.body.tfrom, req.body.transactionref ?? '', req.body.cashref ?? '', req.body.branch]
     );
 };
@@ -646,7 +646,7 @@ const handleDebitRedirectToPersonnalAccount = async (client, req, res, accountus
     let userid = req.user.id;
 
     // if (whichaccount !== 'GLACCOUNT') {
-    //     const accountQuery = `SELECT userid FROM sky."${whichaccount.toLowerCase()}" WHERE accountnumber = $1`;
+    //     const accountQuery = `SELECT userid FROM skyeu."${whichaccount.toLowerCase()}" WHERE accountnumber = $1`;
     //     const accountResult = await client.query(accountQuery, [req.body.accountnumber]);
     //     if (accountResult.rowCount !== 0) {
     //         userid = accountResult.rows[0].userid;
@@ -660,7 +660,7 @@ const handleDebitRedirectToPersonnalAccount = async (client, req, res, accountus
     if (!req.body.transactionref) req.body.transactionref = '';
     if (!req.body.cashref) req.body.cashref = '';
     await client.query(
-        `INSERT INTO sky."transaction" (accountnumber, credit, debit, reference, description, ttype, status, transactiondesc, whichaccount, dateadded, createdby, currency, userid, transactiondate, tfrom, transactionref, cashref, branch) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, now(), $10, $11, $12, now(), $13, $14, $15, $16)`,
+        `INSERT INTO skyeu."transaction" (accountnumber, credit, debit, reference, description, ttype, status, transactiondesc, whichaccount, dateadded, createdby, currency, userid, transactiondate, tfrom, transactionref, cashref, branch) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, now(), $10, $11, $12, now(), $13, $14, $15, $16)`,
         [req.body.accountnumber, 0, debit ? debit : req.body.debit, newReference, req.body.description, req.body.ttype, 'REDIRECTED', transactiondesc, whichaccount, createdBy, req.body.currency, userid, req.body.tfrom, req.body.transactionref ?? '', req.body.cashref ?? '', req.body.branch]
     );
     req.body.transactiondesc += `Debit redirected from ${req.body.accountnumber} to personal account.|`;
@@ -668,13 +668,13 @@ const handleDebitRedirectToPersonnalAccount = async (client, req, res, accountus
     // Check if phone number is provided in the request body
     if (req.body.phone) {
         // Query the user table to find the user with the provided phone number
-        const userQuery = `SELECT id, phone FROM sky."User" WHERE phone = $1`;
+        const userQuery = `SELECT id, phone FROM skyeu."User" WHERE phone = $1`;
         const userResult = await client.query(userQuery, [req.body.phone]);
 
         if (userResult.rowCount > 0) {
             // If user is found, set the personal account number
             // if (req.orgSettings.personal_account_overdrawn) {
-            //     const personalAccountQuery = `SELECT SUM(credit) - SUM(debit) as balance FROM sky."transaction" WHERE accountnumber = $1`;
+            //     const personalAccountQuery = `SELECT SUM(credit) - SUM(debit) as balance FROM skyeu."transaction" WHERE accountnumber = $1`;
             //     const personalAccountResult = await client.query(personalAccountQuery, [req.body.personalaccountnumber]);
             //     const personalAccountBalance = personalAccountResult.rows[0].balance;
         
@@ -723,7 +723,7 @@ const handleDebitRedirectToPersonnalAccount = async (client, req, res, accountus
     if (!req.body.transactionref) req.body.transactionref = '';
     if (!req.body.cashref) req.body.cashref = '';
     await client.query(
-        `INSERT INTO sky."transaction" (accountnumber, credit, debit, reference, description, ttype, status, transactiondesc, whichaccount, dateadded, createdby, currency, userid, transactiondate, valuedate, tfrom, transactionref, cashref, branch) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, now(), $10, $11, $12, now(), now(), $13, $14, $15, $16)`,
+        `INSERT INTO skyeu."transaction" (accountnumber, credit, debit, reference, description, ttype, status, transactiondesc, whichaccount, dateadded, createdby, currency, userid, transactiondate, valuedate, tfrom, transactionref, cashref, branch) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, now(), $10, $11, $12, now(), now(), $13, $14, $15, $16)`,
         [req.body.personalaccountnumber, 0, debit ? debit : req.body.debit, newPersonalReference, req.body.description, req.body.ttype, status, `Debit was to ${req.body.accountnumber}`, req.body.whichaccount, createdBy, req.body.currency, userid, req.body.tfrom, req.body.transactionref ?? '', req.body.cashref ?? '', req.body.branch]
     );
     
@@ -764,7 +764,7 @@ const makePaymentAndCloseAccount = async (client, loanAccountNumber, credit, des
         
         // Update the loan account balance to zero
         await client.query(
-            `UPDATE sky."loanaccounts" SET dateclosed = now(), closeamount = $1 WHERE accountnumber = $2`,
+            `UPDATE skyeu."loanaccounts" SET dateclosed = now(), closeamount = $1 WHERE accountnumber = $2`,
             [credit, loanaccount.totalamount]
         );
 

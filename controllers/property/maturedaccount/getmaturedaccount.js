@@ -33,8 +33,8 @@ async function getMaturedPropertyAccount(req, res) {
       SELECT 
         pa.*,
         pp.* 
-      FROM sky."propertyaccount" pa
-      JOIN sky."propertyproduct" pp 
+      FROM skyeu."propertyaccount" pa
+      JOIN skyeu."propertyproduct" pp 
         ON pa.productid = pp.id
       ${accountFilter}
       ORDER BY pa.dateadded DESC
@@ -64,7 +64,7 @@ async function getMaturedPropertyAccount(req, res) {
 
       // Fetch user details to get fullname and branch
       const userQuery = {
-        text: `SELECT firstname, lastname, othernames, branch FROM sky."User" WHERE id = $1`,
+        text: `SELECT firstname, lastname, othernames, branch FROM skyeu."User" WHERE id = $1`,
         values: [accountRow.userid]
       };
       const { rows: userRows } = await pg.query(userQuery);
@@ -72,7 +72,7 @@ async function getMaturedPropertyAccount(req, res) {
 
       // Fetch branch details to get branchname
       const branchQuery = {
-        text: `SELECT branch FROM sky."Branch" WHERE id = $1`,
+        text: `SELECT branch FROM skyeu."Branch" WHERE id = $1`,
         values: [userRows[0].branch]
       };
       const { rows: branchRows } = await pg.query(branchQuery);
@@ -80,7 +80,7 @@ async function getMaturedPropertyAccount(req, res) {
 
       // --- 4a) Get property items
       const itemsQuery = {
-        text: `SELECT * FROM sky."propertyitems" WHERE accountnumber = $1`,
+        text: `SELECT * FROM skyeu."propertyitems" WHERE accountnumber = $1`,
         values: [currentAccountNumber]
       };
       const { rows: itemRows } = await pg.query(itemsQuery);
@@ -88,7 +88,7 @@ async function getMaturedPropertyAccount(req, res) {
       // Fetch item names from Inventory table
       for (const item of itemRows) {
         const inventoryQuery = {
-          text: `SELECT itemname FROM sky."Inventory" WHERE itemid = $1`,
+          text: `SELECT itemname FROM skyeu."Inventory" WHERE itemid = $1`,
           values: [item.itemid]
         };
         const { rows: inventoryRows } = await pg.query(inventoryQuery);
@@ -105,7 +105,7 @@ async function getMaturedPropertyAccount(req, res) {
       const installmentsQuery = {
         text: `
           SELECT * 
-          FROM sky."propertyinstallments"
+          FROM skyeu."propertyinstallments"
           WHERE accountnumber = $1
           ORDER BY duedate ASC
         `,
@@ -131,7 +131,7 @@ async function getMaturedPropertyAccount(req, res) {
             debit,
             transactionref, 
             dateadded
-          FROM sky."transaction"
+          FROM skyeu."transaction"
           WHERE accountnumber = $1
           ORDER BY dateadded ASC
         `,

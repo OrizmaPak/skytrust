@@ -15,7 +15,7 @@ const checkUser = async (req, res) => {
             });
         }
 
-        let query = `SELECT * FROM sky."User" WHERE `;
+        let query = `SELECT * FROM skyeu."User" WHERE `;
         let params = [];
 
         if (email) {

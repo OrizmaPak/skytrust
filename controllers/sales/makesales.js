@@ -24,7 +24,7 @@ const makesales = async (req, res) => {
 
     if(reference){
         // YOU WILL PUT THE FUNCTION TO VALIDATE THE TRANSACTION
-        const { rows: existingTransactionRows } = await pg.query(`SELECT * FROM sky."transaction" WHERE transactionref = $1`, [reference]);
+        const { rows: existingTransactionRows } = await pg.query(`SELECT * FROM skyeu."transaction" WHERE transactionref = $1`, [reference]);
         if (existingTransactionRows.length > 0) {
             return res.status(StatusCodes.BAD_REQUEST).json({
                 status: false,
@@ -50,7 +50,7 @@ const makesales = async (req, res) => {
     }
 
     // Validate the existence of the 'branchfrom'
-    const { rows: branchFromRows } = await pg.query(`SELECT * FROM sky."Branch" WHERE id = $1`, [branchfrom]);
+    const { rows: branchFromRows } = await pg.query(`SELECT * FROM skyeu."Branch" WHERE id = $1`, [branchfrom]);
     if (branchFromRows.length === 0) {
         // Return a bad request response if 'branchfrom' does not exist
         return res.status(StatusCodes.BAD_REQUEST).json({
@@ -63,7 +63,7 @@ const makesales = async (req, res) => {
     }
 
     // Validate the existence of the 'departmentfrom' in 'branchfrom'
-    const { rows: departmentFromRows } = await pg.query(`SELECT * FROM sky."Department" WHERE id = $1 AND branch = $2`, [departmentfrom, branchfrom]);
+    const { rows: departmentFromRows } = await pg.query(`SELECT * FROM skyeu."Department" WHERE id = $1 AND branch = $2`, [departmentfrom, branchfrom]);
     if (departmentFromRows.length === 0) {
         // Return a bad request response if 'departmentfrom' does not exist in 'branchfrom'
         return res.status(StatusCodes.BAD_REQUEST).json({
@@ -137,7 +137,7 @@ const makesales = async (req, res) => {
     try {
         // Check if the quantity requested is greater than available stock for each itemid
         for (let i = 0; i < itemids.length; i++) {
-            const { rows: inventoryRows } = await pg.query(`SELECT SUM(qty) AS totalQty FROM sky."Inventory" WHERE itemid = $1 AND branch = $2 AND department = $3`, [itemids[i], branchfrom, departmentfrom]);
+            const { rows: inventoryRows } = await pg.query(`SELECT SUM(qty) AS totalQty FROM skyeu."Inventory" WHERE itemid = $1 AND branch = $2 AND department = $3`, [itemids[i], branchfrom, departmentfrom]);
             // console.log('inventoryRows:', inventoryRows, itemids[i], branchfrom, departmentfrom);
             const totalQty = inventoryRows[0].totalqty ?? 0;
             if (qtys[i] > totalQty) {
@@ -159,12 +159,12 @@ const makesales = async (req, res) => {
         // Process each itemid
         for (let i = 0; i < itemids.length; i++) {
             // Fetch fallback data for branchfrom and departmentfrom
-            const { rows: fallbackRowsFrom } = await pg.query(`SELECT * FROM sky."Inventory" WHERE itemid = $1 AND branch = $2 AND department = $3 ORDER BY id DESC LIMIT 1`, [itemids[i], branchfrom, departmentfrom]);
+            const { rows: fallbackRowsFrom } = await pg.query(`SELECT * FROM skyeu."Inventory" WHERE itemid = $1 AND branch = $2 AND department = $3 ORDER BY id DESC LIMIT 1`, [itemids[i], branchfrom, departmentfrom]);
             const fallbackDataFrom = fallbackRowsFrom.length > 0 ? fallbackRowsFrom[0] : {};
 
             // Update the qty to negative in branchfrom and departmentfrom
             const insertQuery = `
-                INSERT INTO sky."Inventory" (
+                INSERT INTO skyeu."Inventory" (
                     itemid, itemname, department, branch, units, cost, price, pricetwo, 
                     beginbalance, qty, minimumbalance, "group", applyto, itemclass, 
                     composite, compositeid, description, imageone, imagetwo, imagethree, 
@@ -221,7 +221,7 @@ const makesales = async (req, res) => {
             }
         }
 
-        const { rows: orgSettingsRows } = await pg.query(`SELECT default_cost_of_sales_account, default_income_account FROM sky."Organisationsettings" LIMIT 1`);
+        const { rows: orgSettingsRows } = await pg.query(`SELECT default_cost_of_sales_account, default_income_account FROM skyeu."Organisationsettings" LIMIT 1`);
         if (orgSettingsRows.length === 0) {
             console.error('Failed to fetch organisation settings');
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -235,7 +235,7 @@ const makesales = async (req, res) => {
 
         const itemnames = [];
         for (let i = 0; i < itemids.length; i++) {
-            const { rows: itemRows } = await pg.query(`SELECT itemname FROM sky."Inventory" WHERE id = $1`, [itemids[i]]);
+            const { rows: itemRows } = await pg.query(`SELECT itemname FROM skyeu."Inventory" WHERE id = $1`, [itemids[i]]);
             if (itemRows.length > 0) {
                 itemnames.push(itemRows[0].name);
             } else {
@@ -363,7 +363,7 @@ const makesales = async (req, res) => {
 
         // Prepare sales data for the receipt
         // Fetch branch name from Branch table using branchfrom
-        const { rows: branchRows } = await pg.query(`SELECT branch FROM sky."Branch" WHERE id = $1`, [branchfrom]);
+        const { rows: branchRows } = await pg.query(`SELECT branch FROM skyeu."Branch" WHERE id = $1`, [branchfrom]);
         const branchName = branchRows.length > 0 ? branchRows[0].branch : "Unknown Branch";
 
         const salesData = {
@@ -376,7 +376,7 @@ const makesales = async (req, res) => {
             totalProfit,
             items: await Promise.all(itemids.map(async (itemId, index) => {
                 // Fetch item name from Inventory table using itemId
-                const { rows: inventoryRows } = await pg.query(`SELECT itemname FROM sky."Inventory" WHERE itemid = $1`, [itemId]);
+                const { rows: inventoryRows } = await pg.query(`SELECT itemname FROM skyeu."Inventory" WHERE itemid = $1`, [itemId]);
                 const itemName = inventoryRows.length > 0 ? inventoryRows[0].itemname : "Unknown Item";
 
                 return {

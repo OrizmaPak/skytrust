@@ -17,7 +17,7 @@ const verifyPin = async (req, res) => {
 
     try {
         // Fetch the user by id
-        const { rows: [user] } = await pg.query(`SELECT pin FROM sky."User" WHERE id = $1`, [id]);
+        const { rows: [user] } = await pg.query(`SELECT pin FROM skyeu."User" WHERE id = $1`, [id]);
         if (!user) {
             return res.status(StatusCodes.NOT_FOUND).json({
                 status: false,

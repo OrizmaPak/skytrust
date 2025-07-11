@@ -18,7 +18,7 @@ const deleteEmploymentRecord = async (req, res) => {
 
     try {
         const { rowCount } = await pg.query(
-            `UPDATE sky."employmentrecord" SET status = 'DELETED' WHERE id = $1 AND status = 'ACTIVE'`,
+            `UPDATE skyeu."employmentrecord" SET status = 'DELETED' WHERE id = $1 AND status = 'ACTIVE'`,
             [id]
         );
 

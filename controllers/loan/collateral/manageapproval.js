@@ -34,7 +34,7 @@ async function approveDeclineCollateral(req, res) {
     }
 
     try {
-        const existingCollateralQuery = `SELECT * FROM sky."collateral" WHERE id = $1`;
+        const existingCollateralQuery = `SELECT * FROM skyeu."collateral" WHERE id = $1`;
         const existingCollateralResult = await pg.query(existingCollateralQuery, [id]);
 
         if (existingCollateralResult.rows.length === 0) {
@@ -48,7 +48,7 @@ async function approveDeclineCollateral(req, res) {
         }
 
         const updateCollateralQuery = `
-            UPDATE sky."collateral" SET
+            UPDATE skyeu."collateral" SET
                 status = $1
             WHERE id = $2
             RETURNING *

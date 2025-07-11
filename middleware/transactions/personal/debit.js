@@ -5,7 +5,7 @@ const { activityMiddleware } = require("../../activity");
 async function personalDebit(client, req, res, next, accountnumber, debit, description, ttype, transactionStatus, whichaccount) {
     if (debit > 0) {
         // Query to calculate the current balance by subtracting the sum of debits from the sum of credits for the given account number
-        const balanceQuery = `SELECT SUM(credit) - SUM(debit) AS balance FROM sky."transaction" WHERE accountnumber = $1 AND status = 'ACTIVE'`;
+        const balanceQuery = `SELECT SUM(credit) - SUM(debit) AS balance FROM skyeu."transaction" WHERE accountnumber = $1 AND status = 'ACTIVE'`;
         const balanceResult = await client.query(balanceQuery, [accountnumber]);
         const currentBalance = balanceResult.rows[0]?.balance || 0; // Get the current balance or default to 0 if no result
 

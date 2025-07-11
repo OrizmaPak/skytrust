@@ -70,7 +70,7 @@ const registeruser = async (req, res) => {
 
     try {
         // Check if email already exists using raw query
-        const { rows: theuser } = await pg.query(`SELECT * FROM sky."User" WHERE email = $1`, [email]);
+        const { rows: theuser } = await pg.query(`SELECT * FROM skyeu."User" WHERE email = $1`, [email]);
 
         // CHECKING IF ITS AN ACTIVE USER IF HE EXISTS
         if (theuser.length > 0 && theuser[0].status != 'ACTIVE') {
@@ -95,7 +95,7 @@ const registeruser = async (req, res) => {
         }
 
         // Check if the branch exists
-        const { rows: branchExists } = await pg.query(`SELECT * FROM sky."Branch" WHERE id = $1`, [branch]);
+        const { rows: branchExists } = await pg.query(`SELECT * FROM skyeu."Branch" WHERE id = $1`, [branch]);
         if (branchExists.length === 0) {
             return res.status(StatusCodes.BAD_REQUEST).json({
                 status: false,
@@ -112,7 +112,7 @@ const registeruser = async (req, res) => {
         // If id is provided, update the user
         if (id) {
             // Check if the user exists and the phone matches
-            const { rows: existingUser } = await pg.query(`SELECT * FROM sky."User" WHERE id = $1`, [id]);
+            const { rows: existingUser } = await pg.query(`SELECT * FROM skyeu."User" WHERE id = $1`, [id]);
             if (existingUser.length === 0) {
                 return res.status(StatusCodes.BAD_REQUEST).json({
                     status: false,
@@ -132,7 +132,7 @@ const registeruser = async (req, res) => {
                 });
             }
 
-            const { rows: updatedUser } = await pg.query(`UPDATE sky."User" SET 
+            const { rows: updatedUser } = await pg.query(`UPDATE skyeu."User" SET 
             firstname = COALESCE($1, firstname), lastname = COALESCE($2, lastname), othernames = COALESCE($3, othernames), email = COALESCE($4, email), password = COALESCE($5, password), role = COALESCE($6, role), permissions = COALESCE($7, permissions), country = COALESCE($8, country), state = COALESCE($9, state), phone = COALESCE($10, phone), emailverified = COALESCE($11, emailverified), address = COALESCE($12, address), officeaddress = COALESCE($13, officeaddress), image = COALESCE(NULLIF($14, ''), image), image2 = COALESCE(NULLIF($15, ''), image2), gender = COALESCE($16, gender), occupation = COALESCE($17, occupation), lga = COALESCE($18, lga), town = COALESCE($19, town), maritalstatus = COALESCE($20, maritalstatus), spousename = COALESCE($21, spousename), stateofresidence = COALESCE($22, stateofresidence), lgaofresidence = COALESCE($23, lgaofresidence), nextofkinfullname = COALESCE($24, nextofkinfullname), nextofkinphone = COALESCE($25, nextofkinphone), nextofkinrelationship = COALESCE($26, nextofkinrelationship), nextofkinaddress = COALESCE($27, nextofkinaddress), nextofkinofficeaddress = COALESCE($28, nextofkinofficeaddress), nextofkinoccupation = COALESCE($29, nextofkinoccupation), dateofbirth = COALESCE($30, dateofbirth), branch = COALESCE($31, branch), registrationpoint = COALESCE($32, registrationpoint), dateadded = COALESCE($33, dateadded), lastupdated = COALESCE($34, lastupdated), status = COALESCE($35, status), createdby = COALESCE($36, createdby) WHERE id = $37 RETURNING *`, 
             [firstname, lastname, othernames, email, hashedPassword, role, permissions, country, state, phone, emailverified, address, officeaddress, image, image2, gender, occupation, lga, town, maritalstatus, spousename, stateofresidence, lgaofresidence, nextofkinfullname, nextofkinphone, nextofkinrelationship, nextofkinaddress, nextofkinofficeaddress, nextofkinoccupation, dateofbirth, branch, registrationpoint, dateadded, lastupdated, "ACTIVE", createdby, id]);
             if (updatedUser.length > 0) {
@@ -154,7 +154,7 @@ const registeruser = async (req, res) => {
             }
         } else {
             // Insert new user using raw query to avoid SQL injection attacks and other vulnerabilities 
-            const { rows: [saveuser] } = await pg.query(`INSERT INTO sky."User" 
+            const { rows: [saveuser] } = await pg.query(`INSERT INTO skyeu."User" 
             (firstname, lastname, othernames, email, password, role, permissions, country, state, phone, emailverified, address, officeaddress, image, image2, gender, occupation, lga, town, maritalstatus, spousename, stateofresidence, lgaofresidence, nextofkinfullname, nextofkinphone, nextofkinrelationship, nextofkinaddress, nextofkinofficeaddress, nextofkinoccupation, dateofbirth, branch, registrationpoint, dateadded, lastupdated, status, createdby) 
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36) RETURNING id`, [firstname, lastname, othernames, email, hashedPassword, role, permissions, country, state, phone, null, address, officeaddress, image, image2, gender, occupation, lga, town, maritalstatus, spousename, stateofresidence, lgaofresidence, nextofkinfullname, nextofkinphone, nextofkinrelationship, nextofkinaddress, nextofkinofficeaddress, nextofkinoccupation, dateofbirth, branch, registrationpoint, dateadded, lastupdated, status, createdby]);
             const userId = saveuser.id;

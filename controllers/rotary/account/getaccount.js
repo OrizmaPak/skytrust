@@ -13,7 +13,7 @@
             const offset = (page - 1) * limit;
     
             let query = {
-                text: `SELECT * FROM sky."rotaryaccount"`,
+                text: `SELECT * FROM skyeu."rotaryaccount"`,
                 values: []
             };
     
@@ -90,7 +90,7 @@
     
             // Get total count for pagination
             const countQuery = {
-                text: `SELECT COUNT(*) FROM sky."rotaryaccount" ${whereClause}`,
+                text: `SELECT COUNT(*) FROM skyeu."rotaryaccount" ${whereClause}`,
                 values: query.values.slice(0, -2) // Exclude limit and offset
             };
             const { rows: [{ count: total }] } = await pg.query(countQuery);
@@ -107,7 +107,7 @@
     
                 // Fetch user details to construct account name
                 const userQuery = {
-                    text: `SELECT firstname, lastname, othernames FROM sky."User" WHERE id = $1`,
+                    text: `SELECT firstname, lastname, othernames FROM skyeu."User" WHERE id = $1`,
                     values: [userId]
                 };
                 const userResult = await pg.query(userQuery);
@@ -116,7 +116,7 @@
     
                 // Fetch registration point name
                 const registrationPointQuery = {
-                    text: `SELECT registrationpoint AS name FROM sky."Registrationpoint" WHERE id = $1`,
+                    text: `SELECT registrationpoint AS name FROM skyeu."Registrationpoint" WHERE id = $1`,
                     values: [registrationPoint]
                 };
                 const registrationPointResult = await pg.query(registrationPointQuery);
@@ -124,7 +124,7 @@
     
                 // Fetch product name
                 const productQuery = {
-                    text: `SELECT product AS productname FROM sky."rotaryProduct" WHERE id = $1`,
+                    text: `SELECT product AS productname FROM skyeu."rotaryProduct" WHERE id = $1`,
                     values: [productId]
                 };
                 const productResult = await pg.query(productQuery);
@@ -133,7 +133,7 @@
     
                 // Fetch member name
                 const memberQuery = {
-                    text: `SELECT member AS membername FROM sky."DefineMember" WHERE id = $1`,
+                    text: `SELECT member AS membername FROM skyeu."DefineMember" WHERE id = $1`,
                     values: [memberId]
                 };
                 const memberResult = await pg.query(memberQuery);
@@ -141,7 +141,7 @@
     
                 // Fetch branch name
                 const branchQuery = {
-                    text: `SELECT branch AS branchname FROM sky."Branch" WHERE id = $1`,
+                    text: `SELECT branch AS branchname FROM skyeu."Branch" WHERE id = $1`,
                     values: [branchId]
                 };
                 const branchResult = await pg.query(branchQuery);
@@ -150,7 +150,7 @@
                 // Fetch schedules for the account sorted by due date
                 const scheduleQuery = {
                     text: `
-                        SELECT * FROM sky."rotaryschedule" 
+                        SELECT * FROM skyeu."rotaryschedule" 
                         WHERE accountnumber = $1 AND status = 'ACTIVE'
                         ORDER BY duedate ASC
                     `,
@@ -163,7 +163,7 @@
                 const transactionQuery = {
                     text: `
                         SELECT SUM(credit) AS total_credit 
-                        FROM sky."transaction" 
+                        FROM skyeu."transaction" 
                         WHERE accountnumber = $1 AND status = 'ACTIVE' 
                     `,
                     values: [accountNumber]

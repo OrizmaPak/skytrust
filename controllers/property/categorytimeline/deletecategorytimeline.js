@@ -22,7 +22,7 @@ const deleteCategoryTimeline = async (req, res) => {
         if (id) {
             // Update existing categorytimeline
             query = {
-                text: `UPDATE sky."categorytimeline" 
+                text: `UPDATE skyeu."categorytimeline" 
                        SET status = $1
                        WHERE id = $2`,
                 values: [status, id]

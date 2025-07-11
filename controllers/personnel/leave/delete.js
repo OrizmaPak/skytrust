@@ -18,7 +18,7 @@ const deleteLeave = async (req, res) => {
 
     try {
         const query = {
-            text: `UPDATE sky."leave" SET status = 'DELETED' WHERE id = $1 RETURNING *`,
+            text: `UPDATE skyeu."leave" SET status = 'DELETED' WHERE id = $1 RETURNING *`,
             values: [id]
         };
 

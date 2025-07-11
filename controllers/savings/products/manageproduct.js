@@ -226,7 +226,7 @@ const manageSavingsProduct = async (req, res) => {
         const numericMembershipIds = membershipIds.map(id => parseInt(id, 10));
 
         // Query to check existence of all membership IDs
-        const queryText = `SELECT id FROM sky."DefineMember" WHERE id = ANY($1::int[])`;
+        const queryText = `SELECT id FROM skyeu."DefineMember" WHERE id = ANY($1::int[])`;
         const { rows: existingMemberships } = await pg.query(queryText, [numericMembershipIds]);
 
         const existingIds = existingMemberships.map(row => row.id);
@@ -353,7 +353,7 @@ const manageSavingsProduct = async (req, res) => {
         if (id) {
             console.log("Updating existing product");
             // Update existing product
-            const { rows: existingProductById } = await pg.query(`SELECT * FROM sky."savingsproduct" WHERE id = $1`, [id]);
+            const { rows: existingProductById } = await pg.query(`SELECT * FROM skyeu."savingsproduct" WHERE id = $1`, [id]);
             if (existingProductById.length === 0) {
                 console.log("Product with provided ID does not exist");
                 await pg.query("ROLLBACK");
@@ -367,7 +367,7 @@ const manageSavingsProduct = async (req, res) => {
             const adjustedCompulsoryDepositPenalty = compulsorydepositdeficit ? 0 : compulsorydepositpenalty;
 
             await pg.query(
-                `UPDATE sky."savingsproduct" SET
+                `UPDATE skyeu."savingsproduct" SET
                     productname = $1,
                     currency = $2,
                     maxbalance = $3,
@@ -465,14 +465,14 @@ const manageSavingsProduct = async (req, res) => {
 
             console.log("Deleted existing interests and deductions");
             // Delete existing interests and deductions
-            await pg.query(`DELETE FROM sky."Interest" WHERE savingsproductid = $1`, [id]);
-            await pg.query(`DELETE FROM sky."Deduction" WHERE savingsproductid = $1`, [id]);
+            await pg.query(`DELETE FROM skyeu."Interest" WHERE savingsproductid = $1`, [id]);
+            await pg.query(`DELETE FROM skyeu."Deduction" WHERE savingsproductid = $1`, [id]);
 
             console.log("Inserting new interests");
             // Insert new interests
             for (const interest of interests) {
                 await pg.query(
-                    `INSERT INTO sky."Interest" (
+                    `INSERT INTO skyeu."Interest" (
                         savingsproductid,
                         interestname,
                         interestmethod,
@@ -507,7 +507,7 @@ const manageSavingsProduct = async (req, res) => {
             // Insert new deductions
             for (const deduction of deductions) {
                 await pg.query(
-                    `INSERT INTO sky."Deduction" (
+                    `INSERT INTO skyeu."Deduction" (
                         savingsproductid,
                         deductionname,
                         deductioneligibilityaccountage,
@@ -554,7 +554,7 @@ const manageSavingsProduct = async (req, res) => {
         } else {
             console.log("Creating new product");
             // Create new product
-            const { rows: existingProduct } = await pg.query(`SELECT * FROM sky."savingsproduct" WHERE productname = $1`, [productname]);
+            const { rows: existingProduct } = await pg.query(`SELECT * FROM skyeu."savingsproduct" WHERE productname = $1`, [productname]);
             if (existingProduct.length > 0) {
                 console.log("Product already exists");
                 await pg.query("ROLLBACK");
@@ -568,7 +568,7 @@ const manageSavingsProduct = async (req, res) => {
             const adjustedCompulsoryDepositPenalty = compulsorydepositdeficit ? 0 : compulsorydepositpenalty;
 
             const insertProductQuery = `
-                INSERT INTO sky."savingsproduct" (
+                INSERT INTO skyeu."savingsproduct" (
                     productname,
                     currency,
                     maxbalance,
@@ -680,7 +680,7 @@ const manageSavingsProduct = async (req, res) => {
             // Insert interests
             for (const interest of interests) {
                 await pg.query(
-                    `INSERT INTO sky."Interest" (
+                    `INSERT INTO skyeu."Interest" (
                         savingsproductid,
                         interestname,
                         interestmethod,
@@ -715,7 +715,7 @@ const manageSavingsProduct = async (req, res) => {
             // Insert deductions
             for (const deduction of deductions) {
                 await pg.query(
-                    `INSERT INTO sky."Deduction" (
+                    `INSERT INTO skyeu."Deduction" (
                         savingsproductid,
                         deductionname,
                         deductioneligibilityaccountage,

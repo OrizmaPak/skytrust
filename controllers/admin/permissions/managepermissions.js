@@ -26,7 +26,7 @@ async function managepermissions(req, res) {
     }
 
     // GET THE USERS
-    const { rows: userDetails } = await pg.query(`SELECT role FROM sky."User" WHERE id = $1`, [id]);
+    const { rows: userDetails } = await pg.query(`SELECT role FROM skyeu."User" WHERE id = $1`, [id]);
 
     // CHECK IF THE USER TO BE UPDATED IS A SUPERADMIN
     if (userDetails[0].role === 'SUPERADMIN') {
@@ -51,18 +51,18 @@ async function managepermissions(req, res) {
 
     try{
         // Check if role is provided and exists in Roles table
-            const { rows: existingRoles } = await pg.query(`SELECT * FROM sky."Roles" WHERE role = $1`, [role]);
+            const { rows: existingRoles } = await pg.query(`SELECT * FROM skyeu."Roles" WHERE role = $1`, [role]);
             if (existingRoles.length > 0) {
                 // If the role exists, fetch its permissions
                 const rolePermissions = existingRoles[0].permissions;
                 // Update the user with the role's permissions
-                await pg.query(`UPDATE sky."User" 
+                await pg.query(`UPDATE skyeu."User" 
                                  SET permissions = $1,
                                  role = $2
                                  WHERE id = $3`, [rolePermissions, role, id]);
             } else {
                 // If the role does not exist, update the user with the provided permissions
-                await pg.query(`UPDATE sky."User" 
+                await pg.query(`UPDATE skyeu."User" 
                                 SET permissions = $1,
                                 role = $2
                                 WHERE id = $3`, [permissions, role, id]);

@@ -8,7 +8,7 @@ const getPropertyProduct = async (req, res) => {
 
     try {
         let query = {
-            text: `SELECT * FROM sky."propertyproduct"`,
+            text: `SELECT * FROM skyeu."propertyproduct"`,
             values: []
         };
 
@@ -95,7 +95,7 @@ const getPropertyProduct = async (req, res) => {
                 const memberNames = [];
                 for (const memberId of memberIds) {
                     const { rows: memberRows } = await pg.query({
-                        text: `SELECT member FROM sky."DefineMember" WHERE id = $1`,
+                        text: `SELECT member FROM skyeu."DefineMember" WHERE id = $1`,
                         values: [memberId.trim()]
                     });
                     if (memberRows.length > 0) {
@@ -108,7 +108,7 @@ const getPropertyProduct = async (req, res) => {
             // Fetch product officer name
             if (product.productofficer) {
                 const { rows: officerRows } = await pg.query({
-                    text: `SELECT firstname, lastname, othernames FROM sky."User" WHERE id = $1`,
+                    text: `SELECT firstname, lastname, othernames FROM skyeu."User" WHERE id = $1`,
                     values: [product.productofficer]
                 });
                 if (officerRows.length > 0) {
@@ -120,7 +120,7 @@ const getPropertyProduct = async (req, res) => {
 
         // Get total count for pagination
         const countQuery = {
-            text: `SELECT COUNT(*) FROM sky."propertyproduct" ${whereClause}`,
+            text: `SELECT COUNT(*) FROM skyeu."propertyproduct" ${whereClause}`,
             values: query.values.slice(0, -2) // Exclude limit and offset
         };
         const { rows: [{ count: total }] } = await pg.query(countQuery);

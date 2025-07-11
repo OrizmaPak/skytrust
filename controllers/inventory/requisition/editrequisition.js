@@ -49,7 +49,7 @@ const editRequisition = async (req, res) => {
 
             // Fetch inventory items with the given reference and itemid
             const { rows: inventoryItems } = await pg.query(`
-                SELECT * FROM sky."Inventory" 
+                SELECT * FROM skyeu."Inventory" 
                 WHERE reference = $1 AND itemid = $2
             `, [reference, itemid]);
 
@@ -87,7 +87,7 @@ const editRequisition = async (req, res) => {
 
                 // Update the status of both items to 'DELETED'
                 await pg.query(`
-                    UPDATE sky."Inventory"
+                    UPDATE skyeu."Inventory"
                     SET status = 'DELETED'
                     WHERE id = $1 OR id = $2
                 `, [positiveQtyItem.id, negativeQtyItem.id]);
@@ -112,7 +112,7 @@ const editRequisition = async (req, res) => {
                 case 'DECLINED':
                     // Update the status of the negativeQtyItem to 'DECLINED'
                     await pg.query(`
-                        UPDATE sky."Inventory"
+                        UPDATE skyeu."Inventory"
                         SET status = 'DECLINED'
                         WHERE id = $1
                     `, [negativeQtyItem.id]);
@@ -127,14 +127,14 @@ const editRequisition = async (req, res) => {
                 case 'PENDING REQUISITION':
                     // Update positiveQtyItem
                     await pg.query(`
-                        UPDATE sky."Inventory"
+                        UPDATE skyeu."Inventory"
                         SET sellingprice = $1, qty = $2
                         WHERE id = $3
                     `, [sellingprice, qty, positiveQtyItem.id]);
 
                     // Update negativeQtyItem
                     await pg.query(`
-                        UPDATE sky."Inventory"
+                        UPDATE skyeu."Inventory"
                         SET sellingprice = $1, qty = $2
                         WHERE id = $3
                     `, [sellingprice, -qty, negativeQtyItem.id]);

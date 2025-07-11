@@ -35,7 +35,7 @@ const definepositionbymembership = async (req, res) => {
     try {
         if (!id) {
             // Check if member exists using raw query
-            const { rows: themember } = await pg.query(`SELECT * FROM sky."DefineMember" WHERE id = $1`, [member]);
+            const { rows: themember } = await pg.query(`SELECT * FROM skyeu."DefineMember" WHERE id = $1`, [member]);
 
             if (themember.length == 0) {
                 return res.status(StatusCodes.BAD_REQUEST).json({
@@ -48,7 +48,7 @@ const definepositionbymembership = async (req, res) => {
             }
 
             // Check if position already exists for the member using raw query
-            const { rows: thepositions } = await pg.query(`SELECT * FROM sky."Position" WHERE member = $1`, [member]);
+            const { rows: thepositions } = await pg.query(`SELECT * FROM skyeu."Position" WHERE member = $1`, [member]);
 
             let positionAlreadyExists = false;
             for (const pos of thepositions) {
@@ -69,7 +69,7 @@ const definepositionbymembership = async (req, res) => {
 
             // Check if branch exists if branch is provided
             if (branch) {
-                const { rows: thebranch } = await pg.query(`SELECT * FROM sky."Branch" WHERE id = $1`, [branch]);
+                const { rows: thebranch } = await pg.query(`SELECT * FROM skyeu."Branch" WHERE id = $1`, [branch]);
                 if (thebranch.length == 0) {
                     return res.status(StatusCodes.BAD_REQUEST).json({
                         status: false,
@@ -83,7 +83,7 @@ const definepositionbymembership = async (req, res) => {
 
             // Check if user exists if userid is provided
             if (userid) {
-                const { rows: theuser } = await pg.query(`SELECT * FROM sky."User" WHERE id = $1`, [userid]);
+                const { rows: theuser } = await pg.query(`SELECT * FROM skyeu."User" WHERE id = $1`, [userid]);
                 if (theuser.length == 0) {
                     return res.status(StatusCodes.BAD_REQUEST).json({
                         status: false,
@@ -101,12 +101,12 @@ const definepositionbymembership = async (req, res) => {
 
         if (id) {
             if (id && status) {
-                query = await pg.query(`UPDATE sky."Position" SET 
+                query = await pg.query(`UPDATE skyeu."Position" SET 
                     status = COALESCE($1, status),
                     lastupdated = $2
                     WHERE id = $3`, [status, new Date(), id]);
             } else {
-                query = await pg.query(`UPDATE sky."Position" SET 
+                query = await pg.query(`UPDATE skyeu."Position" SET 
                     member = COALESCE($1, member), 
                     position = COALESCE($2, position), 
                     branch = COALESCE($3, branch),
@@ -115,7 +115,7 @@ const definepositionbymembership = async (req, res) => {
                     WHERE id = $6`, [member, position, branch, userid, new Date(), id]);
             }
         } else {
-            query = await pg.query(`INSERT INTO sky."Position" 
+            query = await pg.query(`INSERT INTO skyeu."Position" 
                 (member, position, branch, userid, createdby) 
                 VALUES ($1, $2, $3, $4, $5)`, [member, position, branch, userid, user.id]);
         }

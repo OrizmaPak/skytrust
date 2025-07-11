@@ -31,7 +31,7 @@ const getdefinedmembership = async (req, res) => {
     //     userid = req.user.id;
     // }
 
-    let queryString = `SELECT * FROM sky."DefineMember" WHERE 1=1`;
+    let queryString = `SELECT * FROM skyeu."DefineMember" WHERE 1=1`;
     let params = []; // Array to hold query parameters
 
     // Dynamically add conditions based on the presence of filters

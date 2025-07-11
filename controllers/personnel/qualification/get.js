@@ -8,8 +8,8 @@ const getQualifications = async (req, res) => {
     try {
         let query = {
             text: `SELECT q.*, CONCAT(p.firstname, ' ', p.lastname, ' ', COALESCE(p.othernames, '')) AS personnelname
-                   FROM sky."qualification" q
-                   JOIN sky."User" p ON q.userid = p.id`,
+                   FROM skyeu."qualification" q
+                   JOIN skyeu."User" p ON q.userid = p.id`,
             values: []
         };
 
@@ -67,7 +67,7 @@ const getQualifications = async (req, res) => {
 
         // Get total count for pagination
         const countQuery = {
-            text: `SELECT COUNT(*) FROM sky."qualification" ${whereClause}`,
+            text: `SELECT COUNT(*) FROM skyeu."qualification" ${whereClause}`,
             values: query.values.slice(0, -2) // Exclude limit and offset
         };
         const { rows: [{ count: total }] } = await pg.query(countQuery);

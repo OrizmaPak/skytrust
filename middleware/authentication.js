@@ -24,11 +24,11 @@ const authMiddleware = async (req, res, next) => {
     // const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     // CHECK IF THE SESSION IS IN THE SERVER
-    const { rows: [user] } = await pg.query(`SELECT * FROM sky."Session" WHERE sessiontoken = $1`, [token]);
+    const { rows: [user] } = await pg.query(`SELECT * FROM skyeu."Session" WHERE sessiontoken = $1`, [token]);
 
     // CHECK IF THE SESSION TIME IS EXPIRED
     if (user && user.sessiontoken === token && user.expires > new Date()) {
-      const { rows: [loggedinuser] } = await pg.query(`SELECT * FROM sky."User" WHERE id = $1`, [user.userid]);
+      const { rows: [loggedinuser] } = await pg.query(`SELECT * FROM skyeu."User" WHERE id = $1`, [user.userid]);
       // CHECK IF USER IS AN ACTIVE USER
       if (loggedinuser.status != 'ACTIVE') {
         return res.status(StatusCodes.BAD_REQUEST).json({
@@ -50,7 +50,7 @@ const authMiddleware = async (req, res, next) => {
     } else {
       // IF THE SESSION IS EXPIRED DELETE THE SESSION FROM THE SERVER
       if (user && user.sessiontoken === token) {
-        await pg.query(`DELETE FROM sky."Session" WHERE sessiontoken = $1`, [token]);
+        await pg.query(`DELETE FROM skyeu."Session" WHERE sessiontoken = $1`, [token]);
       }
       return res.status(StatusCodes.UNAUTHORIZED).json({
         status: false,

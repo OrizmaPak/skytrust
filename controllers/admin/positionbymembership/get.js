@@ -8,10 +8,10 @@ const getdefinedmembershipposition = async (req, res) => {
     let query = {
       text: `SELECT p.*, b.branch AS branchname, m.member AS membername, 
              CONCAT(u.firstname, ' ', u.lastname, ' ', COALESCE(u.othernames, '')) AS useridname 
-             FROM sky."Position" p 
-             LEFT JOIN sky."Branch" b ON p.branch = b.id 
-             LEFT JOIN sky."DefineMember" m ON p.member = m.id 
-             LEFT JOIN sky."User" u ON p.userid = u.id
+             FROM skyeu."Position" p 
+             LEFT JOIN skyeu."Branch" b ON p.branch = b.id 
+             LEFT JOIN skyeu."DefineMember" m ON p.member = m.id 
+             LEFT JOIN skyeu."User" u ON p.userid = u.id
              WHERE 1=1`, // Make sure we start with WHERE 1=1 here
       values: []
     };
@@ -88,7 +88,7 @@ const getdefinedmembershipposition = async (req, res) => {
     // Get total count for pagination
     // NOTE the crucial fix: we prefix with "WHERE 1=1" before appending the same whereClause
     const countQuery = {
-      text: `SELECT COUNT(*) FROM sky."Position" p WHERE 1=1 ${whereClause}`,
+      text: `SELECT COUNT(*) FROM skyeu."Position" p WHERE 1=1 ${whereClause}`,
       values: query.values.slice(0, -2) // Exclude limit and offset
     };
 

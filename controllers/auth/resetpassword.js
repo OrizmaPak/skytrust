@@ -56,7 +56,7 @@ const resetPassword = async (req, res) => {
     }
 
     // Check if the token exists in the database
-    const { rows: [user] } = await pg.query(`SELECT * FROM sky."VerificationToken" WHERE token = $1`, [passwordtoken]);
+    const { rows: [user] } = await pg.query(`SELECT * FROM skyeu."VerificationToken" WHERE token = $1`, [passwordtoken]);
     if (!user) {
       return res.status(StatusCodes.BAD_REQUEST).json({
         status: false,
@@ -68,7 +68,7 @@ const resetPassword = async (req, res) => {
     }
 
     // Check if email exists
-    const { rows: [existingUser] } = await pg.query(`SELECT * FROM sky."User" WHERE email = $1`, [email]);
+    const { rows: [existingUser] } = await pg.query(`SELECT * FROM skyeu."User" WHERE email = $1`, [email]);
     if (!existingUser) {
       return res.status(StatusCodes.BAD_REQUEST).json({
         status: false,
@@ -81,10 +81,10 @@ const resetPassword = async (req, res) => {
 
     // Hash the new password and update
     const hashpwd = await bcrypt.hash(newpassword, 10);
-    await pg.query(`UPDATE sky."User" SET password = $1 WHERE email = $2`, [hashpwd, email]);
+    await pg.query(`UPDATE skyeu."User" SET password = $1 WHERE email = $2`, [hashpwd, email]);
     
     // Remove the verification token
-    await pg.query(`DELETE FROM sky."VerificationToken" WHERE token = $1`, [passwordtoken]);
+    await pg.query(`DELETE FROM skyeu."VerificationToken" WHERE token = $1`, [passwordtoken]);
 
     // Send confirmation email
     await sendEmail({

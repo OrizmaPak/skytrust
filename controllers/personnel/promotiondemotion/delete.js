@@ -19,7 +19,7 @@ const deletePromotion = async (req, res) => {
     try {
         // Soft delete the promotion by setting its status to 'DELETED'
         const { rowCount } = await pg.query({
-            text: `UPDATE sky."promotiondemotion" 
+            text: `UPDATE skyeu."promotiondemotion" 
                    SET "status" = 'DELETED', "dateadded" = NOW() 
                    WHERE "id" = $1 AND "status" = 'ACTIVE'`,
             values: [id]

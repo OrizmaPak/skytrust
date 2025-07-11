@@ -11,7 +11,7 @@ const deleteGuarantor = async (req, res) => {
 
         // Check if the guarantor exists
         const { rows: guarantorRows } = await pg.query(
-            `SELECT id FROM sky."guarantor" WHERE id = $1`,
+            `SELECT id FROM skyeu."guarantor" WHERE id = $1`,
             [id]
         );
 
@@ -28,7 +28,7 @@ const deleteGuarantor = async (req, res) => {
 
         // Update the status to DELETED
         await pg.query(
-            `UPDATE sky."guarantor" SET status = 'DELETED' WHERE id = $1`,
+            `UPDATE skyeu."guarantor" SET status = 'DELETED' WHERE id = $1`,
             [id]
         );
 

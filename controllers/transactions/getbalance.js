@@ -19,7 +19,7 @@ const getBalance = async (req, res) => {
         }
 
         let query = {
-            text: `SELECT COALESCE(SUM(credit), 0) - COALESCE(SUM(debit), 0) AS balance FROM sky."transaction"`,
+            text: `SELECT COALESCE(SUM(credit), 0) - COALESCE(SUM(debit), 0) AS balance FROM skyeu."transaction"`,
             values: []
         };
 

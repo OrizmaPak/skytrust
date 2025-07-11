@@ -9,7 +9,7 @@ const createOrUpdateAccount = async (req, res) => {
 
     try {
         // Fetch organisation settings
-        const { rows: orgSettingsRows } = await pg.query(`SELECT * FROM sky."Organisationsettings" WHERE id = 1`);
+        const { rows: orgSettingsRows } = await pg.query(`SELECT * FROM skyeu."Organisationsettings" WHERE id = 1`);
         const orgSettings = orgSettingsRows[0];
 
         // Check if organisation settings exist
@@ -27,7 +27,7 @@ const createOrUpdateAccount = async (req, res) => {
         let accountnumber;
         if (id) {
             // Fetch existing account details
-            const { rows: existingAccountRows } = await pg.query(`SELECT * FROM sky."Accounts" WHERE id = $1`, [id]);
+            const { rows: existingAccountRows } = await pg.query(`SELECT * FROM skyeu."Accounts" WHERE id = $1`, [id]);
             if (existingAccountRows.length === 0) {
                 await activityMiddleware(req, user.id, 'Account not found', 'ACCOUNT');
                 return res.status(StatusCodes.NOT_FOUND).json({
@@ -137,7 +137,7 @@ const createOrUpdateAccount = async (req, res) => {
             }
 
             // Generate account number
-            const { rows: accountRows } = await pg.query(`SELECT accountnumber FROM sky."Accounts" WHERE accountnumber LIKE '${prefix}%' ORDER BY accountnumber DESC LIMIT 1`);
+            const { rows: accountRows } = await pg.query(`SELECT accountnumber FROM skyeu."Accounts" WHERE accountnumber LIKE '${prefix}%' ORDER BY accountnumber DESC LIMIT 1`);
             
             // If no existing account numbers with the prefix, start with the first account number
             if (accountRows.length === 0) {
@@ -163,7 +163,7 @@ const createOrUpdateAccount = async (req, res) => {
             }
 
             // Check if the generated account number already exists
-            const { rows: existingAccountRows } = await pg.query(`SELECT * FROM sky."Accounts" WHERE accountnumber = $1`, [accountnumber]);
+            const { rows: existingAccountRows } = await pg.query(`SELECT * FROM skyeu."Accounts" WHERE accountnumber = $1`, [accountnumber]);
             if (existingAccountRows.length > 0) {
                 await activityMiddleware(req, user.id, 'Generated account number already exists. Please try again.', 'ACCOUNT');
                 return res.status(StatusCodes.BAD_REQUEST).json({
@@ -179,12 +179,12 @@ const createOrUpdateAccount = async (req, res) => {
         // Insert or update account in the database
         if (id) {
             // Update existing account
-            await pg.query(`UPDATE sky."Accounts" SET groupname = $1, description = $2, dateadded = $3, createdby = $4 WHERE id = $5`, 
+            await pg.query(`UPDATE skyeu."Accounts" SET groupname = $1, description = $2, dateadded = $3, createdby = $4 WHERE id = $5`, 
                 [groupname, description, new Date(), user.id, id]);
             await activityMiddleware(req, user.id, 'Account updated successfully', 'ACCOUNT');
         } else {
             // Create new account
-            await pg.query(`INSERT INTO sky."Accounts" (accountnumber, groupname, accounttype, description, status, dateadded, createdby) VALUES ($1, $2, $3, $4, 'ACTIVE', $5, $6)`, 
+            await pg.query(`INSERT INTO skyeu."Accounts" (accountnumber, groupname, accounttype, description, status, dateadded, createdby) VALUES ($1, $2, $3, $4, 'ACTIVE', $5, $6)`, 
                 [accountnumber, groupname, accounttype, description, new Date(), user.id]);
             await activityMiddleware(req, user.id, 'Account created successfully', 'ACCOUNT');
         }

@@ -129,7 +129,7 @@ const manageLoanProduct = async (req, res) => {
                     });
                 } else {
                     const branchQuery = {
-                        text: 'SELECT * FROM sky."Branch" WHERE id = $1',
+                        text: 'SELECT * FROM skyeu."Branch" WHERE id = $1',
                         values: [parseInt(branchId.trim(), 10)]
                     };
                     const { rows: branchRows } = await pg.query(branchQuery);
@@ -161,7 +161,7 @@ const manageLoanProduct = async (req, res) => {
 
             if (eligibilityproductcategory === 'SAVINGS' && eligibilityproduct > 0) {
                 const savingsProductQuery = {
-                    text: 'SELECT * FROM sky."savingsproduct" WHERE id = $1',
+                    text: 'SELECT * FROM skyeu."savingsproduct" WHERE id = $1',
                     values: [eligibilityproduct]
                 };
                 const { rows: savingsProductRows } = await pg.query(savingsProductQuery);
@@ -176,7 +176,7 @@ const manageLoanProduct = async (req, res) => {
 
             if (eligibilityproductcategory === 'LOAN' && eligibilityproduct > 0) {
                 const loanProductQuery = {
-                    text: 'SELECT * FROM sky."loanproduct" WHERE id = $1',
+                    text: 'SELECT * FROM skyeu."loanproduct" WHERE id = $1',
                     values: [eligibilityproduct]
                 };
                 const { rows: loanProductRows } = await pg.query(loanProductQuery);
@@ -248,7 +248,7 @@ const manageLoanProduct = async (req, res) => {
     // Check if the product name already exists if the id is not sent
     if (!id) {
         const productNameQuery = {
-            text: 'SELECT * FROM sky."loanproduct" WHERE productname = $1',
+            text: 'SELECT * FROM skyeu."loanproduct" WHERE productname = $1',
             values: [productname]
         };
         const { rows: productNameRows } = await pg.query(productNameQuery);
@@ -268,7 +268,7 @@ const manageLoanProduct = async (req, res) => {
         console.log('Checking if product name is unique');
         // Check if the product name is unique
         const productNameQuery = {
-            text: 'SELECT * FROM sky."loanproduct" WHERE productname = $1',
+            text: 'SELECT * FROM skyeu."loanproduct" WHERE productname = $1',
             values: [productname]
         };
         const { rows: productNameRows } = await pg.query(productNameQuery);
@@ -289,7 +289,7 @@ const manageLoanProduct = async (req, res) => {
         // Check if the default penalty ID exists in the loanfee table
         if (defaultpenaltyid) {
             const penaltyQuery = {
-                text: 'SELECT * FROM sky."loanfee" WHERE id = $1 AND feemethod = $2',
+                text: 'SELECT * FROM skyeu."loanfee" WHERE id = $1 AND feemethod = $2',
                 values: [defaultpenaltyid, 'PENALTY']
             };
             const { rows: penaltyRows } = await pg.query(penaltyQuery);
@@ -311,7 +311,7 @@ const manageLoanProduct = async (req, res) => {
         // // Check if the product officer exists in the user table
         if (productofficer) {
             const productOfficerQuery = {
-                text: 'SELECT * FROM sky."User" WHERE id = $1',
+                text: 'SELECT * FROM skyeu."User" WHERE id = $1',
                 values: [productofficer]
             };
             const { rows: productOfficerRows } = await pg.query(productOfficerQuery);
@@ -334,7 +334,7 @@ const manageLoanProduct = async (req, res) => {
             console.log('Updating existing loan product'); 
             // Update existing loan product
             const updateLoanProductQuery = {
-                text: `UPDATE sky."loanproduct" SET 
+                text: `UPDATE skyeu."loanproduct" SET 
                         productname = COALESCE($1, productname), 
                         description = COALESCE($2, description), 
                         interestmethod = COALESCE($3, interestmethod), 
@@ -371,7 +371,7 @@ const manageLoanProduct = async (req, res) => {
             console.log('Creating new loan product', numberofrepayments??0);
             // Create new loan product
             const createLoanProductQuery = {
-                text: `INSERT INTO sky."loanproduct" (
+                text: `INSERT INTO skyeu."loanproduct" (
                         productname, 
                         description, 
                         interestmethod, 

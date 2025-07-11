@@ -7,7 +7,7 @@ const getRecipients = async (req, res) => {
 
     try {
         let query = {
-            text: `SELECT r.*, b.bank AS bankname FROM sky."reciepients" r JOIN sky."listofbanks" b ON r.bank = b.id`,
+            text: `SELECT r.*, b.bank AS bankname FROM skyeu."reciepients" r JOIN skyeu."listofbanks" b ON r.bank = b.id`,
             values: []
         };
 
@@ -49,7 +49,7 @@ const getRecipients = async (req, res) => {
 
         // Get total count for pagination
         const countQuery = {
-            text: `SELECT COUNT(*) FROM sky."reciepients" r JOIN sky."listofbanks" b ON r.bank = b.id ${whereClause}`,
+            text: `SELECT COUNT(*) FROM skyeu."reciepients" r JOIN skyeu."listofbanks" b ON r.bank = b.id ${whereClause}`,
             values: query.values.slice(0, -2) // Exclude limit and offset
         };
         const { rows: [{ count: total }] } = await pg.query(countQuery);

@@ -44,7 +44,7 @@ async function login(req, res) {
 
     try {
         // Check if email already exists using raw query
-        const { rows: [existingUser] } = await pg.query(`SELECT * FROM sky."User" WHERE email = $1`, [email]);
+        const { rows: [existingUser] } = await pg.query(`SELECT * FROM skyeu."User" WHERE email = $1`, [email]);
 
         if (!existingUser) {
             return res.status(StatusCodes.BAD_REQUEST).json({
@@ -75,7 +75,7 @@ async function login(req, res) {
             console.log(token);
 
             // STORE THE SESSION
-            await pg.query(`INSERT INTO sky."Session" 
+            await pg.query(`INSERT INTO skyeu."Session" 
             (sessiontoken, userid, expires, device) 
             VALUES ($1, $2, $3, $4) 
             `, [token, existingUser.id, calculateExpiryDate(process.env.SESSION_EXPIRATION_HOUR), device]);
@@ -86,7 +86,7 @@ async function login(req, res) {
                 // create verification token
                 const vtoken = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: process.env.VERIFICATION_EXPIRATION_HOUR + 'h' });
                 // create a verification link and code
-                await pg.query(`INSERT INTO sky."VerificationToken" 
+                await pg.query(`INSERT INTO skyeu."VerificationToken" 
                                 (identifier, token, expires) 
                                 VALUES ($1, $2, $3)`, [existingUser.id, vtoken, calculateExpiryDate(process.env.VERIFICATION_EXPIRATION_HOUR)]);
 
@@ -132,17 +132,17 @@ async function login(req, res) {
 
             // CHECK IF THIS IS THE FIRST TIME THE USER IS LOGINING
             if (existingUser.permissions == 'NEWUSER') {
-                await pg.query(`UPDATE sky."User" SET permissions = null WHERE id = $1`, [existingUser.id]);
+                await pg.query(`UPDATE skyeu."User" SET permissions = null WHERE id = $1`, [existingUser.id]);
             }
 
             // Fetch account number and currency from savings table
-            const { rows: [savingsAccount] } = await pg.query(`SELECT accountnumber, savingsproductid FROM sky."savings" WHERE userid = $1`, [existingUser.id]);
+            const { rows: [savingsAccount] } = await pg.query(`SELECT accountnumber, savingsproductid FROM skyeu."savings" WHERE userid = $1`, [existingUser.id]);
             const accountNumber = savingsAccount ? savingsAccount.accountnumber : null;
 
             // Fetch currency using savings product ID
             let currency = null;
             if (savingsAccount && savingsAccount.savingsproductid) {
-                const { rows: [savingsProduct] } = await pg.query(`SELECT currency FROM sky."savingsproduct" WHERE id = $1`, [savingsAccount.savingsproductid]);
+                const { rows: [savingsProduct] } = await pg.query(`SELECT currency FROM skyeu."savingsproduct" WHERE id = $1`, [savingsAccount.savingsproductid]);
                 currency = savingsProduct ? savingsProduct.currency : null;
             }
 

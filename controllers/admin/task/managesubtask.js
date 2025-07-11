@@ -56,7 +56,7 @@ const manageSubtask = async (req, res) => {
 
         if (id) {
             // Check if subtask exists
-            const { rows: [subtaskExists] } = await pg.query(`SELECT * FROM sky."Subtask" WHERE id = $1`, [id]);
+            const { rows: [subtaskExists] } = await pg.query(`SELECT * FROM skyeu."Subtask" WHERE id = $1`, [id]);
             if (!subtaskExists) {
                 return res.status(StatusCodes.NOT_FOUND).json({
                     status: false,
@@ -72,7 +72,7 @@ const manageSubtask = async (req, res) => {
 
         assignedToIds = assignedto ? assignedto.split("||").map(id => id.trim()) : [];
         for (let id of assignedToIds) {
-            const { rows: [user] } = await pg.query(`SELECT id FROM sky."User" WHERE id = $1`, [id]);
+            const { rows: [user] } = await pg.query(`SELECT id FROM skyeu."User" WHERE id = $1`, [id]);
             if (!user) {
                 return res.status(StatusCodes.BAD_REQUEST).json({
                     status: false,
@@ -98,7 +98,7 @@ const manageSubtask = async (req, res) => {
         // Check if assigned to is valid
         assignedToIds = assignedto ? assignedto.split("||").map(id => id.trim()) : [];
         for (let id of assignedToIds) {
-            const { rows: [user] } = await pg.query(`SELECT id FROM sky."User" WHERE id = $1`, [id]);
+            const { rows: [user] } = await pg.query(`SELECT id FROM skyeu."User" WHERE id = $1`, [id]);
             if (!user) {
                 return res.status(StatusCodes.BAD_REQUEST).json({
                     status: false,
@@ -110,7 +110,7 @@ const manageSubtask = async (req, res) => {
             }
         }}
         // const assignedToIds = assignedto ? assignedto.split("||").map(id => id.trim()) : [];
-        // const { rows: [taskAssignedTo] } = await pg.query(`SELECT assignedto FROM sky."Task" WHERE id = $1`, [task]);
+        // const { rows: [taskAssignedTo] } = await pg.query(`SELECT assignedto FROM skyeu."Task" WHERE id = $1`, [task]);
         // const taskAssignedToIds = taskAssignedTo.assignedto.split("||");
         // if (!assignedToIds.every(id => taskAssignedToIds.includes(id))) {
         //     return res.status(StatusCodes.BAD_REQUEST).json({
@@ -126,7 +126,7 @@ const manageSubtask = async (req, res) => {
 
         // Check if title already exists for the task
         if (!id) {
-            const { rows: [subtaskExists] } = await pg.query(`SELECT * FROM sky."Subtask" WHERE task = $1 AND title = $2`, [task, title]);
+            const { rows: [subtaskExists] } = await pg.query(`SELECT * FROM skyeu."Subtask" WHERE task = $1 AND title = $2`, [task, title]);
             if (subtaskExists) {
                 return res.status(StatusCodes.CONFLICT).json({
                     status: false,
@@ -141,7 +141,7 @@ const manageSubtask = async (req, res) => {
         // Create or update subtask
         if (id) {
             // Update assignedto field correctly
-            const { rows: [updatedSubtask] } = await pg.query(`UPDATE sky."Subtask" SET title = COALESCE($1, title), startdate = COALESCE($2, startdate), enddate = COALESCE($3, enddate), description = COALESCE($4, description), assignedto = COALESCE($5, assignedto), taskstatus = COALESCE($6, taskstatus) WHERE id = $7 RETURNING *`, [title, startdate, enddate, description, assignedto, taskstatus, id]);
+            const { rows: [updatedSubtask] } = await pg.query(`UPDATE skyeu."Subtask" SET title = COALESCE($1, title), startdate = COALESCE($2, startdate), enddate = COALESCE($3, enddate), description = COALESCE($4, description), assignedto = COALESCE($5, assignedto), taskstatus = COALESCE($6, taskstatus) WHERE id = $7 RETURNING *`, [title, startdate, enddate, description, assignedto, taskstatus, id]);
             if (!updatedSubtask) {
                 return res.status(StatusCodes.NOT_FOUND).json({
                     status: false,
@@ -155,7 +155,7 @@ const manageSubtask = async (req, res) => {
             if (assignedto) {
                 console.log('assignedto', assignedToIds)   
                 assignedToIds.forEach(async id => {
-                    const { rows: [user] } = await pg.query(`SELECT email FROM sky."User" WHERE id = $1`, [id]);
+                    const { rows: [user] } = await pg.query(`SELECT email FROM skyeu."User" WHERE id = $1`, [id]);
                     if (user) {
                         console.log('email', user.email)
                        await sendEmail({
@@ -175,11 +175,11 @@ const manageSubtask = async (req, res) => {
                 errors: []
             });
         } else {
-            const { rows: [newSubtask] } = await pg.query(`INSERT INTO sky."Subtask" (task, title, startdate, enddate, description, createdby, assignedto, taskstatus) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`, [task, title, startdate, enddate, description, req.user.id, assignedto, taskstatus]);
+            const { rows: [newSubtask] } = await pg.query(`INSERT INTO skyeu."Subtask" (task, title, startdate, enddate, description, createdby, assignedto, taskstatus) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`, [task, title, startdate, enddate, description, req.user.id, assignedto, taskstatus]);
             // Send mail to assignedto
             if (assignedto) {
                 assignedToIds.forEach(async id => {
-                    const { rows: [user] } = await pg.query(`SELECT email FROM sky."User" WHERE id = $1`, [id]);
+                    const { rows: [user] } = await pg.query(`SELECT email FROM skyeu."User" WHERE id = $1`, [id]);
                     if (user) {
                         sendEmail(user.email, `New subtask: ${title}`, `A new subtask ${title} has been created.`);
                     }

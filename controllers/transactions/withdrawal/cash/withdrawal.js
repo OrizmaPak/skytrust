@@ -25,7 +25,7 @@ const processWithdrawal = async (req, res) => {
     try {
         // Check if the branch is active
         const { rows: branchData } = await pg.query(`
-            SELECT * FROM sky."Branch" WHERE id = $1 AND status = 'ACTIVE'
+            SELECT * FROM skyeu."Branch" WHERE id = $1 AND status = 'ACTIVE'
         `, [branch]);
 
         if (branchData.length === 0) {
@@ -40,7 +40,7 @@ const processWithdrawal = async (req, res) => {
 
         // Validate user ID
         const { rows: userData } = await pg.query(`
-            SELECT * FROM sky."User" WHERE id = $1
+            SELECT * FROM skyeu."User" WHERE id = $1
         `, [userid]);
 
         if (userData.length === 0) {
@@ -55,7 +55,7 @@ const processWithdrawal = async (req, res) => {
 
         // Check if the user is a marketer and not a member
         const { rows: userCheckData } = await pg.query(`
-            SELECT * FROM sky."User" WHERE id = $1
+            SELECT * FROM skyeu."User" WHERE id = $1
         `, [userid]);
 
         if (userCheckData.length === 0) {
@@ -90,7 +90,7 @@ const processWithdrawal = async (req, res) => {
 
         // Retrieve the withdrawal limit for the cashier
         const { rows: cashierLimitData } = await pg.query(`
-            SELECT withdrawallimit FROM sky."Cashierlimit" WHERE cashier = $1 AND status = 'ACTIVE'
+            SELECT withdrawallimit FROM skyeu."Cashierlimit" WHERE cashier = $1 AND status = 'ACTIVE'
         `, [userid]);
 
         const withdrawalLimit = (cashierLimitData.length > 0 && cashierLimitData[0].withdrawallimit !== undefined) ? cashierLimitData[0].withdrawallimit : 0;
@@ -143,7 +143,7 @@ const processWithdrawal = async (req, res) => {
 
             // Retrieve organization settings for the default cash account
             const { rows: orgSettingsData } = await pg.query(`
-                SELECT default_cash_account, default_allocation_account, personal_account_prefix FROM sky."Organisationsettings" WHERE status = 'ACTIVE'
+                SELECT default_cash_account, default_allocation_account, personal_account_prefix FROM skyeu."Organisationsettings" WHERE status = 'ACTIVE'
             `);
 
             if (orgSettingsData.length === 0) {
@@ -164,7 +164,7 @@ const processWithdrawal = async (req, res) => {
             // Check the available balance for the branch's cash account
             const { rows: accountTransactions } = await pg.query(`
                 SELECT SUM(credit) - SUM(debit) as balance
-                FROM sky."transaction"
+                FROM skyeu."transaction"
                 WHERE accountnumber = $1 AND branch = $2 AND status = 'ACTIVE'
             `, [orgDefaultCashAccount, branch]);
 
@@ -184,7 +184,7 @@ const processWithdrawal = async (req, res) => {
             // Check the available balance for the account to withdraw from account
             const { rows: accountfromTransactions } = await pg.query(`
                 SELECT SUM(credit) - SUM(debit) as balance
-                FROM sky."transaction"
+                FROM skyeu."transaction"
                 WHERE accountnumber = $1 AND status = 'ACTIVE'
             `, [accountnumber]);
 
@@ -209,7 +209,7 @@ const processWithdrawal = async (req, res) => {
 
                 // Use the phonenumber to get the user and retrieve the id
                 const { rows: userByPhoneData } = await pg.query(`
-                    SELECT id FROM sky."User" WHERE phone = $1 AND status = 'ACTIVE'
+                    SELECT id FROM skyeu."User" WHERE phone = $1 AND status = 'ACTIVE'
                 `, [phonenumber]);
 
                 if (userByPhoneData.length === 0) {
@@ -227,7 +227,7 @@ const processWithdrawal = async (req, res) => {
                 // Check the balance of the user's default_allocation_account
                 const { rows: allocationAccountTransactions } = await pg.query(`
                     SELECT SUM(credit) - SUM(debit) as balance
-                    FROM sky."transaction"
+                    FROM skyeu."transaction"
                     WHERE accountnumber = $1 AND userid = $2 AND status = 'ACTIVE'  
                 `, [orgDefaultAllocationAccount, accountnumberuserid]);
 
@@ -331,7 +331,7 @@ const processWithdrawal = async (req, res) => {
 
             // Insert the bank transaction into the database
             const bankTransactionQuery = {
-                text: `INSERT INTO sky."banktransaction" 
+                text: `INSERT INTO skyeu."banktransaction" 
                        (accountnumber, userid, description, debit, credit, ttype, tfrom, createdby, valuedate, reference, transactiondate, transactiondesc, transactionref, status, whichaccount, rawdata) 
                        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)`,
                 values: [

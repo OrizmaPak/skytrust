@@ -20,11 +20,11 @@ const getStockLedger = async (req, res) => {
         }
 
         // Fetch inventory based on the filters
-        const { rows: inventory } = await pg.query(`SELECT * FROM sky."Inventory" WHERE itemid = $1 AND transactiondate >= $2 AND transactiondate <= $3 AND status = 'ACTIVE' AND qty != 0 ${branch ? `AND branch = '${branch}'` : ''} ${department ? `AND department = '${department}'` : ''}`, [itemid, startdate, enddate]);
+        const { rows: inventory } = await pg.query(`SELECT * FROM skyeu."Inventory" WHERE itemid = $1 AND transactiondate >= $2 AND transactiondate <= $3 AND status = 'ACTIVE' AND qty != 0 ${branch ? `AND branch = '${branch}'` : ''} ${department ? `AND department = '${department}'` : ''}`, [itemid, startdate, enddate]);
 
         // Fetch branch names for the inventory items
         const branchIds = inventory.map(item => item.branch);
-        const { rows: branchNames } = await pg.query(`SELECT id, branch FROM sky."Branch" WHERE id = ANY($1::int[])`, [branchIds]);
+        const { rows: branchNames } = await pg.query(`SELECT id, branch FROM skyeu."Branch" WHERE id = ANY($1::int[])`, [branchIds]);
 
         // Create a map of branch IDs to branch names
         const branchNameMap = branchNames.reduce((map, branch) => {
@@ -34,7 +34,7 @@ const getStockLedger = async (req, res) => {
 
         // Fetch department names for the inventory items
         const departmentIds = inventory.map(item => item.department);
-        const { rows: departmentNames } = await pg.query(`SELECT id, department FROM sky."Department" WHERE id = ANY($1::int[])`, [departmentIds]);
+        const { rows: departmentNames } = await pg.query(`SELECT id, department FROM skyeu."Department" WHERE id = ANY($1::int[])`, [departmentIds]);
 
         // Create a map of department IDs to department names
         const departmentNameMap = departmentNames.reduce((map, department) => {
@@ -55,7 +55,7 @@ const getStockLedger = async (req, res) => {
                                    SUM(CASE WHEN qty < 0 THEN qty ELSE 0 END) AS balanceBroughtOut,
                                    SUM(qty) AS balanceBroughtForward,
                                    MAX(CASE WHEN transactiondate < $2 THEN cost ELSE NULL END) AS balanceBroughtForwardCost
-                                FROM sky."Inventory"
+                                FROM skyeu."Inventory"
                                 WHERE itemid = $1 AND transactiondate < $2 AND status = 'ACTIVE' ${branch ? `AND branch = ${branch}` : ''} ${department ? `AND department = '${department}'` : ''}`;
         const balances = await pg.query(compressedQuery, [itemid, startdate]);
 

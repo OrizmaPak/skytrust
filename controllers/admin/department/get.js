@@ -20,9 +20,9 @@ const getDepartment = async (req, res) => {
 
         let queryString = `
             SELECT d.*, b.branch AS branchname, CONCAT(u.firstname, ' ', u.lastname) AS useridname
-            FROM sky."Department" d
-            LEFT JOIN sky."Branch" b ON d.branch = b.id
-            LEFT JOIN sky."User" u ON d.userid = u.id
+            FROM skyeu."Department" d
+            LEFT JOIN skyeu."Branch" b ON d.branch = b.id
+            LEFT JOIN skyeu."User" u ON d.userid = u.id
             WHERE 1=1
         `; // Base query string with joins for branch and user names
         let params = []; // Array to hold query parameters
@@ -101,7 +101,7 @@ const getDepartment = async (req, res) => {
         const { rows: departments } = await pg.query(queryString, params); // Execute the query with parameters
 
         // Prepare parameters for the count query
-        let countQuery = `SELECT COUNT(*) FROM sky."Department" d WHERE 1=1`;
+        let countQuery = `SELECT COUNT(*) FROM skyeu."Department" d WHERE 1=1`;
         let countParams = [];
         if (branch) {
             countQuery += ` AND d."branch" = $${countParams.length + 1}`;

@@ -10,8 +10,8 @@ const getTerminationResignation = async (req, res) => {
             text: `
                 SELECT tr.*, 
                        CONCAT(u.firstname, ' ', u.lastname, ' ', COALESCE(u.othernames, '')) AS personnelname
-                FROM sky."terminationresignation" tr
-                JOIN sky."User" u ON tr.userid = u.id
+                FROM skyeu."terminationresignation" tr
+                JOIN skyeu."User" u ON tr.userid = u.id
             `,
             values: []
         };

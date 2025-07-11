@@ -55,7 +55,7 @@ const createbranch = async (req, res) => {
 
     try {
         // Validate if user exists
-        const { rows: userExists } = await pg.query(`SELECT * FROM sky."User" WHERE id = $1`, [userid]);
+        const { rows: userExists } = await pg.query(`SELECT * FROM skyeu."User" WHERE id = $1`, [userid]);
         if (userExists.length === 0) {
             return res.status(StatusCodes.BAD_REQUEST).json({
                 status: false,
@@ -67,7 +67,7 @@ const createbranch = async (req, res) => {
         }
 
         if (!id) { // Check if branch already exists using raw query
-            const { rows: thebranch } = await pg.query(`SELECT * FROM sky."Branch" WHERE branch = $1`, [branch]);
+            const { rows: thebranch } = await pg.query(`SELECT * FROM skyeu."Branch" WHERE branch = $1`, [branch]);
 
             // WHEN THE ACCOUNT IS ALREADY IN USE
             if (thebranch.length > 0) {
@@ -86,12 +86,12 @@ const createbranch = async (req, res) => {
 
         if (id) {
             if (status) {
-                query = await pg.query(`UPDATE sky."Branch" SET 
+                query = await pg.query(`UPDATE skyeu."Branch" SET 
                     status = $1,
                     lastupdated = $2
                     WHERE id = $3`, [status, new Date(), id]);
             } else {
-                query = await pg.query(`UPDATE sky."Branch" SET 
+                query = await pg.query(`UPDATE skyeu."Branch" SET 
                     branch = $1, 
                     country = $2, 
                     state = $3, 
@@ -102,7 +102,7 @@ const createbranch = async (req, res) => {
                     WHERE id = $8`, [branch, country, state, address, lga, new Date(), userid, id]);
             }
         } else {
-            query = await pg.query(`INSERT INTO sky."Branch" 
+            query = await pg.query(`INSERT INTO skyeu."Branch" 
                 (branch, country, state, address, lga, createdby, userid) 
                 VALUES ($1, $2, $3, $4, $5, $6, $7)`, [branch, country, state, address, lga, user.id, userid]);
         }

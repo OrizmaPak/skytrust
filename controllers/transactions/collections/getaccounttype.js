@@ -19,7 +19,7 @@ const getAccountType = async (req, res) => {
     try {
         const { rows: settings } = await pg.query(`
             SELECT savings_account_prefix, personal_account_prefix, loan_account_prefix, rotary_account_prefix
-            FROM sky."Organisationsettings"
+            FROM skyeu."Organisationsettings"
             LIMIT 1
         `);
 
@@ -41,8 +41,8 @@ const getAccountType = async (req, res) => {
             accountType = "Savings";
             const { rows: accountDetails } = await pg.query(`
                 SELECT sa.*, CONCAT(u.firstname, ' ', u.lastname, ' ', COALESCE(u.othernames, '')) AS fullname
-                FROM sky."savings" sa
-                JOIN sky."User" u ON sa.userid = u.id
+                FROM skyeu."savings" sa
+                JOIN skyeu."User" u ON sa.userid = u.id
                 WHERE sa.accountnumber = $1
             `, [accountnumber]);
             
@@ -60,8 +60,8 @@ const getAccountType = async (req, res) => {
             accountType = "Personal";
             const { rows: accountDetails } = await pg.query(`
                 SELECT sa.*, CONCAT(u.firstname, ' ', u.lastname, ' ', COALESCE(u.othernames, '')) AS fullname
-                FROM sky."User" sa
-                JOIN sky."User" u ON sa.id = u.id
+                FROM skyeu."User" sa
+                JOIN skyeu."User" u ON sa.id = u.id
                 WHERE sa.phone = $1
             `, [accountnumber.slice(personal_account_prefix.length)]);
             
@@ -79,8 +79,8 @@ const getAccountType = async (req, res) => {
             accountType = "Loan";
             const { rows: accountDetails } = await pg.query(`
                 SELECT sa.*, CONCAT(u.firstname, ' ', u.lastname, ' ', COALESCE(u.othernames, '')) AS fullname
-                FROM sky."loanaccounts" sa
-                JOIN sky."User" u ON sa.userid = u.id
+                FROM skyeu."loanaccounts" sa
+                JOIN skyeu."User" u ON sa.userid = u.id
                 WHERE sa.accountnumber = $1
             `, [accountnumber]);
             
@@ -98,8 +98,8 @@ const getAccountType = async (req, res) => {
             accountType = "Rotary";
             const { rows: accountDetails } = await pg.query(`
                 SELECT ra.*, CONCAT(u.firstname, ' ', u.lastname, ' ', COALESCE(u.othernames, '')) AS fullname
-                FROM sky."rotaryaccount" ra
-                JOIN sky."User" u ON ra.userid = u.id
+                FROM skyeu."rotaryaccount" ra
+                JOIN skyeu."User" u ON ra.userid = u.id
                 WHERE ra.accountnumber = $1
             `, [accountnumber]);
             
@@ -117,7 +117,7 @@ const getAccountType = async (req, res) => {
             accountType = "Personal";
             const { rows: accountDetails } = await pg.query(`
                 SELECT *, CONCAT(firstname, ' ', lastname, ' ', COALESCE(othernames, '')) AS fullname
-                FROM sky."User"
+                FROM skyeu."User"
                 WHERE phone = $1
             `, [accountnumber]);
 

@@ -59,7 +59,7 @@ const updatebranch = async (req, res) => {
     try{
         // CHECK IF NAME ALREADY EXIST
         if(branch){
-            const {rows:checkname} = await pg.query(`SELECT branch FROM sky."Budget" WHERE branch = $1`, [branch]);
+            const {rows:checkname} = await pg.query(`SELECT branch FROM skyeu."Budget" WHERE branch = $1`, [branch]);
             // IT MEANS THE USER DOES NOT WANT TO UPDATE
             if(checkname.length){
                 // TRACK ACTIVITY
@@ -79,7 +79,7 @@ const updatebranch = async (req, res) => {
 
 
             // THIS MEANS THE USER WANTS TO UPDATE
-            const {rowCount: updatelocation} = await pg.query(`UPDATE sky."Budget" 
+            const {rowCount: updatelocation} = await pg.query(`UPDATE skyeu."Budget" 
                              SET branch = COALESCE($1, branch), 
                                  country = COALESCE($2, country), 
                                  state = COALESCE($3, state), 

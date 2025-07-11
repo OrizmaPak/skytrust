@@ -38,7 +38,7 @@ const saveOrUpdateBank = async (req, res) => {
         if (id) {
             // Update existing bank
             query = `
-                UPDATE sky."listofbanks"
+                UPDATE skyeu."listofbanks"
                 SET bank = COALESCE($1, bank), 
                     country = COALESCE($2, country), 
                     status = COALESCE($3, status), 
@@ -50,7 +50,7 @@ const saveOrUpdateBank = async (req, res) => {
         } else {
             // Insert new bank
             query = `
-                INSERT INTO sky."listofbanks" (bank, country, status, createdby)
+                INSERT INTO skyeu."listofbanks" (bank, country, status, createdby)
                 VALUES ($1, $2, $3, $4)
                 RETURNING *
             `;

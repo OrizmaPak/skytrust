@@ -176,7 +176,7 @@ const generateTransactions = async (req, res) => {
             await pg.query('BEGIN');
             for (const transaction of transactions) {
                 const query = `
-                    INSERT INTO sky."transaction" (
+                    INSERT INTO skyeu."transaction" (
                         accountnumber, 
                         userid, 
                         currency, 

@@ -9,8 +9,8 @@ const getReferees = async (req, res) => {
     try {
         let query = {
             text: `SELECT r.*, CONCAT(u.firstname, ' ', u.lastname, ' ', COALESCE(u.othernames, '')) AS personnelname 
-                   FROM sky."referee" r
-                   JOIN sky."User" u ON r.userid = u.id
+                   FROM skyeu."referee" r
+                   JOIN skyeu."User" u ON r.userid = u.id
                    WHERE r.status = 'ACTIVE'`,
             values: []
         };
@@ -64,7 +64,7 @@ const getReferees = async (req, res) => {
 
         // Get total count for pagination
         const countQuery = {
-            text: `SELECT COUNT(*) FROM sky."referee" r ${whereClause}`,
+            text: `SELECT COUNT(*) FROM skyeu."referee" r ${whereClause}`,
             values: query.values.slice(0, -2) // Exclude limit and offset
         };
         const { rows: [{ count: total }] } = await pg.query(countQuery);

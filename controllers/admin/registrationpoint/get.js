@@ -12,8 +12,8 @@ const getRegistrationPoint = async (req, res) => {
         // Base query to select all registration points with branch name
         let queryString = `
             SELECT rp.*, b.branch AS branchname
-            FROM sky."Registrationpoint" rp
-            LEFT JOIN sky."Branch" b ON rp.branch = b.id
+            FROM skyeu."Registrationpoint" rp
+            LEFT JOIN skyeu."Branch" b ON rp.branch = b.id
             WHERE 1=1
         `;
         let params = [];

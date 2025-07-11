@@ -52,7 +52,7 @@ const getActivity = async (req, res) => {
             activities = activities.filter(activity => activity.status == status);
         }
 
-        let {rows: alluser} = await pg.query(`SELECT u.id, u.firstname, u.lastname, u.othernames, u.phone, u.country AS usercountry, b.branch AS branchname, b.country AS branchcountry, b.state AS branchstate, b.lga AS branchlga, b.address AS branchaddress FROM sky."User" u LEFT JOIN sky."Branch" b ON u.branch = b.id`)
+        let {rows: alluser} = await pg.query(`SELECT u.id, u.firstname, u.lastname, u.othernames, u.phone, u.country AS usercountry, b.branch AS branchname, b.country AS branchcountry, b.state AS branchstate, b.lga AS branchlga, b.address AS branchaddress FROM skyeu."User" u LEFT JOIN skyeu."Branch" b ON u.branch = b.id`)
  
         activities = activities.map(activity => {
             const userDetail = alluser.find(user => user.id == activity.userid);

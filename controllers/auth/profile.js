@@ -18,7 +18,7 @@ async function profile(req, res) {
     // If phone or email is provided, search for the user in the User table
     if (phone || email) {
         try {
-            const query = `SELECT * FROM sky."User" WHERE ${phone ? 'phone = $1' : 'email = $1'}`;
+            const query = `SELECT * FROM skyeu."User" WHERE ${phone ? 'phone = $1' : 'email = $1'}`;
             const value = phone || email;
             const { rows } = await pg.query(query, [value]);
 
@@ -54,8 +54,8 @@ async function profile(req, res) {
             // Fetch membership details for the user
             const membershipQuery = `
                 SELECT m.*, dm.member AS membername
-                FROM sky."Membership" m
-                LEFT JOIN sky."DefineMember" dm ON m.member = dm.id
+                FROM skyeu."Membership" m
+                LEFT JOIN skyeu."DefineMember" dm ON m.member = dm.id
                 WHERE m.userid = $1
             `;
             const { rows: membershipRows } = await pg.query(membershipQuery, [user.id]);

@@ -38,7 +38,7 @@ const viewSalesByMonth = async (req, res) => {
         let baseQuery = `
             WITH sales_transactions AS (
                 SELECT DISTINCT reference 
-                FROM sky."Inventory"
+                FROM skyeu."Inventory"
                 WHERE transactiondesc = 'DEP-SALES'
                 AND DATE_TRUNC('month', transactiondate::timestamp) = $1::timestamp
             )
@@ -49,10 +49,10 @@ const viewSalesByMonth = async (req, res) => {
                 SUM(T.debit) as total_debit,
                 T.userid,
                 U.branch
-            FROM sky."transaction" T
+            FROM skyeu."transaction" T
             INNER JOIN sales_transactions ST 
                 ON T.transactionref = ST.reference
-            INNER JOIN sky."User" U 
+            INNER JOIN skyeu."User" U 
                 ON T.userid = U.id
             WHERE DATE_TRUNC('month', T.transactiondate::timestamp) = $1::timestamp
         `;
@@ -118,8 +118,8 @@ const viewSalesByMonth = async (req, res) => {
                 const branchQuery = {
                     text: `
                         SELECT B.id, B.branch 
-                        FROM sky."Branch" B
-                        INNER JOIN sky."User" U ON U.branch = B.id
+                        FROM skyeu."Branch" B
+                        INNER JOIN skyeu."User" U ON U.branch = B.id
                         WHERE U.id = $1
                     `,
                     values: [userid]
@@ -143,7 +143,7 @@ const viewSalesByMonth = async (req, res) => {
                                     COALESCE(othernames, '')
                                 )
                             ) AS fullname
-                        FROM sky."User"
+                        FROM skyeu."User"
                         WHERE id = $1
                     `,
                     values: [userid]
@@ -162,7 +162,7 @@ const viewSalesByMonth = async (req, res) => {
                 const branchQuery = {
                     text: `
                         SELECT branch
-                        FROM sky."Branch" 
+                        FROM skyeu."Branch" 
                         WHERE id = $1
                     `,
                     values: [branch]

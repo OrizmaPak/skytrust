@@ -66,7 +66,7 @@ const getUserYearlyCollection = async (req, res) => {
 
   try {
     // 4) Fetch default_cash_account
-    const orgSettingsQuery = `SELECT default_cash_account FROM sky."Organisationsettings"`;
+    const orgSettingsQuery = `SELECT default_cash_account FROM skyeu."Organisationsettings"`;
     const { rows: orgSettings } = await pg.query(orgSettingsQuery);
     const defaultCashAccount = orgSettings[0].default_cash_account;
 
@@ -77,7 +77,7 @@ const getUserYearlyCollection = async (req, res) => {
     // 6) Fetch all transactions matching the filters
     const yearDataQuery = `
       SELECT *
-      FROM sky."transaction"
+      FROM skyeu."transaction"
       WHERE userid = $1
         AND transactiondate >= $2
         AND transactiondate < $3
@@ -141,7 +141,7 @@ const getUserYearlyCollection = async (req, res) => {
         if (transactionRefs.length > 0) {
           const bankTxQuery = `
             SELECT credit, debit 
-            FROM sky."banktransaction"
+            FROM skyeu."banktransaction"
             WHERE transactionref = ANY($1) AND status = 'ACTIVE'
           `;
           const bankTxResult = await pg.query(bankTxQuery, [transactionRefs]);
@@ -160,7 +160,7 @@ const getUserYearlyCollection = async (req, res) => {
         if (penaltyRefs.length > 0) {
           const penaltyQuery = `
             SELECT debit, credit 
-            FROM sky."transaction"
+            FROM skyeu."transaction"
             WHERE cashref = ANY($1) AND status = 'ACTIVE'
           `;
           const penaltyResult = await pg.query(penaltyQuery, [penaltyRefs]);

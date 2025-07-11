@@ -9,7 +9,7 @@ const getUsehurs = async (req, res) => {
 
     try {
         let query = {
-            text: `SELECT * FROM sky."User"`,
+            text: `SELECT * FROM skyeu."User"`,
             values: []
         };
 
@@ -103,7 +103,7 @@ const getUsehurs = async (req, res) => {
 
         // Get total count for pagination
         const countQuery = {
-            text: `SELECT COUNT(*) FROM sky."User" ${whereClause}`,
+            text: `SELECT COUNT(*) FROM skyeu."User" ${whereClause}`,
             values: query.values.slice(0, -2) // Exclude limit and offset
         };
         const { rows: [{ count: total }] } = await pg.query(countQuery);

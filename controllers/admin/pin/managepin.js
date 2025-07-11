@@ -20,7 +20,7 @@ const managePin = async (req, res) => {
         const encryptedPin = jwt.sign({ pin }, process.env.JWT_SECRET);
 
         // Fetch the user's current pin from the database
-        const { rows: [user] } = await pg.query(`SELECT pin FROM sky."User" WHERE id = $1`, [id]);
+        const { rows: [user] } = await pg.query(`SELECT pin FROM skyeu."User" WHERE id = $1`, [id]);
         if (!user) {
             return res.status(StatusCodes.NOT_FOUND).json({
                 status: false,
@@ -43,7 +43,7 @@ const managePin = async (req, res) => {
 
         // Update the User with the new encrypted pin
         const updateQuery = {
-            text: `UPDATE sky."User" SET pin = $1 WHERE id = $2`,
+            text: `UPDATE skyeu."User" SET pin = $1 WHERE id = $2`,
             values: [encryptedPin, id]
         };
         await pg.query(updateQuery);

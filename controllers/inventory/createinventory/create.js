@@ -107,7 +107,7 @@ const createInventory = async (req, res) => {
 
             for (let br of branches) {
                 // Check if each branch exists
-                // const { rows: branchExists } = await pg.query(`SELECT * FROM sky."Branch" WHERE id = $1`, [br]);
+                // const { rows: branchExists } = await pg.query(`SELECT * FROM skyeu."Branch" WHERE id = $1`, [br]);
                 // if (branchExists.length === 0) {
                 //     return res.status(StatusCodes.BAD_REQUEST).json({
                 //         status: false,
@@ -121,7 +121,7 @@ const createInventory = async (req, res) => {
                 // WE DONT NEED TO CHECK IF THE BRANCH EXIST SINCE WE ARE ALREADY CHECKING IF THE DEPARTMENT EXIST
 
                 // Check if itemname exists for each branch
-                const { rows: itemExists } = await pg.query(`SELECT * FROM sky."Inventory" WHERE itemname = $1 AND branch = $2`, [itemname, br]);
+                const { rows: itemExists } = await pg.query(`SELECT * FROM skyeu."Inventory" WHERE itemname = $1 AND branch = $2`, [itemname, br]);
                 if (itemExists.length > 0) {
                     return res.status(StatusCodes.BAD_REQUEST).json({
                         status: false,
@@ -133,7 +133,7 @@ const createInventory = async (req, res) => {
                 }
             }
             // Generate itemid
-            const { rows: items } = await pg.query(`SELECT itemid FROM sky."Inventory" ORDER BY itemid DESC LIMIT 1`);
+            const { rows: items } = await pg.query(`SELECT itemid FROM skyeu."Inventory" ORDER BY itemid DESC LIMIT 1`);
             let itemid = items.length > 0 ? items[0].itemid + 1 : 1000001;
             // Validate and process department
             const departments = department && department.includes('||') ? department.split('||') : [department];
@@ -151,7 +151,7 @@ const createInventory = async (req, res) => {
                         errors: ["Department cannot be empty"]
                     });
                 }
-                const { rows: deptExists } = await pg.query(`SELECT * FROM sky."Department" WHERE id = $1`, [dept]);
+                const { rows: deptExists } = await pg.query(`SELECT * FROM skyeu."Department" WHERE id = $1`, [dept]);
                 if (deptExists.length === 0) { 
                     return res.status(StatusCodes.BAD_REQUEST).json({
                         status: false,
@@ -165,7 +165,7 @@ const createInventory = async (req, res) => {
                 const reference = new Date().getTime().toString(); // Generate reference number based on datetime
                 const transactionDate = new Date(); // Set transaction date to the current date
                 const departmentQty = i === 0 ? beginbalance : qty; // First department gets beginbalance as qty
-                await pg.query(`INSERT INTO sky."Inventory" (itemid, itemname, department, branch, units, cost, applyto, itemclass, composite, price, pricetwo, beginbalance, qty, minimumbalance, "group", description, imageone, imagetwo, imagethree, status, "reference", transactiondate, transactiondesc, reorderlevel, dateadded, createdby) 
+                await pg.query(`INSERT INTO skyeu."Inventory" (itemid, itemname, department, branch, units, cost, applyto, itemclass, composite, price, pricetwo, beginbalance, qty, minimumbalance, "group", description, imageone, imagetwo, imagethree, status, "reference", transactiondate, transactiondesc, reorderlevel, dateadded, createdby) 
                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26)`, 
                     [itemid, itemname, dept, brnch, units, cost, applyto, itemclass, composite, price, pricetwo, beginbal, beginbal, minimumbalance, group, description, null, null, null, "ACTIVE", reference, transactionDate, "Creation with opening stock", reorderlevel, new Date(), req.user.id]);
             }

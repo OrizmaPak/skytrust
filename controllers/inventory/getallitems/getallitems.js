@@ -5,7 +5,7 @@ const { activityMiddleware } = require("../../../middleware/activity");
 const getAllUniqueItemIds = async (req, res) => {
     try {
         // Fetch all unique itemids and itemnames from the Inventory
-        const { rows: items } = await pg.query(`SELECT DISTINCT itemid, itemname FROM sky."Inventory"`);
+        const { rows: items } = await pg.query(`SELECT DISTINCT itemid, itemname FROM skyeu."Inventory"`);
 
         // Extract unique itemids and itemnames
         const uniqueItems = items.map(item => ({ itemid: item.itemid, itemname: item.itemname }));

@@ -8,7 +8,7 @@ const getCategoryTimeline = async (req, res) => {
 
     try {
         let query = {
-            text: `SELECT * FROM sky."categorytimeline"`,
+            text: `SELECT * FROM skyeu."categorytimeline"`,
             values: []
         };
 
@@ -71,7 +71,7 @@ const getCategoryTimeline = async (req, res) => {
 
         // Get total count for pagination
         const countQuery = {
-            text: `SELECT COUNT(*) FROM sky."categorytimeline" ${whereClause}`,
+            text: `SELECT COUNT(*) FROM skyeu."categorytimeline" ${whereClause}`,
             values: query.values.slice(0, -2) // Exclude limit and offset
         };
         const { rows: [{ count: total }] } = await pg.query(countQuery);

@@ -16,7 +16,7 @@ async function notifyCustomer(req, res) {
     try {
         // Use the userid to get the email from the database
         const userQuery = {
-            text: `SELECT email FROM sky."users" WHERE id = $1`,
+            text: `SELECT email FROM skyeu."users" WHERE id = $1`,
             values: [userid]
         };
         const { rows: [userRows] } = await pg.query(userQuery);

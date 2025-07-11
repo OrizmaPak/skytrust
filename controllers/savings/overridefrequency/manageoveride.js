@@ -20,7 +20,7 @@ const saveOrUpdateFrequencyOverride = async (req, res) => {
 
         // Check if a record with the same savingsproductid and branch already exists
         const checkQuery = `
-            SELECT * FROM sky."frequencyoverride"  
+            SELECT * FROM skyeu."frequencyoverride"  
             WHERE savingsproductid = $1 AND branch = $2
         `;
         const checkResult = await client.query(checkQuery, [savingsproductid, branch]);
@@ -28,7 +28,7 @@ const saveOrUpdateFrequencyOverride = async (req, res) => {
         if (checkResult.rowCount > 0) {
             // If exists, update the compulsorydepositfrequency
             const updateQuery = `
-                UPDATE sky."frequencyoverride"
+                UPDATE skyeu."frequencyoverride"
                 SET compulsorydepositfrequency = $1
                 WHERE savingsproductid = $2 AND branch = $3
             `;
@@ -44,7 +44,7 @@ const saveOrUpdateFrequencyOverride = async (req, res) => {
         } else {
             // If not exists, insert a new record
             const insertQuery = `
-                INSERT INTO sky."frequencyoverride" (savingsproductid, compulsorydepositfrequency, branch, status)
+                INSERT INTO skyeu."frequencyoverride" (savingsproductid, compulsorydepositfrequency, branch, status)
                 VALUES ($1, $2, $3, 'ACTIVE')
             `;
             await client.query(insertQuery, [savingsproductid, compulsorydepositfrequency, branch]);

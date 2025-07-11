@@ -18,7 +18,7 @@ const manageIssueType = async (req, res) => {
 
     try {
         if (!id) {
-            const existingIssueType = await pg.query(`SELECT * FROM sky."issue" WHERE issuetype = $1`, [issuetype]);
+            const existingIssueType = await pg.query(`SELECT * FROM skyeu."issue" WHERE issuetype = $1`, [issuetype]);
             if (existingIssueType.rows.length > 0) {
                 return res.status(StatusCodes.BAD_REQUEST).json({
                     status: false,
@@ -29,7 +29,7 @@ const manageIssueType = async (req, res) => {
                 });
             }
 
-            await pg.query(`INSERT INTO sky."issue" (issuetype, createdby, dateadded) VALUES ($1, $2, $3)`, [issuetype, user.id, new Date()]);
+            await pg.query(`INSERT INTO skyeu."issue" (issuetype, createdby, dateadded) VALUES ($1, $2, $3)`, [issuetype, user.id, new Date()]);
             await activityMiddleware(req, user.id, 'Issue type created successfully', 'ISSUE');
             return res.status(StatusCodes.OK).json({
                 status: true,
@@ -40,7 +40,7 @@ const manageIssueType = async (req, res) => {
             });
         } else {
             if (status === "DELETED") {
-                const { rows: inventoryItems } = await pg.query(`SELECT * FROM sky."Inventory" WHERE issuetype = $1`, [id]);
+                const { rows: inventoryItems } = await pg.query(`SELECT * FROM skyeu."Inventory" WHERE issuetype = $1`, [id]);
                 if (inventoryItems.length > 0) {
                     return res.status(StatusCodes.BAD_REQUEST).json({
                         status: false,
@@ -53,7 +53,7 @@ const manageIssueType = async (req, res) => {
             }
 
             await pg.query(
-                `UPDATE sky."issue" SET issuetype = COALESCE($1, issuetype), status = COALESCE($2, status) WHERE id = $3`,
+                `UPDATE skyeu."issue" SET issuetype = COALESCE($1, issuetype), status = COALESCE($2, status) WHERE id = $3`,
                 [issuetype, status, id]
             );
             await activityMiddleware(req, user.id, 'Issue type updated successfully', 'ISSUE');

@@ -41,7 +41,7 @@ const processCashCollection = async (req, res) => {
     try {
         // Validate branch
         const { rows: branchData } = await pg.query(`
-            SELECT * FROM sky."Branch" WHERE id = $1 AND status = 'ACTIVE'
+            SELECT * FROM skyeu."Branch" WHERE id = $1 AND status = 'ACTIVE'
         `, [branch]);
 
         if (branchData.length === 0) {
@@ -56,7 +56,7 @@ const processCashCollection = async (req, res) => {
 
         // Validate userid
         const { rows: userData } = await pg.query(`
-            SELECT * FROM sky."User" WHERE id = $1
+            SELECT * FROM skyeu."User" WHERE id = $1
         `, [userid]);
 
         if (userData.length === 0) {
@@ -71,7 +71,7 @@ const processCashCollection = async (req, res) => {
 
         // Check if the user has a registrationpoint and the role is not 'member'
         const { rows: userCheckData } = await pg.query(`
-            SELECT * FROM sky."User" WHERE id = $1
+            SELECT * FROM skyeu."User" WHERE id = $1
         `, [userid]);
 
         if (userCheckData.length === 0) {
@@ -106,7 +106,7 @@ const processCashCollection = async (req, res) => {
 
         // Check cashier limit
         const { rows: cashierLimitData } = await pg.query(`
-            SELECT depositlimit FROM sky."Cashierlimit" WHERE cashier = $1 AND status = 'ACTIVE'
+            SELECT depositlimit FROM skyeu."Cashierlimit" WHERE cashier = $1 AND status = 'ACTIVE'
         `, [userid]);
 
         // if (cashierLimitData.length === 0) {
@@ -129,7 +129,7 @@ const processCashCollection = async (req, res) => {
         let failedTransactions = [];
 
         const { rows: orgSettingsData } = await pg.query(`
-            SELECT default_cash_account FROM sky."Organisationsettings" WHERE status = 'ACTIVE'
+            SELECT default_cash_account FROM skyeu."Organisationsettings" WHERE status = 'ACTIVE'
         `);
 
         if (orgSettingsData.length === 0) {
@@ -227,7 +227,7 @@ const processCashCollection = async (req, res) => {
 
             // Perform another deposit to the default cash account and save it directly to the table
             const defaultCashTransactionQuery = `
-                INSERT INTO sky."banktransaction" 
+                INSERT INTO skyeu."banktransaction" 
                 (accountnumber, userid, description, debit, credit, ttype, tfrom, createdby, valuedate, reference, transactiondate, transactiondesc, transactionref, status, whichaccount, rawdata)
                 VALUES 
                 ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)

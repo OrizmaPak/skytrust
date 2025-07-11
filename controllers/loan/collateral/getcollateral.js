@@ -4,7 +4,7 @@ const pg = require("../../../db/pg");
 const getCollateral = async (req, res) => {
     try {
         let query = {
-            text: `SELECT * FROM sky."collateral"`,
+            text: `SELECT * FROM skyeu."collateral"`,
             values: []
         };
 
@@ -62,7 +62,7 @@ const getCollateral = async (req, res) => {
 
         // Get total count for pagination
         const countQuery = {
-            text: `SELECT COUNT(*) FROM sky."collateral" ${whereClause}`,
+            text: `SELECT COUNT(*) FROM skyeu."collateral" ${whereClause}`,
             values: query.values.slice(0, -2) // Exclude limit and offset
         };
         const { rows: [{ count: total }] } = await pg.query(countQuery);

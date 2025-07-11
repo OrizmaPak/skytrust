@@ -83,7 +83,7 @@ const manageSavingsAccount = async (req, res) => {
         }
 
         // Check if the savings product exists
-        const productQuery = `SELECT * FROM sky."savingsproduct" WHERE id = $1 AND status = 'ACTIVE'`;
+        const productQuery = `SELECT * FROM skyeu."savingsproduct" WHERE id = $1 AND status = 'ACTIVE'`;
         const productResult = await pg.query(productQuery, [savingsproductid]);
 
         if (productResult.rowCount === 0 && !accountnumber) {
@@ -99,7 +99,7 @@ const manageSavingsAccount = async (req, res) => {
 
         // Check if the account officer exists and is a user
         if (accountofficer) {
-            const officerQuery = `SELECT * FROM sky."User" WHERE id = $1 AND status = 'ACTIVE'`;
+            const officerQuery = `SELECT * FROM skyeu."User" WHERE id = $1 AND status = 'ACTIVE'`;
             const officerResult = await pg.query(officerQuery, [accountofficer]);
 
             if (officerResult.rowCount === 0) {
@@ -116,7 +116,7 @@ const manageSavingsAccount = async (req, res) => {
 
         // Check if the user already has the savings product
     if (!accountnumber) {
-        const existingAccountQuery = `SELECT COUNT(*) FROM sky."savings" WHERE userid = $1 AND savingsproductid = $2 AND member = $3 AND status = 'ACTIVE'`;
+        const existingAccountQuery = `SELECT COUNT(*) FROM skyeu."savings" WHERE userid = $1 AND savingsproductid = $2 AND member = $3 AND status = 'ACTIVE'`;
         const existingAccountResult = await pg.query(existingAccountQuery, [userid, savingsproductid, member]);
         const accountCount = parseInt(existingAccountResult.rows[0].count);
 
@@ -141,7 +141,7 @@ const manageSavingsAccount = async (req, res) => {
         const accountNumberQuery = {
             text: `
                     SELECT accountnumber, dateadded 
-                    FROM sky."savings" 
+                    FROM skyeu."savings" 
                     WHERE userid = $1 AND savingsproductid = $2 AND status = 'ACTIVE'
                     ORDER BY id DESC
             `,
@@ -167,7 +167,7 @@ const manageSavingsAccount = async (req, res) => {
             const balanceQuery = {
                 text: `
                     SELECT SUM(credit) - SUM(debit) AS balance 
-                    FROM sky."transaction" 
+                    FROM skyeu."transaction" 
                     WHERE accountnumber = $1 AND status = 'ACTIVE'
                 `,
                 values: [accountnumber]
@@ -204,7 +204,7 @@ const manageSavingsAccount = async (req, res) => {
                     const creditQuery = {
                         text: `
                             SELECT SUM(credit) AS totalCredit 
-                            FROM sky."transaction" 
+                            FROM skyeu."transaction" 
                             WHERE accountnumber = $1 AND status = 'ACTIVE'
                         `,
                         values: [accountnumber]
@@ -225,7 +225,7 @@ const manageSavingsAccount = async (req, res) => {
                 const debitQuery = {
                     text: `
                         SELECT SUM(debit) AS totalDebit 
-                        FROM sky."transaction" 
+                        FROM skyeu."transaction" 
                         WHERE accountnumber = $1 AND status = 'ACTIVE'
                     `,
                     values: [accountnumber]
@@ -247,7 +247,7 @@ const manageSavingsAccount = async (req, res) => {
     if (productResult.eligibilityproductcategory === 'LOAN') {
         // Fetch loan account details
         const loanAccountQuery = {
-            text: `SELECT * FROM sky."loanaccounts" WHERE userid = $1 AND loanproduct = $2 AND status = 'ACTIVE' ORDER BY id DESC`,
+            text: `SELECT * FROM skyeu."loanaccounts" WHERE userid = $1 AND loanproduct = $2 AND status = 'ACTIVE' ORDER BY id DESC`,
             values: [userid, productResult.eligibilityproduct]
         };
         const { rows: loanAccountRows } = await pg.query(loanAccountQuery);
@@ -269,7 +269,7 @@ const manageSavingsAccount = async (req, res) => {
                         SELECT 
                             COALESCE(SUM(closeamount), 0) AS totalClosedAmount,
                             COUNT(*) FILTER (WHERE closeamount > 0) AS closedAccountsCount
-                        FROM sky."loanaccounts"
+                        FROM skyeu."loanaccounts"
                         WHERE userid = $1 AND loanproduct = $2 AND status = 'ACTIVE'
                     `,
                     values: [user.id, productResult.eligibilityproduct]
@@ -316,7 +316,7 @@ const manageSavingsAccount = async (req, res) => {
     }
 
         // Fetch the organisation settings
-        const orgSettingsQuery = `SELECT * FROM sky."Organisationsettings" WHERE status = 'ACTIVE' LIMIT 1`;
+        const orgSettingsQuery = `SELECT * FROM skyeu."Organisationsettings" WHERE status = 'ACTIVE' LIMIT 1`;
         const orgSettingsResult = await pg.query(orgSettingsQuery);
 
         if (orgSettingsResult.rowCount === 0) {
@@ -344,7 +344,7 @@ const manageSavingsAccount = async (req, res) => {
             });
         }
 
-        const accountRowsQuery = `SELECT accountnumber FROM sky."savings" WHERE accountnumber::text LIKE $1 AND status = 'ACTIVE' ORDER BY accountnumber DESC LIMIT 1`;
+        const accountRowsQuery = `SELECT accountnumber FROM skyeu."savings" WHERE accountnumber::text LIKE $1 AND status = 'ACTIVE' ORDER BY accountnumber DESC LIMIT 1`;
         const { rows: accountRows } = await pg.query(accountRowsQuery, [`${accountNumberPrefix}%`]);
 
         let generatedAccountNumber;
@@ -371,7 +371,7 @@ const manageSavingsAccount = async (req, res) => {
 
         if (accountnumber) {
             // Check if the account number already exists
-            const accountNumberExistsQuery = `SELECT * FROM sky."savings" WHERE accountnumber = $1`;
+            const accountNumberExistsQuery = `SELECT * FROM skyeu."savings" WHERE accountnumber = $1`;
             const accountNumberExistsResult = await pg.query(accountNumberExistsQuery, [accountnumber]);
 
             if (accountNumberExistsResult.rowCount === 0) {
@@ -387,7 +387,7 @@ const manageSavingsAccount = async (req, res) => {
 
             // Check if the branch exists in the branch table if branch is sent
             if (branch) {
-                 const branchExistsQuery = `SELECT * FROM sky."Branch" WHERE id = $1 AND status = 'ACTIVE'`;
+                 const branchExistsQuery = `SELECT * FROM skyeu."Branch" WHERE id = $1 AND status = 'ACTIVE'`;
                 const branchExistsResult = await pg.query(branchExistsQuery, [branch]);
 
                 if (branchExistsResult.rowCount === 0) {
@@ -404,7 +404,7 @@ const manageSavingsAccount = async (req, res) => {
 
             // Update existing savings account
             const updateAccountQuery = `
-                UPDATE sky."savings"
+                UPDATE skyeu."savings"
                 SET branch = COALESCE($1, branch), 
                     amount = COALESCE($2, amount), 
                     registrationpoint = COALESCE($3, registrationpoint), 
@@ -447,7 +447,7 @@ const manageSavingsAccount = async (req, res) => {
             });
         } else {
             // Check if the userid exists in the user table
-            const userExistsQuery = `SELECT * FROM sky."User" WHERE id = $1 AND status = 'ACTIVE'`;
+            const userExistsQuery = `SELECT * FROM skyeu."User" WHERE id = $1 AND status = 'ACTIVE'`;
             const userExistsResult = await pg.query(userExistsQuery, [userid]);
 
             if (userExistsResult.rowCount === 0) {
@@ -462,7 +462,7 @@ const manageSavingsAccount = async (req, res) => {
             }
 
             // Check if the branch exists in the branch table
-            const branchExistsQuery = `SELECT * FROM sky."Branch" WHERE id = $1 AND status = 'ACTIVE'`;
+            const branchExistsQuery = `SELECT * FROM skyeu."Branch" WHERE id = $1 AND status = 'ACTIVE'`;
             const branchExistsResult = await pg.query(branchExistsQuery, [branch]);
 
             if (branchExistsResult.rowCount === 0) {
@@ -477,7 +477,7 @@ const manageSavingsAccount = async (req, res) => {
             }
             // Save the new savings account
             const insertAccountQuery = `
-                INSERT INTO sky."savings" 
+                INSERT INTO skyeu."savings" 
                 (savingsproductid, accountnumber, userid, amount, branch, registrationpoint, registrationcharge, registrationdate, registrationdesc, bankname1, bankaccountname1, bankaccountnumber1, bankname2, bankaccountname2, bankaccountnumber2, accountofficer, sms, whatsapp, email, status, dateadded, createdby, member)
                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)
                 RETURNING id, accountnumber

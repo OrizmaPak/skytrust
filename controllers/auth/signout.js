@@ -34,10 +34,10 @@ async function signout(req, res) {
     try {
 
         // CHECK IF ITS IN THE TOKEN TABLE
-        const { rows: [user] } = await pg.query(`SELECT * FROM sky."Session" WHERE sessiontoken = $1`, [token]);
+        const { rows: [user] } = await pg.query(`SELECT * FROM skyeu."Session" WHERE sessiontoken = $1`, [token]);
         // console.log(user)
         if(user && user.sessiontoken == token){
-            const deleteResult = await pg.query(`DELETE FROM sky."Session" WHERE sessiontoken = $1`, [token]);
+            const deleteResult = await pg.query(`DELETE FROM skyeu."Session" WHERE sessiontoken = $1`, [token]);
             console.log("Deletion successful:", deleteResult.rowCount > 0);
             const responseData = {
                 status: true,

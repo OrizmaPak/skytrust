@@ -33,7 +33,7 @@ const manageMembership = async (req, res) => {
 
     try {
         // Check if user exists
-        const { rows: theuser } = await pg.query(`SELECT * FROM sky."User" WHERE id = $1`, [userid]);
+        const { rows: theuser } = await pg.query(`SELECT * FROM skyeu."User" WHERE id = $1`, [userid]);
         if (theuser.length == 0) {
             return res.status(StatusCodes.BAD_REQUEST).json({
                 status: false,
@@ -45,7 +45,7 @@ const manageMembership = async (req, res) => {
         }
 
         // Check if member exists
-        const { rows: themember } = await pg.query(`SELECT * FROM sky."DefineMember" WHERE id = $1`, [member]);
+        const { rows: themember } = await pg.query(`SELECT * FROM skyeu."DefineMember" WHERE id = $1`, [member]);
         if (themember.length == 0) {
             return res.status(StatusCodes.BAD_REQUEST).json({
                 status: false,
@@ -58,7 +58,7 @@ const manageMembership = async (req, res) => {
 
         // Check if the user already belongs to the member
         const { rows: existingMembership } = await pg.query(
-            `SELECT * FROM sky."Membership" WHERE member = $1 AND userid = $2`,
+            `SELECT * FROM skyeu."Membership" WHERE member = $1 AND userid = $2`,
             [member, userid]
         );
 
@@ -76,14 +76,14 @@ const manageMembership = async (req, res) => {
         let query;
 
         if (id) {
-            query = await pg.query(`UPDATE sky."Membership" SET 
+            query = await pg.query(`UPDATE skyeu."Membership" SET 
                 member = COALESCE($1, member), 
                 userid = COALESCE($2, userid), 
                 status = COALESCE($3, status),
                 lastupdated = COALESCE($4, lastupdated)
                 WHERE id = $5`, [member, userid, status, new Date(), id]);
         } else {
-            query = await pg.query(`INSERT INTO sky."Membership" 
+            query = await pg.query(`INSERT INTO skyeu."Membership" 
                 (member, userid, status, createdby) 
                 VALUES ($1, $2, $3, $4)`, [member, userid, status, user.id]);
         }

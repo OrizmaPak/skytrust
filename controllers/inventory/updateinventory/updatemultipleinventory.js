@@ -9,7 +9,7 @@ const getFallbackData = async (itemid, department) => {
     if (!department) return {};
 
     const fallbackResult = await pg.query(
-        `SELECT * FROM sky."Inventory" WHERE itemid = $1 AND department = $2 ORDER BY id DESC LIMIT 1`, 
+        `SELECT * FROM skyeu."Inventory" WHERE itemid = $1 AND department = $2 ORDER BY id DESC LIMIT 1`, 
         [itemid, department]
     );
     return fallbackResult.rows[0] || {};
@@ -99,7 +99,7 @@ const updatemultipleinventory = async (req, res) => {
             let departments = department.includes('||') ? department.split('||') : [department];
             if (!department) {
                 const { rows: itemDepartments } = await pg.query(
-                    `SELECT department FROM sky."Inventory" WHERE itemid = $1 GROUP BY department`,
+                    `SELECT department FROM skyeu."Inventory" WHERE itemid = $1 GROUP BY department`,
                     [itemid]
                 );
                 departments = [...new Set(itemDepartments.map(d => d.department))];
@@ -113,7 +113,7 @@ const updatemultipleinventory = async (req, res) => {
                 for (let dept of departments) {
                     console.log('dept:', dept);
                     const { rows } = await pg.query(
-                        `SELECT branch FROM sky."Department" WHERE id = $1`,
+                        `SELECT branch FROM skyeu."Department" WHERE id = $1`,
                         [dept]
                     );
                     console.log('rows:', rows);
@@ -154,7 +154,7 @@ const updatemultipleinventory = async (req, res) => {
 
                 // Insert the data into the Inventory table
                 await pg.query(
-                    `INSERT INTO sky."Inventory" (
+                    `INSERT INTO skyeu."Inventory" (
                         itemid, branch, department, itemname, units, cost, price, pricetwo, 
                         beginbalance, qty, minimumbalance, "group", applyto, itemclass, 
                         composite, compositeid, description, imageone, imagetwo, imagethree, 
@@ -201,7 +201,7 @@ const updatemultipleinventory = async (req, res) => {
         for (const item of items) {
             const { itemid, branch } = item;
             const { rows: branchName } = await pg.query(
-                `SELECT branch FROM sky."Branch" WHERE id = $1`,
+                `SELECT branch FROM skyeu."Branch" WHERE id = $1`,
                 [branch]
             );
             const branchDisplayName = branchName.length > 0 ? branchName[0].branch : "Unknown Branch";

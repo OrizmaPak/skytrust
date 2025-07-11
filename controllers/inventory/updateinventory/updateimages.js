@@ -17,7 +17,7 @@ const updateImages = async (req, res) => {
     }
 
     try {
-        const { rows: item } = await pg.query(`SELECT * FROM sky."Inventory" WHERE itemid = $1`, [itemid]);
+        const { rows: item } = await pg.query(`SELECT * FROM skyeu."Inventory" WHERE itemid = $1`, [itemid]);
         if (!item.length) {
             return res.status(StatusCodes.NOT_FOUND).json({
                 status: false,
@@ -31,7 +31,7 @@ const updateImages = async (req, res) => {
         // UPLOAD TO GOOGLEDRIVE
         await uploadToGoogleDrive(req, res);
 
-        const query = `UPDATE sky."Inventory" SET 
+        const query = `UPDATE skyeu."Inventory" SET 
             imageone = COALESCE($1, imageone),
             imagetwo = COALESCE($2, imagetwo),
             imagethree = COALESCE($3, imagethree)

@@ -6,7 +6,7 @@ const { divideAndRoundUp } = require("../../../utils/pageCalculator");
 
 const getbranch = async (req, res) => {
 
-    let queryString = `SELECT * FROM sky."Branch" WHERE 1=1`;
+    let queryString = `SELECT * FROM skyeu."Branch" WHERE 1=1`;
     
     try {
         // return new Response(JSON.stringify({queryString, params, sort}))

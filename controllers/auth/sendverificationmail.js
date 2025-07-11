@@ -39,7 +39,7 @@ async function sendverificationmail(req, res) {
 
     try {
         // Check if email already exists using raw query
-        const { rows: [existingUser] } = await pg.query(`SELECT * FROM sky."User" WHERE email = $1`, [email]);
+        const { rows: [existingUser] } = await pg.query(`SELECT * FROM skyeu."User" WHERE email = $1`, [email]);
 
         if (!existingUser) {
             return res.status(StatusCodes.BAD_REQUEST).json({
@@ -58,7 +58,7 @@ async function sendverificationmail(req, res) {
             // create verification token
             const vtoken = jwt.sign({ email, id: existingUser.id }, process.env.JWT_SECRET, { expiresIn: process.env.VERIFICATION_EXPIRATION_HOUR + 'h' });
             // create a verification link and code
-            await pg.query(`INSERT INTO sky."VerificationToken"   
+            await pg.query(`INSERT INTO skyeu."VerificationToken"   
                 (identifier, token, expires) 
                 VALUES ($1, $2, $3)`,
                 [existingUser.id, vtoken, calculateExpiryDate(process.env.VERIFICATION_EXPIRATION_HOUR)])

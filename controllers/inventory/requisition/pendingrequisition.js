@@ -28,7 +28,7 @@ const getpendingrequisition = async (req, res) => {
     const enddate = searchParams.get('enddate') || null; // Added end date filter
 
     // Base query string for inventory selection
-    let queryString = `SELECT * FROM sky."Inventory" WHERE status = $1 AND transactiondesc LIKE '%Requisition%'`;
+    let queryString = `SELECT * FROM skyeu."Inventory" WHERE status = $1 AND transactiondesc LIKE '%Requisition%'`;
     let params = [status]; // Array to hold query parameters
 
     
@@ -88,8 +88,8 @@ const getpendingrequisition = async (req, res) => {
                 batches[item.reference].branchfrom = item.branch;
                 batches[item.reference].departmentfrom = item.department;
                 // Fetch branch and department names
-                const { rows: [{ branch: branchfromname }] } = await pg.query(`SELECT branch FROM sky."Branch" WHERE id = $1`, [item.branch]);
-                const { rows: [{ department: departmentfromname }] } = await pg.query(`SELECT department FROM sky."Department" WHERE id = $1`, [item.department]);
+                const { rows: [{ branch: branchfromname }] } = await pg.query(`SELECT branch FROM skyeu."Branch" WHERE id = $1`, [item.branch]);
+                const { rows: [{ department: departmentfromname }] } = await pg.query(`SELECT department FROM skyeu."Department" WHERE id = $1`, [item.department]);
                 batches[item.reference].branchfromname = branchfromname;
                 batches[item.reference].departmentfromname = departmentfromname;
             } else {
@@ -105,8 +105,8 @@ const getpendingrequisition = async (req, res) => {
                     sellingprice: item.sellingprice
                 });
                 // Fetch branch and department names
-                const { rows: [{ branch: branchtoname }] } = await pg.query(`SELECT branch FROM sky."Branch" WHERE id = $1`, [item.branch]);
-                const { rows: [{ department: departmenttoname }] } = await pg.query(`SELECT department FROM sky."Department" WHERE id = $1`, [item.department]);
+                const { rows: [{ branch: branchtoname }] } = await pg.query(`SELECT branch FROM skyeu."Branch" WHERE id = $1`, [item.branch]);
+                const { rows: [{ department: departmenttoname }] } = await pg.query(`SELECT department FROM skyeu."Department" WHERE id = $1`, [item.department]);
                 batches[item.reference].branchtoname = branchtoname;
                 batches[item.reference].departmenttoname = departmenttoname;
             }

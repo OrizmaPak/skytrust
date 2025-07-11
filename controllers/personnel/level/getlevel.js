@@ -8,7 +8,7 @@ const getLevel = async (req, res) => {
 
     try {
         let query = {
-            text: `SELECT * FROM sky."level" WHERE status = 'ACTIVE'`,
+            text: `SELECT * FROM skyeu."level" WHERE status = 'ACTIVE'`,
             values: []
         };
 
@@ -69,13 +69,13 @@ const getLevel = async (req, res) => {
             const { id: levelId } = level;
 
             const allowancesResult = await pg.query(
-                `SELECT * FROM sky."allowances" WHERE level = $1`,
+                `SELECT * FROM skyeu."allowances" WHERE level = $1`,
                 [levelId]
             );
             level.allowances = allowancesResult.rows;
 
             const deductionsResult = await pg.query(
-                `SELECT * FROM sky."deductions" WHERE level = $1`,
+                `SELECT * FROM skyeu."deductions" WHERE level = $1`,
                 [levelId]
             );
             level.deductions = deductionsResult.rows;
@@ -83,7 +83,7 @@ const getLevel = async (req, res) => {
 
         // Get total count for pagination
         const countQuery = {
-            text: `SELECT COUNT(*) FROM sky."level" ${whereClause}`,
+            text: `SELECT COUNT(*) FROM skyeu."level" ${whereClause}`,
             values: query.values.slice(0, -2) // Exclude limit and offset
         };
         const { rows: [{ count: total }] } = await pg.query(countQuery);

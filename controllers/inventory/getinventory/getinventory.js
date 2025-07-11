@@ -40,7 +40,7 @@ const getInventory = async (req, res) => {
     const department = searchParams.get('department') || ''; // Added department filter
 
     // Base query string for inventory selection
-    let queryString = `SELECT * FROM sky."Inventory" WHERE 1=1`;
+    let queryString = `SELECT * FROM skyeu."Inventory" WHERE 1=1`;
     let params = []; // Array to hold query parameters
 
     // Dynamically add conditions based on the presence of filters
@@ -152,8 +152,8 @@ const getInventory = async (req, res) => {
             }); 
             // Fetch departmentname and branchname from their tables
             await Promise.all(uniqueInventory.map(async (item, i) => {
-                const { rows: [{ department }] } = await pg.query(`SELECT department FROM sky."Department" WHERE id = $1`, [item.department]);
-                const { rows: [{ branch }] } = await pg.query(`SELECT branch FROM sky."Branch" WHERE id = $1`, [item.branch]);
+                const { rows: [{ department }] } = await pg.query(`SELECT department FROM skyeu."Department" WHERE id = $1`, [item.department]);
+                const { rows: [{ branch }] } = await pg.query(`SELECT branch FROM skyeu."Branch" WHERE id = $1`, [item.branch]);
                 uniqueInventory[i].departmentname = department;
                 uniqueInventory[i].branchname = branch;
             }));

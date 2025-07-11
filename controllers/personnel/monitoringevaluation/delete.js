@@ -18,7 +18,7 @@ const deleteMonitoringEvaluation = async (req, res) => {
 
     try {
         const query = {
-            text: `UPDATE sky."monitoringevaluation" SET status = 'DELETED' WHERE id = $1 RETURNING *`,
+            text: `UPDATE skyeu."monitoringevaluation" SET status = 'DELETED' WHERE id = $1 RETURNING *`,
             values: [id]
         };
 

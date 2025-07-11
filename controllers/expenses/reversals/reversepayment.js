@@ -22,7 +22,7 @@ const reversePayment = async (req, res) => {
         
         // Update the transaction status to 'REVERSED' in the database
         const result = await pg.query(
-            `UPDATE sky."transaction" SET status = 'REVERSED' WHERE reference LIKE '%' || $1 || '%'`,
+            `UPDATE skyeu."transaction" SET status = 'REVERSED' WHERE reference LIKE '%' || $1 || '%'`,
             [requiredReference]
         );
 

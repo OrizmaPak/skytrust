@@ -8,8 +8,8 @@ const getParentGuardians = async (req, res) => {
     try {
         let query = {
             text: `SELECT pg.*, CONCAT(u.firstname, ' ', u.lastname, ' ', COALESCE(u.othernames, '')) AS personnelname 
-                   FROM sky."parentguardians" pg 
-                   JOIN sky."User" u ON pg.userid = u.id 
+                   FROM skyeu."parentguardians" pg 
+                   JOIN skyeu."User" u ON pg.userid = u.id 
                    WHERE pg."status" = 'ACTIVE'`,
             values: []
         };
@@ -65,7 +65,7 @@ const getParentGuardians = async (req, res) => {
 
         // Get total count for pagination
         const countQuery = {
-            text: `SELECT COUNT(*) FROM sky."parentguardians" pg ${whereClause}`,
+            text: `SELECT COUNT(*) FROM skyeu."parentguardians" pg ${whereClause}`,
             values: query.values.slice(0, -2) // Exclude limit and offset
         };
         const { rows: [{ count: total }] } = await pg.query(countQuery);

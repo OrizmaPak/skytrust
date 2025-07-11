@@ -34,7 +34,7 @@ const getbranch = async (req, res) => {
     //     userid = req.user.id;
     // }
 
-    let queryString = `SELECT * FROM sky."Branch" WHERE 1=1`;
+    let queryString = `SELECT * FROM skyeu."Branch" WHERE 1=1`;
     let params = []; // Array to hold query parameters
 
     // Dynamically add conditions based on the presence of filters
@@ -108,7 +108,7 @@ const getbranch = async (req, res) => {
         const userIds = branches.map(branch => branch.userid).filter(id => id);
         const userNamesQuery = `
             SELECT id, CONCAT(firstname, ' ', lastname, ' ', othernames) AS fullname
-            FROM sky."User"
+            FROM skyeu."User"
             WHERE id = ANY($1::int[])
         `;
         const { rows: userNames } = await pg.query(userNamesQuery, [userIds]);

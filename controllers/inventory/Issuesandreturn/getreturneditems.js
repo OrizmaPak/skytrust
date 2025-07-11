@@ -4,7 +4,7 @@ const { activityMiddleware } = require("../../../middleware/activity"); // Added
 
 const getreturneditems = async (req, res) => {
     const { startdate, enddate } = req.query;
-    let query = `SELECT * FROM sky."Inventory" WHERE status = 'ACTIVE' AND transactiondesc = 'RETURNED ITEMS'`;
+    let query = `SELECT * FROM skyeu."Inventory" WHERE status = 'ACTIVE' AND transactiondesc = 'RETURNED ITEMS'`;
     let params = [];
 
     if (startdate && enddate) {

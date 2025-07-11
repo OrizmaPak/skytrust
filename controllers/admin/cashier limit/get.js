@@ -12,9 +12,9 @@ const getCashierLimit = async (req, res) => {
     try {
         // Building the SQL query dynamically based on query parameters
         let queryString = `
-            SELECT sky."Cashierlimit".*, CONCAT(sky."User".firstname, ' ', sky."User".lastname, ' ', COALESCE(sky."User".othernames, '')) AS cashiername
-            FROM sky."Cashierlimit"
-            LEFT JOIN sky."User" ON sky."Cashierlimit".cashier = sky."User".id
+            SELECT skyeu."Cashierlimit".*, CONCAT(skyeu."User".firstname, ' ', skyeu."User".lastname, ' ', COALESCE(skyeu."User".othernames, '')) AS cashiername
+            FROM skyeu."Cashierlimit"
+            LEFT JOIN skyeu."User" ON skyeu."Cashierlimit".cashier = skyeu."User".id
             WHERE 1=1
         `;
         let params = [];
@@ -22,23 +22,23 @@ const getCashierLimit = async (req, res) => {
         // Determine access level based on user role and permissions
         if (user.role !== 'SUPERADMIN' && (!user.permissions || !user.permissions.includes('CHANGE BRANCH'))) {
             // Restrict to users from the same branch
-            queryString += ` AND sky."User".branch = $${params.length + 1}`;
+            queryString += ` AND skyeu."User".branch = $${params.length + 1}`;
             params.push(user.branch);
         }
 
         // Adding id condition to the query if provided
         if (id) {
-            queryString += ` AND sky."Cashierlimit".id = $${params.length + 1}`;
+            queryString += ` AND skyeu."Cashierlimit".id = $${params.length + 1}`;
             params.push(id);
         }
         // Adding cashier condition to the query if provided
         if (cashier) {
-            queryString += ` AND sky."Cashierlimit".cashier = $${params.length + 1}`;
+            queryString += ` AND skyeu."Cashierlimit".cashier = $${params.length + 1}`;
             params.push(cashier);
         }
         // Adding status condition to the query if provided
         if (status) {
-            queryString += ` AND sky."Cashierlimit".status = $${params.length + 1}`;
+            queryString += ` AND skyeu."Cashierlimit".status = $${params.length + 1}`;
             params.push(status);
         }
 

@@ -24,7 +24,7 @@ const getTransactionsAndBalance = async (req, res) => {
     // -----------------------------------------------------------------------
     // 1. Fetch organization settings
     // -----------------------------------------------------------------------
-    const orgSettingsQuery = `SELECT * FROM sky."Organisationsettings"`;
+    const orgSettingsQuery = `SELECT * FROM skyeu."Organisationsettings"`;
     const orgSettingsResult = await pg.query(orgSettingsQuery);
 
     if (orgSettingsResult.rows.length === 0) {
@@ -109,8 +109,8 @@ const getTransactionsAndBalance = async (req, res) => {
         JSON_AGG(row_to_json(sub)) AS transactions
       FROM (
         SELECT t.*
-        FROM sky."transaction" t
-        JOIN sky."User" u ON t.userid = u.id
+        FROM skyeu."transaction" t
+        JOIN skyeu."User" u ON t.userid = u.id
         WHERE ${conditionsView.join(" AND ")}
       ) AS sub
       GROUP BY sub.userid
@@ -166,9 +166,9 @@ const getTransactionsAndBalance = async (req, res) => {
           )
           ELSE 'Unknown User'
         END AS createdbyname
-      FROM sky."transaction" t
-      LEFT JOIN sky."User" u ON t.userid = u.id
-      LEFT JOIN sky."User" cu ON t.createdby = cu.id
+      FROM skyeu."transaction" t
+      LEFT JOIN skyeu."User" u ON t.userid = u.id
+      LEFT JOIN skyeu."User" cu ON t.createdby = cu.id
       WHERE ${conditionsNotActive.join(" AND ")}
       ORDER BY t.dateadded DESC
     `;
@@ -192,7 +192,7 @@ const getTransactionsAndBalance = async (req, res) => {
       // For simplicity, we won't re-check branch here, but if you want, you can add that filter.
       const userNamesQuery = `
         SELECT id, firstname, lastname, othernames
-        FROM sky."User"
+        FROM skyeu."User"
         WHERE id = ANY($1)
       `;
       const userNamesResult = await pg.query(userNamesQuery, [userIdsView]);
@@ -247,8 +247,8 @@ const getTransactionsAndBalance = async (req, res) => {
 
     const totalCountQuery = `
       SELECT COUNT(DISTINCT t.userid) AS total_count
-      FROM sky."transaction" t
-      JOIN sky."User" u ON t.userid = u.id
+      FROM skyeu."transaction" t
+      JOIN skyeu."User" u ON t.userid = u.id
       WHERE ${conditionsCount.join(" AND ")}
     `;
 

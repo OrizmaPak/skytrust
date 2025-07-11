@@ -11,7 +11,7 @@ const saveOrUpdateQualification = async (req, res) => {
     try {
         await pg.query('BEGIN');
         const { rows: userRows } = await pg.query(
-            `SELECT id FROM sky."User" WHERE id = $1`,
+            `SELECT id FROM skyeu."User" WHERE id = $1`,
             [userid]
         );
 
@@ -29,7 +29,7 @@ const saveOrUpdateQualification = async (req, res) => {
         if (id) {
             // Update existing qualification using COALESCE
             const { rowCount } = await pg.query(
-                `UPDATE sky."qualification" 
+                `UPDATE skyeu."qualification" 
                  SET userid = COALESCE($1, userid), 
                      institution = COALESCE($2, institution), 
                      certificationdate = COALESCE($3, certificationdate), 
@@ -56,7 +56,7 @@ const saveOrUpdateQualification = async (req, res) => {
         } else {
             // Insert new qualification
             await pg.query(
-                `INSERT INTO sky."qualification" (userid, institution, certificationdate, imageone, imagetwo, qualification, createdby)
+                `INSERT INTO skyeu."qualification" (userid, institution, certificationdate, imageone, imagetwo, qualification, createdby)
                  VALUES ($1, $2, $3, $4, $5, $6, $7)`,
                 [userid, institution, certificationdate, imageone, imagetwo, qualification, user.id]
             );

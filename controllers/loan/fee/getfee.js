@@ -4,8 +4,8 @@ const pg = require("../../../db/pg");
 const getLoanFees = async (req, res) => {
     try {
         let query = {
-            text: `SELECT lf.*, CONCAT(acc.groupname, ' - ', acc.accounttype) AS glaccountname FROM sky."loanfee" lf
-                   LEFT JOIN sky."Accounts" acc ON lf.glaccount = acc.accountnumber`,
+            text: `SELECT lf.*, CONCAT(acc.groupname, ' - ', acc.accounttype) AS glaccountname FROM skyeu."loanfee" lf
+                   LEFT JOIN skyeu."Accounts" acc ON lf.glaccount = acc.accountnumber`,
             values: []
         };
 
@@ -63,7 +63,7 @@ const getLoanFees = async (req, res) => {
 
         // Get total count for pagination
         const countQuery = {
-            text: `SELECT COUNT(*) FROM sky."loanfee" lf ${whereClause}`,
+            text: `SELECT COUNT(*) FROM skyeu."loanfee" lf ${whereClause}`,
             values: query.values.slice(0, -2) // Exclude limit and offset
         };
         const { rows: [{ count: total }] } = await pg.query(countQuery);

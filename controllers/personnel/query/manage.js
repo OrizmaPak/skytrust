@@ -20,7 +20,7 @@ const manageQuery = async (req, res) => {
 
     // Check if the user exists in the User table
     const { rowCount: userExists } = await pg.query({
-        text: `SELECT 1 FROM sky."User" WHERE "id" = $1`,
+        text: `SELECT 1 FROM skyeu."User" WHERE "id" = $1`,
         values: [userid]
     });
 
@@ -38,7 +38,7 @@ const manageQuery = async (req, res) => {
         if (id) {
             // Update existing query
             const { rowCount } = await pg.query({
-                text: `UPDATE sky."query" SET 
+                text: `UPDATE skyeu."query" SET 
                         "userid" = COALESCE($1, "userid"),
                         "query" = COALESCE($2, "query"),
                         "imageone" = COALESCE($3, "imageone")
@@ -68,7 +68,7 @@ const manageQuery = async (req, res) => {
         } else {
             // Create new query
             const { rows } = await pg.query({
-                text: `INSERT INTO sky."query" (
+                text: `INSERT INTO skyeu."query" (
                         "userid",
                         "query",
                         "imageone",

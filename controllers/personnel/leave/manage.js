@@ -13,7 +13,7 @@ const saveOrUpdateLeave = async (req, res) => {
         if (id) {
             // Update existing record
             query = {
-                text: `UPDATE sky."leave" 
+                text: `UPDATE skyeu."leave" 
                        SET userid = COALESCE($1, userid), 
                            title = COALESCE($2, title), 
                            startdate = COALESCE($3, startdate), 
@@ -27,7 +27,7 @@ const saveOrUpdateLeave = async (req, res) => {
         } else {
             // Insert new record
             query = {
-                text: `INSERT INTO sky."leave" (userid, title, startdate, enddate, image, createdby, status)
+                text: `INSERT INTO skyeu."leave" (userid, title, startdate, enddate, image, createdby, status)
                        VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
                 values: [userid, title, startdate, enddate, image, user.id, 'ACTIVE']
             };

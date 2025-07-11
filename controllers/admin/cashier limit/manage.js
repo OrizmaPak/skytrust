@@ -18,7 +18,7 @@ const manageCashierLimit = async (req, res) => {
         }
 
         // Check if the cashier is an actual user
-        const { rows: [userExists] } = await pg.query(`SELECT * FROM sky."User" WHERE id = $1`, [cashier]);
+        const { rows: [userExists] } = await pg.query(`SELECT * FROM skyeu."User" WHERE id = $1`, [cashier]);
         if (!userExists) {
             return res.status(StatusCodes.NOT_FOUND).json({
                 status: false,
@@ -30,7 +30,7 @@ const manageCashierLimit = async (req, res) => {
         }
 
         // Check if the cashier limit exists
-        const { rows: [cashierLimitExists] } = await pg.query(`SELECT * FROM sky."Cashierlimit" WHERE cashier = $1`, [cashier]);
+        const { rows: [cashierLimitExists] } = await pg.query(`SELECT * FROM skyeu."Cashierlimit" WHERE cashier = $1`, [cashier]);
         if (cashierLimitExists && !id) {
             return res.status(StatusCodes.CONFLICT).json({
                 status: false,
@@ -45,7 +45,7 @@ const manageCashierLimit = async (req, res) => {
         if (id) {
             // If status is provided, update only the status
             if (status) {
-                const { rows: [updatedCashierLimit] } = await pg.query(`UPDATE sky."Cashierlimit" SET status = $1 WHERE id = $2 RETURNING *`, [status, id]);
+                const { rows: [updatedCashierLimit] } = await pg.query(`UPDATE skyeu."Cashierlimit" SET status = $1 WHERE id = $2 RETURNING *`, [status, id]);
                 if (!updatedCashierLimit) {
                     return res.status(StatusCodes.NOT_FOUND).json({
                         status: false,
@@ -64,7 +64,7 @@ const manageCashierLimit = async (req, res) => {
                 });
             } else {
                 // Update cashier limit details
-                const { rows: [updatedCashierLimit] } = await pg.query(`UPDATE sky."Cashierlimit" SET depositlimit = $1, withdrawallimit = $2 WHERE id = $3 RETURNING *`, [depositlimit, withdrawallimit, id]);
+                const { rows: [updatedCashierLimit] } = await pg.query(`UPDATE skyeu."Cashierlimit" SET depositlimit = $1, withdrawallimit = $2 WHERE id = $3 RETURNING *`, [depositlimit, withdrawallimit, id]);
                 if (!updatedCashierLimit) {
                     return res.status(StatusCodes.NOT_FOUND).json({
                         status: false,
@@ -97,7 +97,7 @@ const manageCashierLimit = async (req, res) => {
             //     });
             // }
             console.log([cashier, depositlimit, withdrawallimit, 'ACTIVE', new Date().getTime(), req.user.id])
-            const { rows: [newCashierLimit] } = await pg.query(`INSERT INTO sky."Cashierlimit" (cashier, depositlimit, withdrawallimit, status, dateadded, createdby) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`, [cashier, depositlimit, withdrawallimit, 'ACTIVE', new Date(), req.user.id]);
+            const { rows: [newCashierLimit] } = await pg.query(`INSERT INTO skyeu."Cashierlimit" (cashier, depositlimit, withdrawallimit, status, dateadded, createdby) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`, [cashier, depositlimit, withdrawallimit, 'ACTIVE', new Date(), req.user.id]);
             return res.status(StatusCodes.CREATED).json({
                 status: true,
                 message: "Cashier limit created successfully",

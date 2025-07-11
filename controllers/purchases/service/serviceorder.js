@@ -15,7 +15,7 @@ const saveOrUpdateServices = async (req, res) => {
             errors: []
         });
     }
-    const supplierQuery = `SELECT * FROM sky."Supplier" WHERE id = $1 AND status = 'ACTIVE'`;
+    const supplierQuery = `SELECT * FROM skyeu."Supplier" WHERE id = $1 AND status = 'ACTIVE'`;
     const { rows: [validSupplier] } = await pg.query(supplierQuery, [supplier]);
 
     if (!validSupplier) {
@@ -27,7 +27,7 @@ const saveOrUpdateServices = async (req, res) => {
             errors: []
         });
     }
-    const branchQuery = `SELECT * FROM sky."Branch" WHERE id = $1 AND status = 'ACTIVE'`;
+    const branchQuery = `SELECT * FROM skyeu."Branch" WHERE id = $1 AND status = 'ACTIVE'`;
     const { rows: [validbranch] } = await pg.query(branchQuery, [branch]);
 
     if (!validbranch) {
@@ -60,7 +60,7 @@ const saveOrUpdateServices = async (req, res) => {
             }
             // Insert new service
             const insertQuery = `
-                INSERT INTO sky."Service" (supplier, servicetype, description, amount, amountfrom, amountto, 
+                INSERT INTO skyeu."Service" (supplier, servicetype, description, amount, amountfrom, amountto, 
                     servicestartdate, serviceenddate, branch, dateadded, createdby, status, reference)
                 VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW(), $7, NOW(), $8, $9, $10)
             `;
@@ -69,7 +69,7 @@ const saveOrUpdateServices = async (req, res) => {
 
         if (req.body.reference) {
             await pg.query(
-                `DELETE FROM sky."Service" WHERE reference = $1`, 
+                `DELETE FROM skyeu."Service" WHERE reference = $1`, 
                 [req.body.reference]
             );
         }

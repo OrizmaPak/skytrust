@@ -29,7 +29,7 @@ const saveOrUpdateEmploymentRecord = async (req, res) => {
         }
  
         const { rows: userRows } = await pg.query(
-            `SELECT id FROM sky."User" WHERE id = $1`,
+            `SELECT id FROM skyeu."User" WHERE id = $1`,
             [userid]
         );
 
@@ -49,7 +49,7 @@ const saveOrUpdateEmploymentRecord = async (req, res) => {
             console.log('Updating existing employment record with ID:', id);
             // Update existing employment record
             await pg.query(
-                `UPDATE sky."employmentrecord" SET 
+                `UPDATE skyeu."employmentrecord" SET 
                     userid = COALESCE($1, userid), 
                     employer = COALESCE($2, employer), 
                     position = COALESCE($3, position), 
@@ -66,7 +66,7 @@ const saveOrUpdateEmploymentRecord = async (req, res) => {
             console.log('Inserting new employment record');
             // Insert new employment record
             const { rows } = await pg.query(
-                `INSERT INTO sky."employmentrecord" (userid, employer, position, years, reasonofleaving, doc, dateadded, createdby, status) VALUES ($1, $2, $3, $4, $5, $6, NOW(), $7, 'ACTIVE') RETURNING id`,
+                `INSERT INTO skyeu."employmentrecord" (userid, employer, position, years, reasonofleaving, doc, dateadded, createdby, status) VALUES ($1, $2, $3, $4, $5, $6, NOW(), $7, 'ACTIVE') RETURNING id`,
                 [userid, employer, position, years, reasonofleaving, doc, user.id]
             );
             id = rows[0].id;

@@ -9,7 +9,7 @@ const getaccountTransactions = async (req, res) => {
     try {
         // 1. Build the main query to fetch filtered transactions
         let query = {
-            text: `SELECT * FROM sky."transaction"`,
+            text: `SELECT * FROM skyeu."transaction"`,
             values: []
         };
 
@@ -96,7 +96,7 @@ const getaccountTransactions = async (req, res) => {
         // 2. Capture the current state of query.values for sum and count queries
         const sumQueryValues = [...query.values];
         const countQuery = {
-            text: `SELECT COUNT(*) FROM sky."transaction" ${whereClause}`,
+            text: `SELECT COUNT(*) FROM skyeu."transaction" ${whereClause}`,
             values: [...query.values]
         };
 
@@ -128,7 +128,7 @@ const getaccountTransactions = async (req, res) => {
             const openingBalanceQuery = `
                 SELECT 
                     COALESCE(SUM(credit), 0) - COALESCE(SUM(debit), 0) AS opening_balance
-                FROM sky."transaction" 
+                FROM skyeu."transaction" 
                 WHERE "dateadded" < $1 AND accountnumber = $2 AND status = 'ACTIVE'
             `;
             const { rows: [balanceRow] } = await pg.query(openingBalanceQuery, [startdate, accountnumber]);
@@ -144,7 +144,7 @@ const getaccountTransactions = async (req, res) => {
             SELECT 
                 COALESCE(SUM(credit), 0) AS total_credit, 
                 COALESCE(SUM(debit), 0) AS total_debit
-            FROM sky."transaction" 
+            FROM skyeu."transaction" 
             WHERE accountnumber = $1 AND status = 'ACTIVE'
         `; 
         // sumQueryValues.push(accountnumber);
