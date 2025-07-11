@@ -9,7 +9,7 @@ const xss = require('xss-clean');
 const express = require('express');
 const cors = require('cors');
 const app = express(); 
-app.set('trust proxy', 1); 
+app.set('trust proxy', 1);  
 
 // routers
 const authRouter = require('./routes/auth');
