@@ -250,7 +250,7 @@ const signup = async (req, res) => {
             messagestatus = true
         }
         req.newuser = saveuser
-        let accountaction = await autoAddMembershipAndAccounts(req, res, 0)
+        const accountaction = await autoAddMembershipAndAccounts(req, res, 0)
 
         const responseData = {
             status: accountaction,
@@ -281,12 +281,18 @@ const signup = async (req, res) => {
             `, [defineMember.id, userId, userId]);
         }
 
+        req.user = {
+            id: userId,
+            branch: details.branch ?? branch,
+            registrationpoint: details.registrationpoint ?? 0
+        };
+
         const savingsDetails = {
             savingsproductid: 1,
             userid: userId,
             amount: 1000.0,
-            branch: 1,
-            registrationpoint: 0,
+            branch: details.branch ?? branch ?? 1,
+            registrationpoint: details.registrationpoint ?? 0,
             registrationcharge: 50.0,
             registrationdesc: 'Initial deposit',
             bankname1: 'Bank A',
@@ -298,9 +304,16 @@ const signup = async (req, res) => {
         };
 
         req.body = savingsDetails;
-        await manageSavingsAccount(req, res);
+        req.skipResponse = true;
+        const savingsResult = await manageSavingsAccount(req, res);
+        if (responseData.data) {
+            responseData.data.savingsaccount = savingsResult?.status ? savingsResult.data : null;
+        }
+        if (savingsResult?.status === false) {
+            responseData.errors.push('Savings account creation failed');
+        }
 
-        // return res.status(StatusCodes.OK).json(responseData);
+        return res.status(responseData.statuscode).json(responseData);
     } catch (err) {
         console.error('Unexpected Error:', err);
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({

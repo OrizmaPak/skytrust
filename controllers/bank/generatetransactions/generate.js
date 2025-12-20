@@ -3,20 +3,66 @@ const pg = require("../../../db/pg");
 const { activityMiddleware } = require("../../../middleware/activity");
 
 const generateTransactions = async (req, res) => {
-    const { accountnumber, startdate, enddate, totalamount, creditsno, debitsno, userid, branch } = req.body;
+    const { accountnumber, startdate, enddate, totalamount, estimatedamount, creditsno, debitsno, userid, branch } = req.body;
     const user = req.user;
 
-    if (!accountnumber || !startdate || !enddate || !totalamount || !creditsno || !debitsno) {
+    const parsedEstimate = Number(estimatedamount ?? totalamount);
+    const creditCount = Number(creditsno);
+    const debitCount = Number(debitsno);
+    const minimumPerTransaction = 5; // dollars
+
+    const estimateMissing = !Number.isFinite(parsedEstimate) || parsedEstimate <= 0;
+    const creditCountMissing = !Number.isInteger(creditCount) || creditCount < 0;
+    const debitCountMissing = !Number.isInteger(debitCount) || debitCount < 0;
+
+    if (!accountnumber || !startdate || !enddate || estimateMissing || creditCountMissing || debitCountMissing) {
         return res.status(StatusCodes.BAD_REQUEST).json({
             status: false,
             message: "Missing required fields",
             statuscode: StatusCodes.BAD_REQUEST,
             data: null,
-            errors: ["accountnumber, startdate, enddate, totalamount, creditsno, and debitsno are required"]
+            errors: ["accountnumber, startdate, enddate, estimatedamount (> 0), creditsno, and debitsno are required"]
         });
     }
 
     try {
+        const splitAmountIntoTransactions = (total, count, minValue) => {
+            if (count === 0) return [];
+
+            const minCents = Math.round(minValue * 100);
+            let totalCents = Math.round(total * 100);
+
+            // Ensure we have at least the minimum for each transaction
+            totalCents = Math.max(totalCents, minCents * count);
+
+            // Allocate the minimum first
+            let remainingCents = totalCents - minCents * count;
+
+            // Generate random weights to create varied amounts (skewed for “lumpy” values)
+            const weights = Array.from({ length: count }, () => Math.pow(Math.random(), 1.5) + 0.2);
+            const weightSum = weights.reduce((s, w) => s + w, 0);
+
+            const allocations = weights.map((w) => Math.floor((w / weightSum) * remainingCents) + minCents);
+
+            // Distribute any leftover cents randomly to keep totals exact
+            let allocatedCents = allocations.reduce((s, c) => s + c, 0);
+            let leftovers = totalCents - allocatedCents;
+            while (leftovers > 0) {
+                const idx = Math.floor(Math.random() * allocations.length);
+                allocations[idx] += 1;
+                leftovers -= 1;
+            }
+
+            return allocations.map((cents) => Number((cents / 100).toFixed(2)));
+        };
+
+        const buildTargetTotal = (count) => {
+            if (count === 0) return 0;
+            const base = Math.max(parsedEstimate, minimumPerTransaction * count);
+            const multiplier = 2.5 + Math.random() * 3.5; // between 2.5x and 6x to make values feel “big”
+            return base * multiplier;
+        };
+
         const descriptions = [
             "Shopping at the local mall for clothing and accessories",
             "Business transaction involving client invoice settlement",
@@ -74,11 +120,6 @@ const generateTransactions = async (req, res) => {
             return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
         };
 
-        const generateRandomAmount = (remainingAmount, remainingTransactions) => {
-            if (remainingTransactions === 1) return remainingAmount;
-            return parseFloat((Math.random() * remainingAmount).toFixed(2));
-        };
-
         const generateReferencer = () => {
             const prefix = 'REF';
             const randomPart = Math.random().toString(36).substring(2, 10).toUpperCase();
@@ -89,12 +130,11 @@ const generateTransactions = async (req, res) => {
         };
 
         const transactions = [];
-        let remainingCreditAmount = totalamount;
-        let remainingDebitAmount = totalamount;
+        const creditAmounts = splitAmountIntoTransactions(buildTargetTotal(creditCount), creditCount, minimumPerTransaction);
+        const debitAmounts = splitAmountIntoTransactions(buildTargetTotal(debitCount), debitCount, minimumPerTransaction);
 
-        for (let i = 0; i < creditsno; i++) {
-            const creditAmount = generateRandomAmount(remainingCreditAmount, creditsno - i);
-            remainingCreditAmount -= creditAmount;
+        for (let i = 0; i < creditAmounts.length; i++) {
+            const creditAmount = creditAmounts[i];
 
             let ref = generateReferencer()
 
@@ -131,10 +171,8 @@ const generateTransactions = async (req, res) => {
         }
 
 
-
-        for (let i = 0; i < debitsno; i++) {
-            const debitAmount = generateRandomAmount(remainingDebitAmount, debitsno - i);
-            remainingDebitAmount -= debitAmount;
+        for (let i = 0; i < debitAmounts.length; i++) {
+            const debitAmount = debitAmounts[i];
 
             let ref = generateReferencer()
 
@@ -253,13 +291,14 @@ const generateTransactions = async (req, res) => {
             errors: []
         });
     } catch (error) {
+        const isSmallAmountError = error.message?.includes('Total amount is too small');
         console.error('Unexpected Error:', error);
         await activityMiddleware(req, user.id, 'An unexpected error occurred generating transactions', 'TRANSACTION');
 
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        return res.status(isSmallAmountError ? StatusCodes.BAD_REQUEST : StatusCodes.INTERNAL_SERVER_ERROR).json({
             status: false,
-            message: "An unexpected error occurred",
-            statuscode: StatusCodes.INTERNAL_SERVER_ERROR,
+            message: isSmallAmountError ? error.message : "An unexpected error occurred",
+            statuscode: isSmallAmountError ? StatusCodes.BAD_REQUEST : StatusCodes.INTERNAL_SERVER_ERROR,
             data: null,
             errors: [error.message]
         });

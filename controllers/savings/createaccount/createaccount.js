@@ -7,6 +7,13 @@ const manageSavingsAccount = async (req, res) => {
     let { savingsproductid, userid=user.id, amount = 0, branch=user.branch, registrationpoint=user.registrationpoint, registrationcharge=0, registrationdesc='', bankname1, bankaccountname1, bankaccountnumber1, bankname2, bankaccountname2, bankaccountnumber2, accountofficer=0, sms, whatsapp, email, createdby, accountnumber, member=0, registrationdate, reason, status} = req.body;
 
     try {
+        if (req && req.skipResponse) {
+            res = {
+                status: () => ({
+                    json: (payload) => payload
+                })
+            };
+        }
         sms = sms ? true : false;
         whatsapp = whatsapp ? true : false;
         email = email ? true : false;
