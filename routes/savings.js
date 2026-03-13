@@ -3,6 +3,7 @@ const { manageSavingsProduct } = require('../controllers/savings/products/manage
 const { getSavingsProducts } = require('../controllers/savings/getproduct/getproducts');
 const { manageSavingsAccount } = require('../controllers/savings/createaccount/createaccount');
 const { getAccounts } = require('../controllers/savings/getaccount/getaccount');
+const { deleteSavingsAccount } = require('../controllers/savings/deleteaccount/deleteaccount');
 const { getFrequencyOverrides } = require('../controllers/savings/overridefrequency/getoveridefrequency');
 const { saveOrUpdateFrequencyOverride } = require('../controllers/savings/overridefrequency/manageoveride');
 const router = express.Router();
@@ -17,6 +18,9 @@ router.route('/product')
 router.route('/account') 
     .post(manageSavingsAccount)
     .get(getAccounts);
+
+router.route('/account/:id')
+    .delete(deleteSavingsAccount);
 
 router.route('/overridefrequency') 
     .post(saveOrUpdateFrequencyOverride)
