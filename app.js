@@ -45,16 +45,17 @@ const { decryptMiddleware, encryptResponseMiddleware } = require('./middleware/e
 app.use(express.json());
 app.use(helmet());
 app.use(xss());
-app.use(cors()); // Add CORS middleware to fix cross-origin errors
 
 const corsOptions = {
-  origin: '*', // Allow all origins
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
+  origin: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Requested-With'],
+  credentials: false,
+  optionsSuccessStatus: 204,
 };
  
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(decryptMiddleware);
