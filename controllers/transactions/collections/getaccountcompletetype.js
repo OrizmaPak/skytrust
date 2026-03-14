@@ -19,7 +19,7 @@ const getfullAccountType = async (req, res) => {
     try {
         const { rows: settings } = await pg.query(`
             SELECT savings_account_prefix, personal_account_prefix, loan_account_prefix, property_account_prefix, rotary_account_prefix, *
-            FROM sky."Organisationsettings"
+            FROM skytobi."Organisationsettings"
             LIMIT 1
         `);
 
@@ -47,7 +47,7 @@ const getfullAccountType = async (req, res) => {
 
         const getBranchName = async (branchId) => {
             const { rows: branchDetails } = await pg.query(`
-                SELECT branch FROM sky."Branch" WHERE id = $1
+                SELECT branch FROM skytobi."Branch" WHERE id = $1
             `, [branchId]);
             return branchDetails.length > 0 ? branchDetails[0].branch : null;
         };
@@ -55,7 +55,7 @@ const getfullAccountType = async (req, res) => {
         if(accountnumber){
             const { rows: accountDetails } = await pg.query(`
                 SELECT ga.*
-                FROM sky."Accounts" ga
+                FROM skytobi."Accounts" ga
                 WHERE ga.accountnumber = $1
                 `, [accountnumber]);
                 
@@ -88,8 +88,8 @@ const getfullAccountType = async (req, res) => {
             accountType = "Savings";
             const { rows: accountDetails } = await pg.query(`
                 SELECT sa.*, u.*, CONCAT(u.firstname, ' ', u.lastname, ' ', COALESCE(u.othernames, '')) AS fullname
-                FROM sky."savings" sa
-                JOIN sky."User" u ON sa.userid = u.id
+                FROM skytobi."savings" sa
+                JOIN skytobi."User" u ON sa.userid = u.id
                 WHERE sa.accountnumber = $1
             `, [accountnumber]);
             
@@ -113,8 +113,8 @@ const getfullAccountType = async (req, res) => {
             accountType = "Personal";
             const { rows: accountDetails } = await pg.query(`
                 SELECT sa.*, u.*, CONCAT(u.firstname, ' ', u.lastname, ' ', COALESCE(u.othernames, '')) AS fullname
-                FROM sky."User" sa
-                JOIN sky."User" u ON sa.id = u.id
+                FROM skytobi."User" sa
+                JOIN skytobi."User" u ON sa.id = u.id
                 WHERE sa.phone = $1
             `, [accountnumber.slice(personal_account_prefix.length)]);
             
@@ -138,8 +138,8 @@ const getfullAccountType = async (req, res) => {
             accountType = "Loan";
             const { rows: accountDetails } = await pg.query(`
                 SELECT sa.*, u.*, CONCAT(u.firstname, ' ', u.lastname, ' ', COALESCE(u.othernames, '')) AS fullname
-                FROM sky."loanaccounts" sa
-                JOIN sky."User" u ON sa.userid = u.id
+                FROM skytobi."loanaccounts" sa
+                JOIN skytobi."User" u ON sa.userid = u.id
                 WHERE sa.accountnumber = $1
             `, [accountnumber]);
             
@@ -164,8 +164,8 @@ const getfullAccountType = async (req, res) => {
             accountType = "Property";
             const { rows: accountDetails } = await pg.query(`
                 SELECT sa.*, u.*, CONCAT(u.firstname, ' ', u.lastname, ' ', COALESCE(u.othernames, '')) AS fullname
-                FROM sky."propertyaccount" sa
-                JOIN sky."User" u ON sa.userid = u.id
+                FROM skytobi."propertyaccount" sa
+                JOIN skytobi."User" u ON sa.userid = u.id
                 WHERE sa.accountnumber = $1
             `, [accountnumber]);
             
@@ -189,8 +189,8 @@ const getfullAccountType = async (req, res) => {
             accountType = "Rotary";
             const { rows: accountDetails } = await pg.query(`
                 SELECT sa.*, u.*, CONCAT(u.firstname, ' ', u.lastname, ' ', COALESCE(u.othernames, '')) AS fullname
-                FROM sky."rotaryaccount" sa
-                JOIN sky."User" u ON sa.userid = u.id
+                FROM skytobi."rotaryaccount" sa
+                JOIN skytobi."User" u ON sa.userid = u.id
                 WHERE sa.accountnumber = $1
             `, [accountnumber]);
             
@@ -214,7 +214,7 @@ const getfullAccountType = async (req, res) => {
             accountType = "Personal";
             const { rows: accountDetails } = await pg.query(`
                 SELECT *, CONCAT(firstname, ' ', lastname, ' ', COALESCE(othernames, '')) AS fullname
-                FROM sky."User"
+                FROM skytobi."User"
                 WHERE phone = $1
             `, [accountnumber]);
 

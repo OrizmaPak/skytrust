@@ -7,7 +7,7 @@ const getRejectedServicesReceived = async (req, res) => {
 
     try {
         let query = {
-            text: `SELECT * FROM sky."Service" WHERE status = 'ACTIVE' AND amount < 0`,
+            text: `SELECT * FROM skytobi."Service" WHERE status = 'ACTIVE' AND amount < 0`,
             values: []
         };
 
@@ -89,8 +89,8 @@ const getRejectedServicesReceived = async (req, res) => {
         // Fetch branch and supplier names
         for (const ref in groupedServices) {
             const firstService = groupedServices[ref].services[0];
-            const branchQuery = `SELECT branch FROM sky."Branch" WHERE id = $1`;
-            const supplierQuery = `SELECT supplier FROM sky."Supplier" WHERE id = $1`;
+            const branchQuery = `SELECT branch FROM skytobi."Branch" WHERE id = $1`;
+            const supplierQuery = `SELECT supplier FROM skytobi."Supplier" WHERE id = $1`;
 
             const { rows: [branch] } = await pg.query(branchQuery, [firstService.branch]);
             const { rows: [supplier] } = await pg.query(supplierQuery, [firstService.supplier]);

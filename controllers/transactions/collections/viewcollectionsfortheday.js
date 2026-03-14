@@ -36,7 +36,7 @@
     
         try {
             // Get organisation settings to fetch default cash account
-            const { rows: orgSettings } = await pg.query(`SELECT default_cash_account FROM sky."Organisationsettings"`);
+            const { rows: orgSettings } = await pg.query(`SELECT default_cash_account FROM skytobi."Organisationsettings"`);
             const defaultCashAccount = orgSettings[0].default_cash_account;
     
             // Fetch transactions for the specified day, excluding default cash account
@@ -50,13 +50,13 @@
                     rp.registrationpoint AS registrationpointname,
                     b.branch AS branchname
                 FROM 
-                    sky."transaction" t
+                    skytobi."transaction" t
                 JOIN 
-                    sky."User" u ON t.userid = u.id
+                    skytobi."User" u ON t.userid = u.id
                 JOIN 
-                    sky."Branch" b ON u.branch = b.id
+                    skytobi."Branch" b ON u.branch = b.id
                 LEFT JOIN 
-                    sky."Registrationpoint" rp ON u.registrationpoint = rp.id
+                    skytobi."Registrationpoint" rp ON u.registrationpoint = rp.id
                 WHERE 
                     t.transactiondate >= $1 
                     AND t.transactiondate <= $2
@@ -150,7 +150,7 @@
     
                 if (penaltyRefs) {
                     const penaltyQuery = `
-                        SELECT debit, credit FROM sky."transaction"
+                        SELECT debit, credit FROM skytobi."transaction"
                         WHERE cashref = $1 AND status = 'ACTIVE' AND accountnumber != $2
                     `;
                     const penaltyResult = await pg.query(penaltyQuery, [penaltyRefs, defaultCashAccount]);
@@ -164,7 +164,7 @@
                 // Add transaction details
                 const transactionQuery = `
                     SELECT accountnumber, whichaccount, tfrom, credit
-                    FROM sky."transaction"
+                    FROM skytobi."transaction"
                     WHERE cashref = $1 AND ttype IN ('CREDIT', 'DEBIT') AND status = 'ACTIVE' AND accountnumber != $2
                 `;
                 const transactionResult = await pg.query(transactionQuery, [tx.cashref, defaultCashAccount]);
@@ -175,29 +175,29 @@
                     const { whichaccount, accountnumber } = transaction;
     
                     if (whichaccount === 'PERSONAL') {
-                        const { rows: orgSettings } = await pg.query(`SELECT personal_account_prefix FROM sky."Organisationsettings"`);
+                        const { rows: orgSettings } = await pg.query(`SELECT personal_account_prefix FROM skytobi."Organisationsettings"`);
                         const personalAccountPrefix = orgSettings[0].personal_account_prefix;
                         const phone = accountnumber.replace(personalAccountPrefix, '');
-                        const { rows: users } = await pg.query(`SELECT firstname, lastname, othernames FROM sky."User" WHERE phone = $1`, [phone]);
+                        const { rows: users } = await pg.query(`SELECT firstname, lastname, othernames FROM skytobi."User" WHERE phone = $1`, [phone]);
                         if (users.length > 0) {
                             const { firstname, lastname, othernames } = users[0];
                             accountName = `${firstname} ${lastname} ${othernames}`.trim();
                         }
                     } else if (whichaccount === 'SAVINGS') {
-                        const { rows: savings } = await pg.query(`SELECT userid FROM sky."savings" WHERE accountnumber = $1`, [accountnumber]);
+                        const { rows: savings } = await pg.query(`SELECT userid FROM skytobi."savings" WHERE accountnumber = $1`, [accountnumber]);
                         if (savings.length > 0) {
                             const { userid: savingsUserId } = savings[0];
-                            const { rows: users } = await pg.query(`SELECT firstname, lastname, othernames FROM sky."User" WHERE id = $1`, [savingsUserId]);
+                            const { rows: users } = await pg.query(`SELECT firstname, lastname, othernames FROM skytobi."User" WHERE id = $1`, [savingsUserId]);
                             if (users.length > 0) {
                                 const { firstname, lastname, othernames } = users[0];
                                 accountName = `${firstname} ${lastname} ${othernames}`.trim();
                             }
                         }
                     } else if (whichaccount === 'LOAN') {
-                        const { rows: loans } = await pg.query(`SELECT userid FROM sky."loanaccounts" WHERE accountnumber = $1`, [accountnumber]);
+                        const { rows: loans } = await pg.query(`SELECT userid FROM skytobi."loanaccounts" WHERE accountnumber = $1`, [accountnumber]);
                         if (loans.length > 0) {
                             const { userid: loanUserId } = loans[0];
-                            const { rows: users } = await pg.query(`SELECT firstname, lastname, othernames FROM sky."User" WHERE id = $1`, [loanUserId]);
+                            const { rows: users } = await pg.query(`SELECT firstname, lastname, othernames FROM skytobi."User" WHERE id = $1`, [loanUserId]);
                             if (users.length > 0) {
                                 const { firstname, lastname, othernames } = users[0];
                                 accountName = `${firstname} ${lastname} ${othernames}`.trim();
@@ -225,7 +225,7 @@
                 const uniqueRefs = Array.from(new Set(refs));
     
                 const bankTxQuery = `
-                    SELECT credit, debit FROM sky."banktransaction"
+                    SELECT credit, debit FROM skytobi."banktransaction"
                     WHERE transactionref = ANY($1) AND status = 'ACTIVE'
                 `;
                 const bankTxResult = await pg.query(bankTxQuery, [uniqueRefs]);

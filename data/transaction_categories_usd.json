@@ -1,0 +1,5145 @@
+{
+  "currency": "USD",
+  "transaction_categories": [
+    {
+      "category_name": "Home Utilities",
+      "min_transaction_amount": 5,
+      "max_transaction_amount": 1200,
+      "transaction_descriptions": [
+        {
+          "description": "Electricity bill payment",
+          "min_amount": 9.5,
+          "max_amount": 1200
+        },
+        {
+          "description": "Prepaid meter recharge",
+          "min_amount": 5,
+          "max_amount": 300
+        },
+        {
+          "description": "Water bill settlement",
+          "min_amount": 9.0,
+          "max_amount": 1200
+        },
+        {
+          "description": "Waste disposal fee",
+          "min_amount": 5,
+          "max_amount": 325
+        },
+        {
+          "description": "Cooking gas refill",
+          "min_amount": 5.2,
+          "max_amount": 1200
+        },
+        {
+          "description": "Home internet subscription",
+          "min_amount": 5,
+          "max_amount": 1200
+        },
+        {
+          "description": "Cable TV subscription",
+          "min_amount": 5,
+          "max_amount": 1200
+        },
+        {
+          "description": "Home security monitoring fee",
+          "min_amount": 5,
+          "max_amount": 295
+        },
+        {
+          "description": "Generator fuel purchase",
+          "min_amount": 9.8,
+          "max_amount": 515
+        },
+        {
+          "description": "Solar inverter maintenance",
+          "min_amount": 20,
+          "max_amount": 1200
+        },
+        {
+          "description": "House cleaning service",
+          "min_amount": 5,
+          "max_amount": 510
+        },
+        {
+          "description": "Laundry service payment",
+          "min_amount": 9.6,
+          "max_amount": 1200
+        },
+        {
+          "description": "Plumbing repair payment",
+          "min_amount": 20,
+          "max_amount": 1200
+        },
+        {
+          "description": "Electrician repair service",
+          "min_amount": 21,
+          "max_amount": 1200
+        },
+        {
+          "description": "Air conditioner servicing",
+          "min_amount": 18,
+          "max_amount": 1200
+        },
+        {
+          "description": "Home fumigation service",
+          "min_amount": 5,
+          "max_amount": 510
+        },
+        {
+          "description": "Borehole maintenance payment",
+          "min_amount": 21,
+          "max_amount": 1200
+        },
+        {
+          "description": "Septic tank evacuation",
+          "min_amount": 5,
+          "max_amount": 500
+        },
+        {
+          "description": "Home appliance repair",
+          "min_amount": 18,
+          "max_amount": 1200
+        },
+        {
+          "description": "Furniture polishing service",
+          "min_amount": 5,
+          "max_amount": 475
+        },
+        {
+          "description": "Window blinds installation",
+          "min_amount": 20,
+          "max_amount": 1200
+        },
+        {
+          "description": "Curtain cleaning payment",
+          "min_amount": 9.9,
+          "max_amount": 1200
+        },
+        {
+          "description": "Compound cleaning service",
+          "min_amount": 5,
+          "max_amount": 500
+        },
+        {
+          "description": "Home painting deposit",
+          "min_amount": 91,
+          "max_amount": 1200
+        },
+        {
+          "description": "Roof repair payment",
+          "min_amount": 20,
+          "max_amount": 1200
+        },
+        {
+          "description": "Tiles replacement payment",
+          "min_amount": 20,
+          "max_amount": 1200
+        },
+        {
+          "description": "Water purifier maintenance",
+          "min_amount": 19,
+          "max_amount": 1200
+        },
+        {
+          "description": "Home router purchase",
+          "min_amount": 5,
+          "max_amount": 1200
+        },
+        {
+          "description": "Gas cylinder replacement",
+          "min_amount": 20,
+          "max_amount": 1200
+        },
+        {
+          "description": "Kitchen sink repair",
+          "min_amount": 18,
+          "max_amount": 1200
+        },
+        {
+          "description": "Household consumables restock",
+          "min_amount": 5,
+          "max_amount": 1200
+        },
+        {
+          "description": "Dishwasher repair charge",
+          "min_amount": 19,
+          "max_amount": 1200
+        },
+        {
+          "description": "Microwave servicing",
+          "min_amount": 19,
+          "max_amount": 1200
+        },
+        {
+          "description": "Fridge repair service",
+          "min_amount": 21,
+          "max_amount": 1200
+        },
+        {
+          "description": "TV repair payment",
+          "min_amount": 20,
+          "max_amount": 1200
+        },
+        {
+          "description": "Smart home device installation",
+          "min_amount": 19,
+          "max_amount": 1200
+        },
+        {
+          "description": "Water heater repair",
+          "min_amount": 18,
+          "max_amount": 1200
+        },
+        {
+          "description": "Pest control service",
+          "min_amount": 5,
+          "max_amount": 520
+        },
+        {
+          "description": "Home moving support",
+          "min_amount": 5,
+          "max_amount": 305
+        },
+        {
+          "description": "Carpet cleaning service",
+          "min_amount": 5.2,
+          "max_amount": 540
+        },
+        {
+          "description": "CCTV maintenance payment",
+          "min_amount": 20,
+          "max_amount": 1200
+        },
+        {
+          "description": "Door lock replacement",
+          "min_amount": 19,
+          "max_amount": 1200
+        },
+        {
+          "description": "Home insurance premium",
+          "min_amount": 11,
+          "max_amount": 1200
+        },
+        {
+          "description": "Estate service charge",
+          "min_amount": 5,
+          "max_amount": 310
+        },
+        {
+          "description": "Janitorial supply purchase",
+          "min_amount": 5,
+          "max_amount": 1200
+        },
+        {
+          "description": "Home renovation materials",
+          "min_amount": 5.2,
+          "max_amount": 1200
+        },
+        {
+          "description": "Emergency house repair",
+          "min_amount": 19,
+          "max_amount": 1200
+        },
+        {
+          "description": "Generator servicing fee",
+          "min_amount": 20,
+          "max_amount": 1200
+        },
+        {
+          "description": "Electrical fittings purchase",
+          "min_amount": 5,
+          "max_amount": 1200
+        },
+        {
+          "description": "House maintenance contribution",
+          "min_amount": 19,
+          "max_amount": 1200
+        }
+      ]
+    },
+    {
+      "category_name": "Banking and Financial Services",
+      "min_transaction_amount": 0.1,
+      "max_transaction_amount": 50000,
+      "transaction_descriptions": [
+        {
+          "description": "Savings account deposit",
+          "min_amount": 295,
+          "max_amount": 50000
+        },
+        {
+          "description": "Current account funding",
+          "min_amount": 280,
+          "max_amount": 50000
+        },
+        {
+          "description": "Loan repayment",
+          "min_amount": 31,
+          "max_amount": 16200
+        },
+        {
+          "description": "Microfinance loan disbursement",
+          "min_amount": 305,
+          "max_amount": 50000
+        },
+        {
+          "description": "Bank transfer charge",
+          "min_amount": 3.0,
+          "max_amount": 945
+        },
+        {
+          "description": "ATM withdrawal",
+          "min_amount": 15,
+          "max_amount": 1590
+        },
+        {
+          "description": "POS cash withdrawal",
+          "min_amount": 16,
+          "max_amount": 1650
+        },
+        {
+          "description": "Credit card payment",
+          "min_amount": 29,
+          "max_amount": 15300
+        },
+        {
+          "description": "Debit card maintenance fee",
+          "min_amount": 57,
+          "max_amount": 18000
+        },
+        {
+          "description": "Standing order setup fee",
+          "min_amount": 62,
+          "max_amount": 19450
+        },
+        {
+          "description": "Bank statement request payment",
+          "min_amount": 29,
+          "max_amount": 15450
+        },
+        {
+          "description": "Fixed deposit investment",
+          "min_amount": 290,
+          "max_amount": 50000
+        },
+        {
+          "description": "Treasury bill purchase",
+          "min_amount": 305,
+          "max_amount": 50000
+        },
+        {
+          "description": "Mutual fund contribution",
+          "min_amount": 2.9,
+          "max_amount": 910
+        },
+        {
+          "description": "Wallet funding",
+          "min_amount": 275,
+          "max_amount": 50000
+        },
+        {
+          "description": "Insurance premium debit",
+          "min_amount": 30,
+          "max_amount": 15600
+        },
+        {
+          "description": "Mortgage repayment",
+          "min_amount": 1590,
+          "max_amount": 50000
+        },
+        {
+          "description": "Overdraft settlement",
+          "min_amount": 30,
+          "max_amount": 15600
+        },
+        {
+          "description": "Cash deposit at branch",
+          "min_amount": 270,
+          "max_amount": 50000
+        },
+        {
+          "description": "Cheque book request fee",
+          "min_amount": 3.1,
+          "max_amount": 980
+        },
+        {
+          "description": "SMS alert renewal",
+          "min_amount": 3.1,
+          "max_amount": 965
+        },
+        {
+          "description": "Account maintenance charge",
+          "min_amount": 56,
+          "max_amount": 17800
+        },
+        {
+          "description": "Business account funding",
+          "min_amount": 290,
+          "max_amount": 50000
+        },
+        {
+          "description": "International transfer fee",
+          "min_amount": 2.8,
+          "max_amount": 890
+        },
+        {
+          "description": "Foreign exchange purchase",
+          "min_amount": 15,
+          "max_amount": 7650
+        },
+        {
+          "description": "FX conversion settlement",
+          "min_amount": 31,
+          "max_amount": 16050
+        },
+        {
+          "description": "Investment platform top-up",
+          "min_amount": 310,
+          "max_amount": 50000
+        },
+        {
+          "description": "Pension contribution",
+          "min_amount": 2.8,
+          "max_amount": 875
+        },
+        {
+          "description": "Cooperative savings payment",
+          "min_amount": 30,
+          "max_amount": 15600
+        },
+        {
+          "description": "Crowdfunding investment",
+          "min_amount": 305,
+          "max_amount": 50000
+        },
+        {
+          "description": "Endowment premium payment",
+          "min_amount": 30,
+          "max_amount": 15600
+        },
+        {
+          "description": "Escrow funding",
+          "min_amount": 305,
+          "max_amount": 50000
+        },
+        {
+          "description": "Digital bank transfer",
+          "min_amount": 15,
+          "max_amount": 1530
+        },
+        {
+          "description": "Agency banking cash-out",
+          "min_amount": 14,
+          "max_amount": 1480
+        },
+        {
+          "description": "Agency banking deposit",
+          "min_amount": 305,
+          "max_amount": 50000
+        },
+        {
+          "description": "Merchant settlement payout",
+          "min_amount": 31,
+          "max_amount": 16350
+        },
+        {
+          "description": "Salary advance repayment",
+          "min_amount": 29,
+          "max_amount": 15300
+        },
+        {
+          "description": "Mobile money transfer",
+          "min_amount": 15,
+          "max_amount": 1590
+        },
+        {
+          "description": "Recurring savings contribution",
+          "min_amount": 2.9,
+          "max_amount": 920
+        },
+        {
+          "description": "Asset financing repayment",
+          "min_amount": 32,
+          "max_amount": 16650
+        },
+        {
+          "description": "Wealth management fee",
+          "min_amount": 3.0,
+          "max_amount": 955
+        },
+        {
+          "description": "Investment withdrawal request",
+          "min_amount": 310,
+          "max_amount": 50000
+        },
+        {
+          "description": "Bond purchase settlement",
+          "min_amount": 290,
+          "max_amount": 50000
+        },
+        {
+          "description": "Loan processing fee",
+          "min_amount": 15,
+          "max_amount": 1590
+        },
+        {
+          "description": "Bank draft issuance fee",
+          "min_amount": 3.0,
+          "max_amount": 935
+        },
+        {
+          "description": "Cash handling charge",
+          "min_amount": 3.2,
+          "max_amount": 990
+        },
+        {
+          "description": "Account opening deposit",
+          "min_amount": 315,
+          "max_amount": 50000
+        },
+        {
+          "description": "Capital market investment",
+          "min_amount": 305,
+          "max_amount": 50000
+        },
+        {
+          "description": "Trust fund contribution",
+          "min_amount": 2.9,
+          "max_amount": 900
+        },
+        {
+          "description": "Financial advisory payment",
+          "min_amount": 76,
+          "max_amount": 25450
+        }
+      ]
+    },
+    {
+      "category_name": "Industrial Services",
+      "min_transaction_amount": 50,
+      "max_transaction_amount": 150000,
+      "transaction_descriptions": [
+        {
+          "description": "Factory equipment maintenance",
+          "min_amount": 97,
+          "max_amount": 30600
+        },
+        {
+          "description": "Industrial machine servicing",
+          "min_amount": 99,
+          "max_amount": 31200
+        },
+        {
+          "description": "Raw materials procurement",
+          "min_amount": 5100,
+          "max_amount": 150000
+        },
+        {
+          "description": "Safety gear purchase",
+          "min_amount": 50,
+          "max_amount": 12250
+        },
+        {
+          "description": "Generator diesel supply",
+          "min_amount": 50,
+          "max_amount": 12100
+        },
+        {
+          "description": "Forklift repair service",
+          "min_amount": 105,
+          "max_amount": 33000
+        },
+        {
+          "description": "Welding material purchase",
+          "min_amount": 50,
+          "max_amount": 12100
+        },
+        {
+          "description": "Industrial cleaning service",
+          "min_amount": 50,
+          "max_amount": 2420
+        },
+        {
+          "description": "Production line inspection",
+          "min_amount": 110,
+          "max_amount": 38000
+        },
+        {
+          "description": "Machine installation payment",
+          "min_amount": 105,
+          "max_amount": 33300
+        },
+        {
+          "description": "Warehouse fumigation",
+          "min_amount": 50,
+          "max_amount": 2720
+        },
+        {
+          "description": "Packaging material supply",
+          "min_amount": 50,
+          "max_amount": 13750
+        },
+        {
+          "description": "Industrial waste disposal",
+          "min_amount": 50,
+          "max_amount": 2720
+        },
+        {
+          "description": "Plant security service",
+          "min_amount": 50,
+          "max_amount": 2520
+        },
+        {
+          "description": "Electrical panel maintenance",
+          "min_amount": 99,
+          "max_amount": 31200
+        },
+        {
+          "description": "Boiler servicing charge",
+          "min_amount": 105,
+          "max_amount": 32400
+        },
+        {
+          "description": "Conveyor belt replacement",
+          "min_amount": 99,
+          "max_amount": 31200
+        },
+        {
+          "description": "Cooling system maintenance",
+          "min_amount": 100,
+          "max_amount": 31500
+        },
+        {
+          "description": "Factory insurance premium",
+          "min_amount": 50,
+          "max_amount": 26500
+        },
+        {
+          "description": "Engineering consultancy fee",
+          "min_amount": 130,
+          "max_amount": 44400
+        },
+        {
+          "description": "Quality control lab payment",
+          "min_amount": 50,
+          "max_amount": 26250
+        },
+        {
+          "description": "Industrial training fee",
+          "min_amount": 120,
+          "max_amount": 40000
+        },
+        {
+          "description": "Spare parts purchase",
+          "min_amount": 50,
+          "max_amount": 13350
+        },
+        {
+          "description": "Bulk lubricant supply",
+          "min_amount": 50,
+          "max_amount": 12250
+        },
+        {
+          "description": "Industrial gas purchase",
+          "min_amount": 50,
+          "max_amount": 13750
+        },
+        {
+          "description": "Machine operator contract fee",
+          "min_amount": 50,
+          "max_amount": 1560
+        },
+        {
+          "description": "Factory repainting payment",
+          "min_amount": 52,
+          "max_amount": 27000
+        },
+        {
+          "description": "Plant expansion deposit",
+          "min_amount": 4700,
+          "max_amount": 150000
+        },
+        {
+          "description": "Industrial water treatment",
+          "min_amount": 50,
+          "max_amount": 2650
+        },
+        {
+          "description": "Tool calibration service",
+          "min_amount": 50,
+          "max_amount": 2650
+        },
+        {
+          "description": "Heavy duty repairs",
+          "min_amount": 90,
+          "max_amount": 28500
+        },
+        {
+          "description": "Production materials transport",
+          "min_amount": 50,
+          "max_amount": 11900
+        },
+        {
+          "description": "Site safety audit fee",
+          "min_amount": 115,
+          "max_amount": 39200
+        },
+        {
+          "description": "Mechanical fabrication payment",
+          "min_amount": 50,
+          "max_amount": 25250
+        },
+        {
+          "description": "Equipment leasing fee",
+          "min_amount": 50,
+          "max_amount": 1460
+        },
+        {
+          "description": "Industrial automation service",
+          "min_amount": 50,
+          "max_amount": 2450
+        },
+        {
+          "description": "Compressed air servicing",
+          "min_amount": 105,
+          "max_amount": 33000
+        },
+        {
+          "description": "Pipeline maintenance fee",
+          "min_amount": 105,
+          "max_amount": 33300
+        },
+        {
+          "description": "Industrial electronics repair",
+          "min_amount": 90,
+          "max_amount": 28500
+        },
+        {
+          "description": "Loading bay repair service",
+          "min_amount": 100,
+          "max_amount": 31800
+        },
+        {
+          "description": "Factory rent payment",
+          "min_amount": 50,
+          "max_amount": 26250
+        },
+        {
+          "description": "Bulk adhesive purchase",
+          "min_amount": 50,
+          "max_amount": 12250
+        },
+        {
+          "description": "Manufacturing consumables supply",
+          "min_amount": 50,
+          "max_amount": 13350
+        },
+        {
+          "description": "Metal cutting service",
+          "min_amount": 50,
+          "max_amount": 2580
+        },
+        {
+          "description": "Industrial pest control",
+          "min_amount": 50,
+          "max_amount": 2450
+        },
+        {
+          "description": "Fire safety compliance fee",
+          "min_amount": 50,
+          "max_amount": 1590
+        },
+        {
+          "description": "Warehouse shelving installation",
+          "min_amount": 100,
+          "max_amount": 31800
+        },
+        {
+          "description": "Maintenance contractor payment",
+          "min_amount": 105,
+          "max_amount": 32700
+        },
+        {
+          "description": "Production downtime support",
+          "min_amount": 50,
+          "max_amount": 1530
+        },
+        {
+          "description": "Industrial operations settlement",
+          "min_amount": 50,
+          "max_amount": 25250
+        }
+      ]
+    },
+    {
+      "category_name": "Transportation",
+      "min_transaction_amount": 2,
+      "max_transaction_amount": 6000,
+      "transaction_descriptions": [
+        {
+          "description": "Bus ticket purchase",
+          "min_amount": 2.0,
+          "max_amount": 27
+        },
+        {
+          "description": "Taxi fare payment",
+          "min_amount": 3.6,
+          "max_amount": 72
+        },
+        {
+          "description": "Ride-hailing trip payment",
+          "min_amount": 4.0,
+          "max_amount": 80
+        },
+        {
+          "description": "Train ticket purchase",
+          "min_amount": 4.7,
+          "max_amount": 2450
+        },
+        {
+          "description": "Flight booking deposit",
+          "min_amount": 85,
+          "max_amount": 6000
+        },
+        {
+          "description": "Fuel purchase",
+          "min_amount": 10,
+          "max_amount": 535
+        },
+        {
+          "description": "Car wash payment",
+          "min_amount": 10,
+          "max_amount": 5400
+        },
+        {
+          "description": "Engine oil change",
+          "min_amount": 4.6,
+          "max_amount": 485
+        },
+        {
+          "description": "Tyre replacement payment",
+          "min_amount": 19,
+          "max_amount": 5940
+        },
+        {
+          "description": "Vehicle servicing fee",
+          "min_amount": 18,
+          "max_amount": 5820
+        },
+        {
+          "description": "Car battery purchase",
+          "min_amount": 5.0,
+          "max_amount": 2600
+        },
+        {
+          "description": "Brake pad replacement",
+          "min_amount": 19,
+          "max_amount": 5880
+        },
+        {
+          "description": "Transport union levy",
+          "min_amount": 2,
+          "max_amount": 330
+        },
+        {
+          "description": "Vehicle registration fee",
+          "min_amount": 5.3,
+          "max_amount": 555
+        },
+        {
+          "description": "Road worthiness payment",
+          "min_amount": 9.1,
+          "max_amount": 4800
+        },
+        {
+          "description": "Driver allowance payment",
+          "min_amount": 9.3,
+          "max_amount": 4900
+        },
+        {
+          "description": "Fleet maintenance settlement",
+          "min_amount": 19,
+          "max_amount": 5880
+        },
+        {
+          "description": "Truck loading fee",
+          "min_amount": 2,
+          "max_amount": 310
+        },
+        {
+          "description": "Dispatch rider payment",
+          "min_amount": 9.4,
+          "max_amount": 4950
+        },
+        {
+          "description": "Interstate travel fare",
+          "min_amount": 5.2,
+          "max_amount": 550
+        },
+        {
+          "description": "Boat transport fee",
+          "min_amount": 2,
+          "max_amount": 320
+        },
+        {
+          "description": "Parking fee payment",
+          "min_amount": 10,
+          "max_amount": 5450
+        },
+        {
+          "description": "Toll gate payment",
+          "min_amount": 9.9,
+          "max_amount": 5200
+        },
+        {
+          "description": "Haulage charge",
+          "min_amount": 2,
+          "max_amount": 290
+        },
+        {
+          "description": "Courier delivery payment",
+          "min_amount": 10,
+          "max_amount": 5400
+        },
+        {
+          "description": "Logistics support fee",
+          "min_amount": 2,
+          "max_amount": 290
+        },
+        {
+          "description": "Airport shuttle payment",
+          "min_amount": 10,
+          "max_amount": 5500
+        },
+        {
+          "description": "Travel insurance payment",
+          "min_amount": 9.6,
+          "max_amount": 5050
+        },
+        {
+          "description": "Motorcycle repair cost",
+          "min_amount": 20,
+          "max_amount": 6000
+        },
+        {
+          "description": "Mechanic labour charge",
+          "min_amount": 2,
+          "max_amount": 320
+        },
+        {
+          "description": "Spare tyre purchase",
+          "min_amount": 5.1,
+          "max_amount": 2670
+        },
+        {
+          "description": "Clutch repair payment",
+          "min_amount": 20,
+          "max_amount": 6000
+        },
+        {
+          "description": "Car rental payment",
+          "min_amount": 9.3,
+          "max_amount": 4900
+        },
+        {
+          "description": "Vehicle tracking subscription",
+          "min_amount": 3.1,
+          "max_amount": 5350
+        },
+        {
+          "description": "Transport permit fee",
+          "min_amount": 5.0,
+          "max_amount": 520
+        },
+        {
+          "description": "Bus terminal levy",
+          "min_amount": 2,
+          "max_amount": 295
+        },
+        {
+          "description": "Trailer service repair",
+          "min_amount": 19,
+          "max_amount": 6000
+        },
+        {
+          "description": "Fuel card top-up",
+          "min_amount": 9.4,
+          "max_amount": 495
+        },
+        {
+          "description": "Navigation device purchase",
+          "min_amount": 4.7,
+          "max_amount": 2450
+        },
+        {
+          "description": "Car interior cleaning",
+          "min_amount": 5.0,
+          "max_amount": 530
+        },
+        {
+          "description": "Wheel balancing payment",
+          "min_amount": 10,
+          "max_amount": 5450
+        },
+        {
+          "description": "Vehicle diagnostics fee",
+          "min_amount": 2,
+          "max_amount": 295
+        },
+        {
+          "description": "Shock absorber replacement",
+          "min_amount": 18,
+          "max_amount": 5700
+        },
+        {
+          "description": "Commercial bus ticketing",
+          "min_amount": 2.1,
+          "max_amount": 27
+        },
+        {
+          "description": "Driver hiring payment",
+          "min_amount": 9.0,
+          "max_amount": 4750
+        },
+        {
+          "description": "Emergency towing service",
+          "min_amount": 5.0,
+          "max_amount": 530
+        },
+        {
+          "description": "Car painting service",
+          "min_amount": 5.2,
+          "max_amount": 550
+        },
+        {
+          "description": "Logistics warehouse transfer",
+          "min_amount": 4.5,
+          "max_amount": 480
+        },
+        {
+          "description": "Fuel tanker service fee",
+          "min_amount": 9.1,
+          "max_amount": 480
+        },
+        {
+          "description": "Auto workshop settlement",
+          "min_amount": 25,
+          "max_amount": 6000
+        }
+      ]
+    },
+    {
+      "category_name": "Healthcare",
+      "min_transaction_amount": 5,
+      "max_transaction_amount": 15000,
+      "transaction_descriptions": [
+        {
+          "description": "Hospital consultation fee",
+          "min_amount": 17,
+          "max_amount": 440
+        },
+        {
+          "description": "Laboratory test payment",
+          "min_amount": 17,
+          "max_amount": 8910
+        },
+        {
+          "description": "Pharmacy purchase",
+          "min_amount": 9.2,
+          "max_amount": 4810
+        },
+        {
+          "description": "Medical scan payment",
+          "min_amount": 16,
+          "max_amount": 8550
+        },
+        {
+          "description": "Dental treatment fee",
+          "min_amount": 5,
+          "max_amount": 565
+        },
+        {
+          "description": "Eye clinic consultation",
+          "min_amount": 16,
+          "max_amount": 430
+        },
+        {
+          "description": "Surgery deposit",
+          "min_amount": 190,
+          "max_amount": 15000
+        },
+        {
+          "description": "Ward admission payment",
+          "min_amount": 17,
+          "max_amount": 8730
+        },
+        {
+          "description": "Health insurance premium",
+          "min_amount": 16,
+          "max_amount": 8550
+        },
+        {
+          "description": "Antenatal service payment",
+          "min_amount": 17,
+          "max_amount": 8910
+        },
+        {
+          "description": "Child immunization fee",
+          "min_amount": 5,
+          "max_amount": 560
+        },
+        {
+          "description": "Physiotherapy session payment",
+          "min_amount": 18,
+          "max_amount": 9540
+        },
+        {
+          "description": "Mental health consultation",
+          "min_amount": 40,
+          "max_amount": 13700
+        },
+        {
+          "description": "Ambulance service fee",
+          "min_amount": 5,
+          "max_amount": 525
+        },
+        {
+          "description": "Vaccination payment",
+          "min_amount": 18,
+          "max_amount": 9630
+        },
+        {
+          "description": "Orthopedic treatment charge",
+          "min_amount": 5,
+          "max_amount": 515
+        },
+        {
+          "description": "Medical report fee",
+          "min_amount": 5,
+          "max_amount": 545
+        },
+        {
+          "description": "Dialysis session payment",
+          "min_amount": 170,
+          "max_amount": 15000
+        },
+        {
+          "description": "Chemotherapy session deposit",
+          "min_amount": 185,
+          "max_amount": 15000
+        },
+        {
+          "description": "X-ray service payment",
+          "min_amount": 18,
+          "max_amount": 9270
+        },
+        {
+          "description": "Ultrasound scan fee",
+          "min_amount": 5,
+          "max_amount": 560
+        },
+        {
+          "description": "MRI scan payment",
+          "min_amount": 170,
+          "max_amount": 15000
+        },
+        {
+          "description": "CT scan settlement",
+          "min_amount": 185,
+          "max_amount": 15000
+        },
+        {
+          "description": "Doctor home visit payment",
+          "min_amount": 16,
+          "max_amount": 8550
+        },
+        {
+          "description": "Home care nurse payment",
+          "min_amount": 19,
+          "max_amount": 9720
+        },
+        {
+          "description": "Nutrition consultation fee",
+          "min_amount": 42,
+          "max_amount": 14100
+        },
+        {
+          "description": "Clinic follow-up payment",
+          "min_amount": 18,
+          "max_amount": 9540
+        },
+        {
+          "description": "Blood transfusion deposit",
+          "min_amount": 190,
+          "max_amount": 15000
+        },
+        {
+          "description": "Emergency treatment fee",
+          "min_amount": 5,
+          "max_amount": 590
+        },
+        {
+          "description": "Medical supplies purchase",
+          "min_amount": 9.3,
+          "max_amount": 4860
+        },
+        {
+          "description": "Prescription refill payment",
+          "min_amount": 19,
+          "max_amount": 9720
+        },
+        {
+          "description": "HMO co-payment",
+          "min_amount": 17,
+          "max_amount": 9090
+        },
+        {
+          "description": "Pediatric checkup payment",
+          "min_amount": 17,
+          "max_amount": 8910
+        },
+        {
+          "description": "Specialist consultation fee",
+          "min_amount": 42,
+          "max_amount": 14250
+        },
+        {
+          "description": "Inhaler purchase",
+          "min_amount": 8.1,
+          "max_amount": 4280
+        },
+        {
+          "description": "Wheelchair purchase",
+          "min_amount": 8.7,
+          "max_amount": 4590
+        },
+        {
+          "description": "Hearing test payment",
+          "min_amount": 18,
+          "max_amount": 9270
+        },
+        {
+          "description": "Maternity service payment",
+          "min_amount": 17,
+          "max_amount": 9180
+        },
+        {
+          "description": "Fertility consultation fee",
+          "min_amount": 42,
+          "max_amount": 14250
+        },
+        {
+          "description": "Hospital card registration",
+          "min_amount": 9.5,
+          "max_amount": 1000
+        },
+        {
+          "description": "Medical screening payment",
+          "min_amount": 18,
+          "max_amount": 9450
+        },
+        {
+          "description": "Test result processing fee",
+          "min_amount": 8.6,
+          "max_amount": 900
+        },
+        {
+          "description": "Skin treatment consultation",
+          "min_amount": 45,
+          "max_amount": 15000
+        },
+        {
+          "description": "ENT clinic payment",
+          "min_amount": 17,
+          "max_amount": 8910
+        },
+        {
+          "description": "Private hospital deposit",
+          "min_amount": 180,
+          "max_amount": 15000
+        },
+        {
+          "description": "Hospital discharge bill",
+          "min_amount": 19,
+          "max_amount": 9720
+        },
+        {
+          "description": "Drug delivery payment",
+          "min_amount": 18,
+          "max_amount": 9360
+        },
+        {
+          "description": "Healthcare support contribution",
+          "min_amount": 5,
+          "max_amount": 530
+        },
+        {
+          "description": "Clinical procedure payment",
+          "min_amount": 19,
+          "max_amount": 9810
+        },
+        {
+          "description": "Medical emergency fund payment",
+          "min_amount": 19,
+          "max_amount": 9720
+        }
+      ]
+    },
+    {
+      "category_name": "Education",
+      "min_transaction_amount": 5,
+      "max_transaction_amount": 25000,
+      "transaction_descriptions": [
+        {
+          "description": "School fees payment",
+          "min_amount": 76,
+          "max_amount": 25000
+        },
+        {
+          "description": "Tuition deposit",
+          "min_amount": 75,
+          "max_amount": 25000
+        },
+        {
+          "description": "Exam registration fee",
+          "min_amount": 7.7,
+          "max_amount": 810
+        },
+        {
+          "description": "Standardized test registration",
+          "min_amount": 7.1,
+          "max_amount": 740
+        },
+        {
+          "description": "Admission form payment",
+          "min_amount": 15,
+          "max_amount": 7720
+        },
+        {
+          "description": "Textbook purchase",
+          "min_amount": 7.1,
+          "max_amount": 3750
+        },
+        {
+          "description": "Notebook supply payment",
+          "min_amount": 14,
+          "max_amount": 7280
+        },
+        {
+          "description": "School uniform purchase",
+          "min_amount": 7.7,
+          "max_amount": 4010
+        },
+        {
+          "description": "Lesson fee payment",
+          "min_amount": 15,
+          "max_amount": 7950
+        },
+        {
+          "description": "Private tutor payment",
+          "min_amount": 15,
+          "max_amount": 7880
+        },
+        {
+          "description": "Online course subscription",
+          "min_amount": 5,
+          "max_amount": 8320
+        },
+        {
+          "description": "Professional certification fee",
+          "min_amount": 5,
+          "max_amount": 465
+        },
+        {
+          "description": "Library fee payment",
+          "min_amount": 14,
+          "max_amount": 7580
+        },
+        {
+          "description": "Lab practical fee",
+          "min_amount": 5,
+          "max_amount": 450
+        },
+        {
+          "description": "PTA levy payment",
+          "min_amount": 15,
+          "max_amount": 7950
+        },
+        {
+          "description": "School bus fee",
+          "min_amount": 5,
+          "max_amount": 450
+        },
+        {
+          "description": "Hostel accommodation payment",
+          "min_amount": 71,
+          "max_amount": 25000
+        },
+        {
+          "description": "Departmental dues payment",
+          "min_amount": 15,
+          "max_amount": 8100
+        },
+        {
+          "description": "Project supervision fee",
+          "min_amount": 5,
+          "max_amount": 455
+        },
+        {
+          "description": "Convocation fee payment",
+          "min_amount": 15,
+          "max_amount": 7950
+        },
+        {
+          "description": "Transcript processing fee",
+          "min_amount": 7.0,
+          "max_amount": 735
+        },
+        {
+          "description": "Application form payment",
+          "min_amount": 15,
+          "max_amount": 7800
+        },
+        {
+          "description": "Admission acceptance fee",
+          "min_amount": 5,
+          "max_amount": 450
+        },
+        {
+          "description": "School ID card fee",
+          "min_amount": 5,
+          "max_amount": 440
+        },
+        {
+          "description": "Academic gown rental",
+          "min_amount": 15,
+          "max_amount": 7650
+        },
+        {
+          "description": "E-learning platform payment",
+          "min_amount": 15,
+          "max_amount": 7800
+        },
+        {
+          "description": "Workshop registration fee",
+          "min_amount": 35,
+          "max_amount": 11750
+        },
+        {
+          "description": "Educational seminar ticket",
+          "min_amount": 7.1,
+          "max_amount": 740
+        },
+        {
+          "description": "Training manual purchase",
+          "min_amount": 37,
+          "max_amount": 12500
+        },
+        {
+          "description": "Research material payment",
+          "min_amount": 15,
+          "max_amount": 7720
+        },
+        {
+          "description": "Printing and binding fee",
+          "min_amount": 5,
+          "max_amount": 440
+        },
+        {
+          "description": "Exam clearance payment",
+          "min_amount": 15,
+          "max_amount": 7800
+        },
+        {
+          "description": "School development levy",
+          "min_amount": 5,
+          "max_amount": 440
+        },
+        {
+          "description": "Graduation contribution",
+          "min_amount": 5,
+          "max_amount": 435
+        },
+        {
+          "description": "Scholarship application fee",
+          "min_amount": 7.2,
+          "max_amount": 760
+        },
+        {
+          "description": "School portal access fee",
+          "min_amount": 7.1,
+          "max_amount": 750
+        },
+        {
+          "description": "Language class payment",
+          "min_amount": 15,
+          "max_amount": 7800
+        },
+        {
+          "description": "Computer training fee",
+          "min_amount": 34,
+          "max_amount": 11500
+        },
+        {
+          "description": "Coding bootcamp fee",
+          "min_amount": 5,
+          "max_amount": 495
+        },
+        {
+          "description": "Study abroad processing fee",
+          "min_amount": 7.1,
+          "max_amount": 740
+        },
+        {
+          "description": "Mock exam payment",
+          "min_amount": 14,
+          "max_amount": 7280
+        },
+        {
+          "description": "School club dues",
+          "min_amount": 5,
+          "max_amount": 450
+        },
+        {
+          "description": "Music lesson payment",
+          "min_amount": 16,
+          "max_amount": 8170
+        },
+        {
+          "description": "Educational excursion fee",
+          "min_amount": 5,
+          "max_amount": 460
+        },
+        {
+          "description": "Student association levy",
+          "min_amount": 5,
+          "max_amount": 450
+        },
+        {
+          "description": "School meal subscription",
+          "min_amount": 5,
+          "max_amount": 8250
+        },
+        {
+          "description": "Boarding fees payment",
+          "min_amount": 79,
+          "max_amount": 25000
+        },
+        {
+          "description": "Lesson materials purchase",
+          "min_amount": 7.8,
+          "max_amount": 4090
+        },
+        {
+          "description": "Academic coaching payment",
+          "min_amount": 34,
+          "max_amount": 11650
+        },
+        {
+          "description": "Education support donation",
+          "min_amount": 5,
+          "max_amount": 7880
+        }
+      ]
+    },
+    {
+      "category_name": "Telecommunications",
+      "min_transaction_amount": 1,
+      "max_transaction_amount": 2500,
+      "transaction_descriptions": [
+        {
+          "description": "Airtime recharge",
+          "min_amount": 1.1,
+          "max_amount": 335
+        },
+        {
+          "description": "Data subscription payment",
+          "min_amount": 3.0,
+          "max_amount": 2500
+        },
+        {
+          "description": "SME data purchase",
+          "min_amount": 5.2,
+          "max_amount": 2500
+        },
+        {
+          "description": "Voice bundle renewal",
+          "min_amount": 5.1,
+          "max_amount": 535
+        },
+        {
+          "description": "International call bundle",
+          "min_amount": 5.2,
+          "max_amount": 540
+        },
+        {
+          "description": "Family data plan payment",
+          "min_amount": 10,
+          "max_amount": 2500
+        },
+        {
+          "description": "Broadband subscription",
+          "min_amount": 3.2,
+          "max_amount": 2500
+        },
+        {
+          "description": "WiFi router recharge",
+          "min_amount": 1.1,
+          "max_amount": 335
+        },
+        {
+          "description": "Fiber internet payment",
+          "min_amount": 10,
+          "max_amount": 2500
+        },
+        {
+          "description": "SIM card replacement fee",
+          "min_amount": 18,
+          "max_amount": 2500
+        },
+        {
+          "description": "eSIM activation charge",
+          "min_amount": 1.1,
+          "max_amount": 335
+        },
+        {
+          "description": "Caller tune subscription",
+          "min_amount": 2.9,
+          "max_amount": 2500
+        },
+        {
+          "description": "SMS bundle purchase",
+          "min_amount": 5.2,
+          "max_amount": 2500
+        },
+        {
+          "description": "Business internet plan",
+          "min_amount": 5.2,
+          "max_amount": 550
+        },
+        {
+          "description": "Dedicated IP payment",
+          "min_amount": 9.0,
+          "max_amount": 2500
+        },
+        {
+          "description": "MiFi recharge payment",
+          "min_amount": 10,
+          "max_amount": 2500
+        },
+        {
+          "description": "Modem purchase",
+          "min_amount": 5.1,
+          "max_amount": 2500
+        },
+        {
+          "description": "Internet installation charge",
+          "min_amount": 21,
+          "max_amount": 2500
+        },
+        {
+          "description": "Network device maintenance",
+          "min_amount": 19,
+          "max_amount": 2500
+        },
+        {
+          "description": "Office telephony payment",
+          "min_amount": 9.5,
+          "max_amount": 2500
+        },
+        {
+          "description": "Corporate call credit",
+          "min_amount": 5.2,
+          "max_amount": 545
+        },
+        {
+          "description": "VoIP subscription payment",
+          "min_amount": 3.2,
+          "max_amount": 2500
+        },
+        {
+          "description": "Cloud phone service fee",
+          "min_amount": 1,
+          "max_amount": 290
+        },
+        {
+          "description": "Antenna maintenance support",
+          "min_amount": 19,
+          "max_amount": 2500
+        },
+        {
+          "description": "Telecom mast service fee",
+          "min_amount": 1,
+          "max_amount": 310
+        },
+        {
+          "description": "Hotspot voucher purchase",
+          "min_amount": 5.0,
+          "max_amount": 2500
+        },
+        {
+          "description": "Conference call subscription",
+          "min_amount": 2.8,
+          "max_amount": 2500
+        },
+        {
+          "description": "Telecom software license",
+          "min_amount": 3.0,
+          "max_amount": 2500
+        },
+        {
+          "description": "Call center line rental",
+          "min_amount": 10,
+          "max_amount": 2500
+        },
+        {
+          "description": "VPN subscription payment",
+          "min_amount": 3.0,
+          "max_amount": 2500
+        },
+        {
+          "description": "Remote access data plan",
+          "min_amount": 4.7,
+          "max_amount": 490
+        },
+        {
+          "description": "SMS gateway top-up",
+          "min_amount": 1,
+          "max_amount": 310
+        },
+        {
+          "description": "Bulk messaging credit",
+          "min_amount": 5.2,
+          "max_amount": 550
+        },
+        {
+          "description": "Broadband renewal fee",
+          "min_amount": 1,
+          "max_amount": 300
+        },
+        {
+          "description": "Customer line migration fee",
+          "min_amount": 1,
+          "max_amount": 310
+        },
+        {
+          "description": "New line activation",
+          "min_amount": 4.8,
+          "max_amount": 510
+        },
+        {
+          "description": "Data rollover fee",
+          "min_amount": 1.1,
+          "max_amount": 335
+        },
+        {
+          "description": "Telecom support payment",
+          "min_amount": 10,
+          "max_amount": 2500
+        },
+        {
+          "description": "Call forwarding service fee",
+          "min_amount": 1,
+          "max_amount": 305
+        },
+        {
+          "description": "Roaming activation payment",
+          "min_amount": 9.3,
+          "max_amount": 2500
+        },
+        {
+          "description": "Line unbar request fee",
+          "min_amount": 1.0,
+          "max_amount": 325
+        },
+        {
+          "description": "ISP invoice settlement",
+          "min_amount": 9.0,
+          "max_amount": 2500
+        },
+        {
+          "description": "Satellite internet payment",
+          "min_amount": 9.3,
+          "max_amount": 2500
+        },
+        {
+          "description": "Bandwidth upgrade fee",
+          "min_amount": 1,
+          "max_amount": 305
+        },
+        {
+          "description": "Router installation service",
+          "min_amount": 18,
+          "max_amount": 2500
+        },
+        {
+          "description": "Internet downtime compensation",
+          "min_amount": 5.1,
+          "max_amount": 535
+        },
+        {
+          "description": "Telecom service deposit",
+          "min_amount": 100,
+          "max_amount": 2500
+        },
+        {
+          "description": "Business communication package",
+          "min_amount": 5.2,
+          "max_amount": 540
+        },
+        {
+          "description": "Mobile line recharge",
+          "min_amount": 1,
+          "max_amount": 285
+        },
+        {
+          "description": "Digital connectivity payment",
+          "min_amount": 9.4,
+          "max_amount": 2500
+        }
+      ]
+    },
+    {
+      "category_name": "Food and Groceries",
+      "min_transaction_amount": 1,
+      "max_transaction_amount": 1500,
+      "transaction_descriptions": [
+        {
+          "description": "Supermarket purchase",
+          "min_amount": 9.5,
+          "max_amount": 600
+        },
+        {
+          "description": "Monthly groceries restock",
+          "min_amount": 9.4,
+          "max_amount": 595
+        },
+        {
+          "description": "Fruit and vegetables purchase",
+          "min_amount": 4.7,
+          "max_amount": 1500
+        },
+        {
+          "description": "Meat supply payment",
+          "min_amount": 9.2,
+          "max_amount": 1500
+        },
+        {
+          "description": "Fish market purchase",
+          "min_amount": 4.8,
+          "max_amount": 1500
+        },
+        {
+          "description": "Rice bag purchase",
+          "min_amount": 5.0,
+          "max_amount": 1500
+        },
+        {
+          "description": "Cooking oil purchase",
+          "min_amount": 4.8,
+          "max_amount": 1500
+        },
+        {
+          "description": "Bread purchase",
+          "min_amount": 5.0,
+          "max_amount": 1500
+        },
+        {
+          "description": "Bottled water supply",
+          "min_amount": 4.9,
+          "max_amount": 1500
+        },
+        {
+          "description": "Soft drinks purchase",
+          "min_amount": 5.2,
+          "max_amount": 1500
+        },
+        {
+          "description": "Restaurant bill payment",
+          "min_amount": 9.2,
+          "max_amount": 1500
+        },
+        {
+          "description": "Takeout food order",
+          "min_amount": 5.0,
+          "max_amount": 1500
+        },
+        {
+          "description": "Fast food payment",
+          "min_amount": 9.3,
+          "max_amount": 1500
+        },
+        {
+          "description": "Bakery purchase",
+          "min_amount": 4.5,
+          "max_amount": 1500
+        },
+        {
+          "description": "Catering service payment",
+          "min_amount": 11,
+          "max_amount": 1500
+        },
+        {
+          "description": "Office lunch contribution",
+          "min_amount": 1,
+          "max_amount": 295
+        },
+        {
+          "description": "Family foodstuff purchase",
+          "min_amount": 5.0,
+          "max_amount": 1500
+        },
+        {
+          "description": "Snacks purchase",
+          "min_amount": 4.8,
+          "max_amount": 1500
+        },
+        {
+          "description": "Frozen foods purchase",
+          "min_amount": 5.3,
+          "max_amount": 1500
+        },
+        {
+          "description": "Spices and condiments purchase",
+          "min_amount": 5.1,
+          "max_amount": 1500
+        },
+        {
+          "description": "Milk and dairy purchase",
+          "min_amount": 4.7,
+          "max_amount": 1500
+        },
+        {
+          "description": "Egg tray purchase",
+          "min_amount": 5.2,
+          "max_amount": 1500
+        },
+        {
+          "description": "Palm oil purchase",
+          "min_amount": 5.0,
+          "max_amount": 1500
+        },
+        {
+          "description": "Beans bag purchase",
+          "min_amount": 5.0,
+          "max_amount": 1500
+        },
+        {
+          "description": "Garri purchase",
+          "min_amount": 5.2,
+          "max_amount": 1500
+        },
+        {
+          "description": "Yam tuber purchase",
+          "min_amount": 5.2,
+          "max_amount": 1500
+        },
+        {
+          "description": "Plantain purchase",
+          "min_amount": 5.2,
+          "max_amount": 1500
+        },
+        {
+          "description": "Food vendor payment",
+          "min_amount": 9.6,
+          "max_amount": 1500
+        },
+        {
+          "description": "Meal subscription payment",
+          "min_amount": 3.1,
+          "max_amount": 1500
+        },
+        {
+          "description": "School lunch payment",
+          "min_amount": 10,
+          "max_amount": 1500
+        },
+        {
+          "description": "Party drinks supply",
+          "min_amount": 4.8,
+          "max_amount": 1500
+        },
+        {
+          "description": "Ice block purchase",
+          "min_amount": 4.6,
+          "max_amount": 1500
+        },
+        {
+          "description": "Water dispenser refill",
+          "min_amount": 5.2,
+          "max_amount": 1500
+        },
+        {
+          "description": "Kitchen restock purchase",
+          "min_amount": 5.3,
+          "max_amount": 1500
+        },
+        {
+          "description": "Market shopping payment",
+          "min_amount": 9.2,
+          "max_amount": 580
+        },
+        {
+          "description": "Cereal purchase",
+          "min_amount": 4.5,
+          "max_amount": 1500
+        },
+        {
+          "description": "Noodles bulk purchase",
+          "min_amount": 4.7,
+          "max_amount": 1500
+        },
+        {
+          "description": "Baby food purchase",
+          "min_amount": 5.1,
+          "max_amount": 1500
+        },
+        {
+          "description": "Canned food purchase",
+          "min_amount": 5.0,
+          "max_amount": 1500
+        },
+        {
+          "description": "Household provisions purchase",
+          "min_amount": 4.7,
+          "max_amount": 1500
+        },
+        {
+          "description": "Local market payment",
+          "min_amount": 10,
+          "max_amount": 1500
+        },
+        {
+          "description": "Fresh juice purchase",
+          "min_amount": 4.5,
+          "max_amount": 1500
+        },
+        {
+          "description": "Coffee beans purchase",
+          "min_amount": 4.8,
+          "max_amount": 1500
+        },
+        {
+          "description": "Food delivery payment",
+          "min_amount": 11,
+          "max_amount": 1500
+        },
+        {
+          "description": "Weekend groceries shopping",
+          "min_amount": 9.5,
+          "max_amount": 600
+        },
+        {
+          "description": "Cooking ingredients purchase",
+          "min_amount": 5.1,
+          "max_amount": 1500
+        },
+        {
+          "description": "Special diet food purchase",
+          "min_amount": 4.8,
+          "max_amount": 1500
+        },
+        {
+          "description": "Bulk food order payment",
+          "min_amount": 10,
+          "max_amount": 1500
+        },
+        {
+          "description": "Farm produce purchase",
+          "min_amount": 5.0,
+          "max_amount": 1500
+        },
+        {
+          "description": "Groceries support contribution",
+          "min_amount": 10,
+          "max_amount": 630
+        }
+      ]
+    },
+    {
+      "category_name": "Entertainment and Recreation",
+      "min_transaction_amount": 3,
+      "max_transaction_amount": 4000,
+      "transaction_descriptions": [
+        {
+          "description": "Cinema ticket purchase",
+          "min_amount": 5.2,
+          "max_amount": 2720
+        },
+        {
+          "description": "Concert ticket payment",
+          "min_amount": 11,
+          "max_amount": 4000
+        },
+        {
+          "description": "Streaming subscription",
+          "min_amount": 3,
+          "max_amount": 4000
+        },
+        {
+          "description": "Music platform subscription",
+          "min_amount": 3,
+          "max_amount": 4000
+        },
+        {
+          "description": "Game subscription payment",
+          "min_amount": 3,
+          "max_amount": 4000
+        },
+        {
+          "description": "Game purchase",
+          "min_amount": 5.0,
+          "max_amount": 2650
+        },
+        {
+          "description": "Event entry fee",
+          "min_amount": 5.3,
+          "max_amount": 555
+        },
+        {
+          "description": "Comedy show ticket",
+          "min_amount": 5.2,
+          "max_amount": 550
+        },
+        {
+          "description": "Club entry payment",
+          "min_amount": 10,
+          "max_amount": 4000
+        },
+        {
+          "description": "Beach resort ticket",
+          "min_amount": 30,
+          "max_amount": 4000
+        },
+        {
+          "description": "Swimming pool access fee",
+          "min_amount": 5.3,
+          "max_amount": 555
+        },
+        {
+          "description": "Gym class payment",
+          "min_amount": 11,
+          "max_amount": 4000
+        },
+        {
+          "description": "Amusement park ticket",
+          "min_amount": 4.8,
+          "max_amount": 510
+        },
+        {
+          "description": "Bowling session payment",
+          "min_amount": 10,
+          "max_amount": 4000
+        },
+        {
+          "description": "Sports viewing center payment",
+          "min_amount": 9.8,
+          "max_amount": 4000
+        },
+        {
+          "description": "Football match ticket",
+          "min_amount": 5.1,
+          "max_amount": 535
+        },
+        {
+          "description": "Picnic setup payment",
+          "min_amount": 18,
+          "max_amount": 4000
+        },
+        {
+          "description": "Photography session payment",
+          "min_amount": 9.4,
+          "max_amount": 4000
+        },
+        {
+          "description": "Video game arcade payment",
+          "min_amount": 9.3,
+          "max_amount": 4000
+        },
+        {
+          "description": "Lounge reservation payment",
+          "min_amount": 10,
+          "max_amount": 4000
+        },
+        {
+          "description": "Birthday party contribution",
+          "min_amount": 3,
+          "max_amount": 300
+        },
+        {
+          "description": "Vacation fun activity payment",
+          "min_amount": 11,
+          "max_amount": 4000
+        },
+        {
+          "description": "Skating rink access fee",
+          "min_amount": 4.8,
+          "max_amount": 510
+        },
+        {
+          "description": "Paintball game payment",
+          "min_amount": 9.0,
+          "max_amount": 4000
+        },
+        {
+          "description": "Karaoke night payment",
+          "min_amount": 10,
+          "max_amount": 4000
+        },
+        {
+          "description": "Museum entry fee",
+          "min_amount": 4.6,
+          "max_amount": 485
+        },
+        {
+          "description": "Cultural festival ticket",
+          "min_amount": 4.5,
+          "max_amount": 475
+        },
+        {
+          "description": "Art exhibition ticket",
+          "min_amount": 4.7,
+          "max_amount": 495
+        },
+        {
+          "description": "Spa relaxation payment",
+          "min_amount": 9.8,
+          "max_amount": 4000
+        },
+        {
+          "description": "Massage therapy payment",
+          "min_amount": 9.5,
+          "max_amount": 4000
+        },
+        {
+          "description": "Dance class payment",
+          "min_amount": 9.3,
+          "max_amount": 4000
+        },
+        {
+          "description": "Music lesson payment",
+          "min_amount": 10,
+          "max_amount": 4000
+        },
+        {
+          "description": "Book fair ticket",
+          "min_amount": 4.9,
+          "max_amount": 515
+        },
+        {
+          "description": "Outdoor games fee",
+          "min_amount": 3,
+          "max_amount": 310
+        },
+        {
+          "description": "Resort food and fun payment",
+          "min_amount": 30,
+          "max_amount": 4000
+        },
+        {
+          "description": "Video streaming subscription",
+          "min_amount": 3.2,
+          "max_amount": 4000
+        },
+        {
+          "description": "Premium streaming subscription",
+          "min_amount": 3,
+          "max_amount": 4000
+        },
+        {
+          "description": "Cable premium upgrade",
+          "min_amount": 9.6,
+          "max_amount": 4000
+        },
+        {
+          "description": "Betting wallet funding",
+          "min_amount": 91,
+          "max_amount": 4000
+        },
+        {
+          "description": "Esports tournament payment",
+          "min_amount": 10,
+          "max_amount": 4000
+        },
+        {
+          "description": "Live band reservation",
+          "min_amount": 10,
+          "max_amount": 4000
+        },
+        {
+          "description": "VIP event pass payment",
+          "min_amount": 10,
+          "max_amount": 4000
+        },
+        {
+          "description": "Weekend hangout contribution",
+          "min_amount": 3,
+          "max_amount": 290
+        },
+        {
+          "description": "Tour guide fee",
+          "min_amount": 3,
+          "max_amount": 320
+        },
+        {
+          "description": "Holiday fun expense",
+          "min_amount": 5.2,
+          "max_amount": 545
+        },
+        {
+          "description": "Camp event payment",
+          "min_amount": 10,
+          "max_amount": 4000
+        },
+        {
+          "description": "Leisure activity booking",
+          "min_amount": 9.1,
+          "max_amount": 4000
+        },
+        {
+          "description": "Family recreation payment",
+          "min_amount": 9.9,
+          "max_amount": 4000
+        },
+        {
+          "description": "Indoor games fee",
+          "min_amount": 3,
+          "max_amount": 335
+        },
+        {
+          "description": "Recreation group contribution",
+          "min_amount": 3,
+          "max_amount": 320
+        }
+      ]
+    },
+    {
+      "category_name": "Hospitality and Accommodation",
+      "min_transaction_amount": 15,
+      "max_transaction_amount": 12000,
+      "transaction_descriptions": [
+        {
+          "description": "Hotel room booking",
+          "min_amount": 55,
+          "max_amount": 9540
+        },
+        {
+          "description": "Short stay apartment payment",
+          "min_amount": 52,
+          "max_amount": 9090
+        },
+        {
+          "description": "Guest house deposit",
+          "min_amount": 170,
+          "max_amount": 12000
+        },
+        {
+          "description": "Resort accommodation fee",
+          "min_amount": 49,
+          "max_amount": 8640
+        },
+        {
+          "description": "Lodging extension payment",
+          "min_amount": 18,
+          "max_amount": 9540
+        },
+        {
+          "description": "Conference hall booking",
+          "min_amount": 19,
+          "max_amount": 9900
+        },
+        {
+          "description": "Event venue deposit",
+          "min_amount": 190,
+          "max_amount": 12000
+        },
+        {
+          "description": "Catering hall reservation",
+          "min_amount": 19,
+          "max_amount": 9810
+        },
+        {
+          "description": "Hotel laundry service",
+          "min_amount": 49,
+          "max_amount": 8640
+        },
+        {
+          "description": "Room service payment",
+          "min_amount": 17,
+          "max_amount": 9180
+        },
+        {
+          "description": "Mini bar charge",
+          "min_amount": 15,
+          "max_amount": 570
+        },
+        {
+          "description": "Hotel airport pickup fee",
+          "min_amount": 49,
+          "max_amount": 8550
+        },
+        {
+          "description": "Hotel restaurant bill",
+          "min_amount": 56,
+          "max_amount": 9810
+        },
+        {
+          "description": "Accommodation balance payment",
+          "min_amount": 53,
+          "max_amount": 9360
+        },
+        {
+          "description": "Vacation apartment booking",
+          "min_amount": 49,
+          "max_amount": 8640
+        },
+        {
+          "description": "Service apartment rent",
+          "min_amount": 51,
+          "max_amount": 9000
+        },
+        {
+          "description": "Hostel guest booking",
+          "min_amount": 18,
+          "max_amount": 9630
+        },
+        {
+          "description": "Airbnb stay payment",
+          "min_amount": 19,
+          "max_amount": 9990
+        },
+        {
+          "description": "Travel lodge settlement",
+          "min_amount": 52,
+          "max_amount": 9180
+        },
+        {
+          "description": "Executive suite booking",
+          "min_amount": 56,
+          "max_amount": 9810
+        },
+        {
+          "description": "Meeting room rental",
+          "min_amount": 19,
+          "max_amount": 9900
+        },
+        {
+          "description": "Banquet hall payment",
+          "min_amount": 18,
+          "max_amount": 9630
+        },
+        {
+          "description": "Poolside reservation fee",
+          "min_amount": 17,
+          "max_amount": 8910
+        },
+        {
+          "description": "Wedding venue deposit",
+          "min_amount": 165,
+          "max_amount": 12000
+        },
+        {
+          "description": "Guest accommodation support",
+          "min_amount": 49,
+          "max_amount": 8640
+        },
+        {
+          "description": "Hospitality service charge",
+          "min_amount": 15,
+          "max_amount": 580
+        },
+        {
+          "description": "Daily room extension",
+          "min_amount": 18,
+          "max_amount": 9270
+        },
+        {
+          "description": "Holiday resort booking",
+          "min_amount": 49,
+          "max_amount": 8640
+        },
+        {
+          "description": "Check-in advance payment",
+          "min_amount": 18,
+          "max_amount": 9630
+        },
+        {
+          "description": "Lodge maintenance contribution",
+          "min_amount": 56,
+          "max_amount": 9720
+        },
+        {
+          "description": "Guest refreshments payment",
+          "min_amount": 16,
+          "max_amount": 8550
+        },
+        {
+          "description": "Suite upgrade fee",
+          "min_amount": 50,
+          "max_amount": 8730
+        },
+        {
+          "description": "Hotel security deposit",
+          "min_amount": 54,
+          "max_amount": 9450
+        },
+        {
+          "description": "Tourist lodge payment",
+          "min_amount": 52,
+          "max_amount": 9180
+        },
+        {
+          "description": "Breakfast package payment",
+          "min_amount": 19,
+          "max_amount": 9720
+        },
+        {
+          "description": "Full board accommodation",
+          "min_amount": 57,
+          "max_amount": 9900
+        },
+        {
+          "description": "Weekend stay booking",
+          "min_amount": 18,
+          "max_amount": 9450
+        },
+        {
+          "description": "Business trip accommodation",
+          "min_amount": 53,
+          "max_amount": 9360
+        },
+        {
+          "description": "Group room reservation",
+          "min_amount": 18,
+          "max_amount": 9360
+        },
+        {
+          "description": "Travel hostel payment",
+          "min_amount": 19,
+          "max_amount": 9990
+        },
+        {
+          "description": "Hospitality booking fee",
+          "min_amount": 19,
+          "max_amount": 9720
+        },
+        {
+          "description": "Cabin reservation payment",
+          "min_amount": 18,
+          "max_amount": 9450
+        },
+        {
+          "description": "Premium room booking",
+          "min_amount": 16,
+          "max_amount": 8550
+        },
+        {
+          "description": "Inn accommodation fee",
+          "min_amount": 55,
+          "max_amount": 9630
+        },
+        {
+          "description": "Corporate lodging payment",
+          "min_amount": 19,
+          "max_amount": 9810
+        },
+        {
+          "description": "Hotel conference support",
+          "min_amount": 50,
+          "max_amount": 8820
+        },
+        {
+          "description": "Accommodation commission payment",
+          "min_amount": 56,
+          "max_amount": 9810
+        },
+        {
+          "description": "Family suite reservation",
+          "min_amount": 57,
+          "max_amount": 9990
+        },
+        {
+          "description": "Overnight stay payment",
+          "min_amount": 17,
+          "max_amount": 8730
+        },
+        {
+          "description": "Temporary lodging settlement",
+          "min_amount": 17,
+          "max_amount": 8910
+        }
+      ]
+    },
+    {
+      "category_name": "Construction and Real Estate",
+      "min_transaction_amount": 50,
+      "max_transaction_amount": 250000,
+      "transaction_descriptions": [
+        {
+          "description": "Land purchase deposit",
+          "min_amount": 3960,
+          "max_amount": 250000
+        },
+        {
+          "description": "House rent payment",
+          "min_amount": 3680,
+          "max_amount": 250000
+        },
+        {
+          "description": "Office rent payment",
+          "min_amount": 3840,
+          "max_amount": 250000
+        },
+        {
+          "description": "Shop rent settlement",
+          "min_amount": 74,
+          "max_amount": 38800
+        },
+        {
+          "description": "Estate development levy",
+          "min_amount": 50,
+          "max_amount": 2300
+        },
+        {
+          "description": "Building materials purchase",
+          "min_amount": 1650,
+          "max_amount": 250000
+        },
+        {
+          "description": "Cement supply payment",
+          "min_amount": 81,
+          "max_amount": 42400
+        },
+        {
+          "description": "Blocks purchase payment",
+          "min_amount": 72,
+          "max_amount": 38000
+        },
+        {
+          "description": "Sand supply payment",
+          "min_amount": 73,
+          "max_amount": 38400
+        },
+        {
+          "description": "Granite purchase",
+          "min_amount": 50,
+          "max_amount": 20400
+        },
+        {
+          "description": "Carpentry work payment",
+          "min_amount": 77,
+          "max_amount": 40400
+        },
+        {
+          "description": "Mason labour payment",
+          "min_amount": 82,
+          "max_amount": 43200
+        },
+        {
+          "description": "Roofing materials purchase",
+          "min_amount": 1570,
+          "max_amount": 250000
+        },
+        {
+          "description": "POP ceiling installation",
+          "min_amount": 150,
+          "max_amount": 47050
+        },
+        {
+          "description": "Tiling work payment",
+          "min_amount": 79,
+          "max_amount": 41600
+        },
+        {
+          "description": "Painting contract payment",
+          "min_amount": 74,
+          "max_amount": 38800
+        },
+        {
+          "description": "Electrical wiring payment",
+          "min_amount": 74,
+          "max_amount": 39200
+        },
+        {
+          "description": "Plumbing installation payment",
+          "min_amount": 145,
+          "max_amount": 45600
+        },
+        {
+          "description": "Survey fee payment",
+          "min_amount": 74,
+          "max_amount": 39200
+        },
+        {
+          "description": "Architectural design fee",
+          "min_amount": 200,
+          "max_amount": 67850
+        },
+        {
+          "description": "Quantity surveyor payment",
+          "min_amount": 74,
+          "max_amount": 39200
+        },
+        {
+          "description": "Building approval fee",
+          "min_amount": 50,
+          "max_amount": 2540
+        },
+        {
+          "description": "Site clearing payment",
+          "min_amount": 84,
+          "max_amount": 44000
+        },
+        {
+          "description": "Excavation service payment",
+          "min_amount": 78,
+          "max_amount": 40800
+        },
+        {
+          "description": "Foundation work payment",
+          "min_amount": 1700,
+          "max_amount": 250000
+        },
+        {
+          "description": "Iron rod purchase",
+          "min_amount": 50,
+          "max_amount": 20400
+        },
+        {
+          "description": "Door installation payment",
+          "min_amount": 170,
+          "max_amount": 53300
+        },
+        {
+          "description": "Window fabrication payment",
+          "min_amount": 84,
+          "max_amount": 44000
+        },
+        {
+          "description": "Glass work payment",
+          "min_amount": 74,
+          "max_amount": 38800
+        },
+        {
+          "description": "Borehole drilling payment",
+          "min_amount": 72,
+          "max_amount": 38000
+        },
+        {
+          "description": "Generator house construction",
+          "min_amount": 50,
+          "max_amount": 4360
+        },
+        {
+          "description": "Fence construction payment",
+          "min_amount": 85,
+          "max_amount": 44400
+        },
+        {
+          "description": "Gate fabrication payment",
+          "min_amount": 77,
+          "max_amount": 40400
+        },
+        {
+          "description": "Property legal fee",
+          "min_amount": 50,
+          "max_amount": 2350
+        },
+        {
+          "description": "Title documentation payment",
+          "min_amount": 79,
+          "max_amount": 41600
+        },
+        {
+          "description": "Agency commission payment",
+          "min_amount": 74,
+          "max_amount": 38800
+        },
+        {
+          "description": "Property inspection fee",
+          "min_amount": 200,
+          "max_amount": 66550
+        },
+        {
+          "description": "Facility management payment",
+          "min_amount": 73,
+          "max_amount": 38400
+        },
+        {
+          "description": "Tenant service charge",
+          "min_amount": 50,
+          "max_amount": 2590
+        },
+        {
+          "description": "Land documentation fee",
+          "min_amount": 50,
+          "max_amount": 2540
+        },
+        {
+          "description": "Renovation project payment",
+          "min_amount": 84,
+          "max_amount": 44000
+        },
+        {
+          "description": "Interior finishing payment",
+          "min_amount": 84,
+          "max_amount": 44000
+        },
+        {
+          "description": "Kitchen cabinet installation",
+          "min_amount": 160,
+          "max_amount": 50400
+        },
+        {
+          "description": "Real estate investment",
+          "min_amount": 3840,
+          "max_amount": 250000
+        },
+        {
+          "description": "Mortgage deposit",
+          "min_amount": 4240,
+          "max_amount": 250000
+        },
+        {
+          "description": "Lease agreement payment",
+          "min_amount": 81,
+          "max_amount": 42400
+        },
+        {
+          "description": "Property valuation fee",
+          "min_amount": 190,
+          "max_amount": 64650
+        },
+        {
+          "description": "Construction equipment rental",
+          "min_amount": 80,
+          "max_amount": 42000
+        },
+        {
+          "description": "Concrete casting payment",
+          "min_amount": 1660,
+          "max_amount": 250000
+        },
+        {
+          "description": "Building project contribution",
+          "min_amount": 50,
+          "max_amount": 2470
+        }
+      ]
+    },
+    {
+      "category_name": "Agriculture and Farming",
+      "min_transaction_amount": 5,
+      "max_transaction_amount": 40000,
+      "transaction_descriptions": [
+        {
+          "description": "Seed purchase",
+          "min_amount": 8.2,
+          "max_amount": 4320
+        },
+        {
+          "description": "Fertilizer payment",
+          "min_amount": 16,
+          "max_amount": 8640
+        },
+        {
+          "description": "Pesticide purchase",
+          "min_amount": 9.1,
+          "max_amount": 4770
+        },
+        {
+          "description": "Farm labour payment",
+          "min_amount": 18,
+          "max_amount": 9630
+        },
+        {
+          "description": "Irrigation support payment",
+          "min_amount": 17,
+          "max_amount": 9090
+        },
+        {
+          "description": "Tractor rental fee",
+          "min_amount": 19,
+          "max_amount": 9900
+        },
+        {
+          "description": "Farm land lease payment",
+          "min_amount": 19,
+          "max_amount": 9720
+        },
+        {
+          "description": "Poultry feed purchase",
+          "min_amount": 8.4,
+          "max_amount": 4410
+        },
+        {
+          "description": "Fish feed purchase",
+          "min_amount": 8.5,
+          "max_amount": 4460
+        },
+        {
+          "description": "Livestock purchase",
+          "min_amount": 8.4,
+          "max_amount": 4410
+        },
+        {
+          "description": "Veterinary service payment",
+          "min_amount": 19,
+          "max_amount": 9720
+        },
+        {
+          "description": "Farm produce transport",
+          "min_amount": 8.4,
+          "max_amount": 880
+        },
+        {
+          "description": "Harvest labour payment",
+          "min_amount": 19,
+          "max_amount": 9900
+        },
+        {
+          "description": "Crop storage payment",
+          "min_amount": 17,
+          "max_amount": 8730
+        },
+        {
+          "description": "Greenhouse maintenance",
+          "min_amount": 34,
+          "max_amount": 10800
+        },
+        {
+          "description": "Farm equipment repair",
+          "min_amount": 35,
+          "max_amount": 11000
+        },
+        {
+          "description": "Agrochemical purchase",
+          "min_amount": 9.5,
+          "max_amount": 4950
+        },
+        {
+          "description": "Cassava stem purchase",
+          "min_amount": 9.3,
+          "max_amount": 4860
+        },
+        {
+          "description": "Maize seed purchase",
+          "min_amount": 8.6,
+          "max_amount": 4540
+        },
+        {
+          "description": "Rice seed purchase",
+          "min_amount": 9.0,
+          "max_amount": 4720
+        },
+        {
+          "description": "Yam seedling purchase",
+          "min_amount": 8.5,
+          "max_amount": 4460
+        },
+        {
+          "description": "Plantain sucker purchase",
+          "min_amount": 8.3,
+          "max_amount": 4360
+        },
+        {
+          "description": "Palm seedling purchase",
+          "min_amount": 8.2,
+          "max_amount": 4320
+        },
+        {
+          "description": "Broiler chicks purchase",
+          "min_amount": 9.0,
+          "max_amount": 4720
+        },
+        {
+          "description": "Layer birds purchase",
+          "min_amount": 8.9,
+          "max_amount": 4680
+        },
+        {
+          "description": "Goat feed purchase",
+          "min_amount": 8.6,
+          "max_amount": 4500
+        },
+        {
+          "description": "Pig feed purchase",
+          "min_amount": 8.1,
+          "max_amount": 4280
+        },
+        {
+          "description": "Water pumping payment",
+          "min_amount": 17,
+          "max_amount": 9000
+        },
+        {
+          "description": "Farm security service",
+          "min_amount": 8.5,
+          "max_amount": 890
+        },
+        {
+          "description": "Soil testing fee",
+          "min_amount": 5,
+          "max_amount": 570
+        },
+        {
+          "description": "Extension service payment",
+          "min_amount": 17,
+          "max_amount": 9180
+        },
+        {
+          "description": "Farm insurance premium",
+          "min_amount": 19,
+          "max_amount": 9720
+        },
+        {
+          "description": "Processing machine rental",
+          "min_amount": 17,
+          "max_amount": 9090
+        },
+        {
+          "description": "Cold room storage payment",
+          "min_amount": 17,
+          "max_amount": 8730
+        },
+        {
+          "description": "Produce packaging payment",
+          "min_amount": 17,
+          "max_amount": 8820
+        },
+        {
+          "description": "Market stall fee",
+          "min_amount": 5,
+          "max_amount": 570
+        },
+        {
+          "description": "Agric training fee",
+          "min_amount": 47,
+          "max_amount": 15700
+        },
+        {
+          "description": "Feed mill payment",
+          "min_amount": 16,
+          "max_amount": 8550
+        },
+        {
+          "description": "Animal vaccination payment",
+          "min_amount": 17,
+          "max_amount": 9180
+        },
+        {
+          "description": "Farm harvesting tools purchase",
+          "min_amount": 9.4,
+          "max_amount": 4900
+        },
+        {
+          "description": "Crop spraying payment",
+          "min_amount": 17,
+          "max_amount": 8820
+        },
+        {
+          "description": "Farm cooperative contribution",
+          "min_amount": 5,
+          "max_amount": 565
+        },
+        {
+          "description": "Bulk produce purchase",
+          "min_amount": 8.2,
+          "max_amount": 4320
+        },
+        {
+          "description": "Agric supply payment",
+          "min_amount": 18,
+          "max_amount": 9630
+        },
+        {
+          "description": "Organic manure purchase",
+          "min_amount": 8.1,
+          "max_amount": 4280
+        },
+        {
+          "description": "Fish pond maintenance",
+          "min_amount": 35,
+          "max_amount": 10900
+        },
+        {
+          "description": "Farm fencing payment",
+          "min_amount": 18,
+          "max_amount": 9630
+        },
+        {
+          "description": "Agric consultancy fee",
+          "min_amount": 40,
+          "max_amount": 13700
+        },
+        {
+          "description": "Produce export logistics",
+          "min_amount": 8.6,
+          "max_amount": 910
+        },
+        {
+          "description": "Farm operations settlement",
+          "min_amount": 17,
+          "max_amount": 8910
+        }
+      ]
+    },
+    {
+      "category_name": "Retail and Shopping",
+      "min_transaction_amount": 2,
+      "max_transaction_amount": 8000,
+      "transaction_descriptions": [
+        {
+          "description": "Clothing purchase",
+          "min_amount": 5.2,
+          "max_amount": 2750
+        },
+        {
+          "description": "Shoe purchase",
+          "min_amount": 5.2,
+          "max_amount": 2750
+        },
+        {
+          "description": "Bag purchase",
+          "min_amount": 4.5,
+          "max_amount": 2400
+        },
+        {
+          "description": "Fashion accessory purchase",
+          "min_amount": 4.8,
+          "max_amount": 2520
+        },
+        {
+          "description": "Boutique payment",
+          "min_amount": 10,
+          "max_amount": 5350
+        },
+        {
+          "description": "Online shopping payment",
+          "min_amount": 9.3,
+          "max_amount": 4900
+        },
+        {
+          "description": "Department store purchase",
+          "min_amount": 4.9,
+          "max_amount": 2580
+        },
+        {
+          "description": "Perfume purchase",
+          "min_amount": 4.5,
+          "max_amount": 2380
+        },
+        {
+          "description": "Cosmetics purchase",
+          "min_amount": 5.0,
+          "max_amount": 2620
+        },
+        {
+          "description": "Skincare products purchase",
+          "min_amount": 4.8,
+          "max_amount": 2500
+        },
+        {
+          "description": "Hair extension purchase",
+          "min_amount": 4.8,
+          "max_amount": 2500
+        },
+        {
+          "description": "Jewelry purchase",
+          "min_amount": 5.2,
+          "max_amount": 2720
+        },
+        {
+          "description": "Wristwatch purchase",
+          "min_amount": 4.9,
+          "max_amount": 2580
+        },
+        {
+          "description": "Phone accessory purchase",
+          "min_amount": 4.7,
+          "max_amount": 2480
+        },
+        {
+          "description": "Gift item purchase",
+          "min_amount": 5.2,
+          "max_amount": 2720
+        },
+        {
+          "description": "Office supplies purchase",
+          "min_amount": 5.3,
+          "max_amount": 2770
+        },
+        {
+          "description": "Home decor purchase",
+          "min_amount": 4.8,
+          "max_amount": 2500
+        },
+        {
+          "description": "Baby items purchase",
+          "min_amount": 5.2,
+          "max_amount": 2750
+        },
+        {
+          "description": "Toy purchase",
+          "min_amount": 4.5,
+          "max_amount": 2380
+        },
+        {
+          "description": "Sportswear purchase",
+          "min_amount": 4.5,
+          "max_amount": 2400
+        },
+        {
+          "description": "School supplies purchase",
+          "min_amount": 5.0,
+          "max_amount": 2620
+        },
+        {
+          "description": "Kitchen utensils purchase",
+          "min_amount": 4.7,
+          "max_amount": 2480
+        },
+        {
+          "description": "Household essentials purchase",
+          "min_amount": 4.7,
+          "max_amount": 2480
+        },
+        {
+          "description": "Beauty store payment",
+          "min_amount": 11,
+          "max_amount": 5550
+        },
+        {
+          "description": "Appliance purchase",
+          "min_amount": 5.2,
+          "max_amount": 2750
+        },
+        {
+          "description": "Laptop bag purchase",
+          "min_amount": 5.0,
+          "max_amount": 2600
+        },
+        {
+          "description": "Stationery purchase",
+          "min_amount": 5.0,
+          "max_amount": 2620
+        },
+        {
+          "description": "Craft materials purchase",
+          "min_amount": 4.5,
+          "max_amount": 2400
+        },
+        {
+          "description": "Books and magazine purchase",
+          "min_amount": 5.2,
+          "max_amount": 2750
+        },
+        {
+          "description": "Discount store payment",
+          "min_amount": 9.1,
+          "max_amount": 4800
+        },
+        {
+          "description": "Promo sales purchase",
+          "min_amount": 5.1,
+          "max_amount": 2670
+        },
+        {
+          "description": "Tailoring material purchase",
+          "min_amount": 4.7,
+          "max_amount": 2480
+        },
+        {
+          "description": "Fabric purchase",
+          "min_amount": 5.1,
+          "max_amount": 2670
+        },
+        {
+          "description": "Ready-to-wear outfit payment",
+          "min_amount": 9.9,
+          "max_amount": 5200
+        },
+        {
+          "description": "Luxury retail payment",
+          "min_amount": 10,
+          "max_amount": 5300
+        },
+        {
+          "description": "Marketplace vendor payment",
+          "min_amount": 10,
+          "max_amount": 5350
+        },
+        {
+          "description": "Phone purchase installment",
+          "min_amount": 4.8,
+          "max_amount": 2520
+        },
+        {
+          "description": "Tablet purchase",
+          "min_amount": 5.3,
+          "max_amount": 2770
+        },
+        {
+          "description": "Gift wrap service payment",
+          "min_amount": 9.3,
+          "max_amount": 4900
+        },
+        {
+          "description": "Back-to-school shopping",
+          "min_amount": 5.0,
+          "max_amount": 530
+        },
+        {
+          "description": "Wedding gift purchase",
+          "min_amount": 5.2,
+          "max_amount": 2750
+        },
+        {
+          "description": "Birthday gift payment",
+          "min_amount": 9.5,
+          "max_amount": 5000
+        },
+        {
+          "description": "Seasonal shopping payment",
+          "min_amount": 9.8,
+          "max_amount": 5150
+        },
+        {
+          "description": "Men fashion purchase",
+          "min_amount": 4.5,
+          "max_amount": 2380
+        },
+        {
+          "description": "Women fashion purchase",
+          "min_amount": 5.0,
+          "max_amount": 2600
+        },
+        {
+          "description": "Children clothing purchase",
+          "min_amount": 4.7,
+          "max_amount": 2480
+        },
+        {
+          "description": "Travel accessories purchase",
+          "min_amount": 5.2,
+          "max_amount": 2720
+        },
+        {
+          "description": "Smart gadget purchase",
+          "min_amount": 4.8,
+          "max_amount": 2500
+        },
+        {
+          "description": "Personal shopping support",
+          "min_amount": 2,
+          "max_amount": 290
+        },
+        {
+          "description": "Retail order settlement",
+          "min_amount": 10,
+          "max_amount": 5300
+        }
+      ]
+    },
+    {
+      "category_name": "Technology and Software",
+      "min_transaction_amount": 3,
+      "max_transaction_amount": 50000,
+      "transaction_descriptions": [
+        {
+          "description": "Software subscription payment",
+          "min_amount": 7.9,
+          "max_amount": 13750
+        },
+        {
+          "description": "Domain name renewal",
+          "min_amount": 7.7,
+          "max_amount": 13350
+        },
+        {
+          "description": "Website hosting payment",
+          "min_amount": 7.1,
+          "max_amount": 12500
+        },
+        {
+          "description": "Cloud storage subscription",
+          "min_amount": 7.2,
+          "max_amount": 12600
+        },
+        {
+          "description": "Server hosting fee",
+          "min_amount": 7.7,
+          "max_amount": 13350
+        },
+        {
+          "description": "Laptop repair payment",
+          "min_amount": 48,
+          "max_amount": 15150
+        },
+        {
+          "description": "Phone screen replacement",
+          "min_amount": 52,
+          "max_amount": 16500
+        },
+        {
+          "description": "Computer accessories purchase",
+          "min_amount": 11,
+          "max_amount": 6000
+        },
+        {
+          "description": "Antivirus subscription",
+          "min_amount": 6.9,
+          "max_amount": 12100
+        },
+        {
+          "description": "CRM subscription payment",
+          "min_amount": 7.5,
+          "max_amount": 13100
+        },
+        {
+          "description": "Project management tool subscription",
+          "min_amount": 6.8,
+          "max_amount": 12000
+        },
+        {
+          "description": "Email hosting payment",
+          "min_amount": 7.3,
+          "max_amount": 12900
+        },
+        {
+          "description": "API usage fee",
+          "min_amount": 3,
+          "max_amount": 815
+        },
+        {
+          "description": "Developer license payment",
+          "min_amount": 24,
+          "max_amount": 12400
+        },
+        {
+          "description": "UI design tool subscription",
+          "min_amount": 8.0,
+          "max_amount": 13850
+        },
+        {
+          "description": "Code repository payment",
+          "min_amount": 22,
+          "max_amount": 11900
+        },
+        {
+          "description": "Automation software payment",
+          "min_amount": 7.3,
+          "max_amount": 12900
+        },
+        {
+          "description": "Database hosting fee",
+          "min_amount": 6.8,
+          "max_amount": 11900
+        },
+        {
+          "description": "VPN software subscription",
+          "min_amount": 6.8,
+          "max_amount": 12000
+        },
+        {
+          "description": "AI tool subscription",
+          "min_amount": 7.5,
+          "max_amount": 13100
+        },
+        {
+          "description": "Mobile app developer fee",
+          "min_amount": 3,
+          "max_amount": 780
+        },
+        {
+          "description": "Website redesign payment",
+          "min_amount": 59,
+          "max_amount": 20000
+        },
+        {
+          "description": "Software maintenance fee",
+          "min_amount": 7.0,
+          "max_amount": 12250
+        },
+        {
+          "description": "Tech support payment",
+          "min_amount": 25,
+          "max_amount": 13000
+        },
+        {
+          "description": "Printer repair payment",
+          "min_amount": 46,
+          "max_amount": 14700
+        },
+        {
+          "description": "POS software subscription",
+          "min_amount": 8.0,
+          "max_amount": 13850
+        },
+        {
+          "description": "SaaS platform payment",
+          "min_amount": 6.9,
+          "max_amount": 12100
+        },
+        {
+          "description": "Cloud backup payment",
+          "min_amount": 24,
+          "max_amount": 12900
+        },
+        {
+          "description": "Cybersecurity audit fee",
+          "min_amount": 65,
+          "max_amount": 21800
+        },
+        {
+          "description": "SSL certificate renewal",
+          "min_amount": 3,
+          "max_amount": 720
+        },
+        {
+          "description": "Internet calling software fee",
+          "min_amount": 7.3,
+          "max_amount": 12750
+        },
+        {
+          "description": "Helpdesk software payment",
+          "min_amount": 7.1,
+          "max_amount": 12500
+        },
+        {
+          "description": "Attendance system subscription",
+          "min_amount": 7.7,
+          "max_amount": 13500
+        },
+        {
+          "description": "Biometric device purchase",
+          "min_amount": 12,
+          "max_amount": 6440
+        },
+        {
+          "description": "Software integration fee",
+          "min_amount": 6.9,
+          "max_amount": 12100
+        },
+        {
+          "description": "Custom development payment",
+          "min_amount": 22,
+          "max_amount": 11900
+        },
+        {
+          "description": "Data recovery service",
+          "min_amount": 11,
+          "max_amount": 1190
+        },
+        {
+          "description": "Hardware upgrade payment",
+          "min_amount": 24,
+          "max_amount": 12900
+        },
+        {
+          "description": "External hard drive purchase",
+          "min_amount": 12,
+          "max_amount": 6310
+        },
+        {
+          "description": "Keyboard and mouse purchase",
+          "min_amount": 13,
+          "max_amount": 6810
+        },
+        {
+          "description": "Digital workspace subscription",
+          "min_amount": 7.9,
+          "max_amount": 13750
+        },
+        {
+          "description": "Video conferencing license",
+          "min_amount": 12,
+          "max_amount": 1240
+        },
+        {
+          "description": "Graphic design software payment",
+          "min_amount": 7.7,
+          "max_amount": 13500
+        },
+        {
+          "description": "Email automation tool subscription",
+          "min_amount": 6.9,
+          "max_amount": 12100
+        },
+        {
+          "description": "Website maintenance retainer",
+          "min_amount": 51,
+          "max_amount": 16050
+        },
+        {
+          "description": "Tech installation payment",
+          "min_amount": 45,
+          "max_amount": 14250
+        },
+        {
+          "description": "Source code purchase",
+          "min_amount": 12,
+          "max_amount": 6190
+        },
+        {
+          "description": "Plugin subscription payment",
+          "min_amount": 8.0,
+          "max_amount": 13850
+        },
+        {
+          "description": "Cloud compute invoice",
+          "min_amount": 12,
+          "max_amount": 1280
+        },
+        {
+          "description": "Technology services settlement",
+          "min_amount": 22,
+          "max_amount": 11900
+        }
+      ]
+    },
+    {
+      "category_name": "Personal Care and Beauty",
+      "min_transaction_amount": 3,
+      "max_transaction_amount": 2000,
+      "transaction_descriptions": [
+        {
+          "description": "Hair salon payment",
+          "min_amount": 9.8,
+          "max_amount": 2000
+        },
+        {
+          "description": "Barbing service payment",
+          "min_amount": 10,
+          "max_amount": 2000
+        },
+        {
+          "description": "Manicure service payment",
+          "min_amount": 9.6,
+          "max_amount": 2000
+        },
+        {
+          "description": "Pedicure service payment",
+          "min_amount": 9.3,
+          "max_amount": 2000
+        },
+        {
+          "description": "Spa treatment payment",
+          "min_amount": 10,
+          "max_amount": 2000
+        },
+        {
+          "description": "Facial treatment payment",
+          "min_amount": 9.6,
+          "max_amount": 2000
+        },
+        {
+          "description": "Makeup service payment",
+          "min_amount": 9.1,
+          "max_amount": 2000
+        },
+        {
+          "description": "Skincare product purchase",
+          "min_amount": 5.0,
+          "max_amount": 2000
+        },
+        {
+          "description": "Hair treatment purchase",
+          "min_amount": 5.2,
+          "max_amount": 2000
+        },
+        {
+          "description": "Wig installation payment",
+          "min_amount": 20,
+          "max_amount": 2000
+        },
+        {
+          "description": "Hair coloring service",
+          "min_amount": 5.0,
+          "max_amount": 520
+        },
+        {
+          "description": "Nail extension payment",
+          "min_amount": 10,
+          "max_amount": 2000
+        },
+        {
+          "description": "Massage therapy payment",
+          "min_amount": 9.5,
+          "max_amount": 2000
+        },
+        {
+          "description": "Body scrub treatment",
+          "min_amount": 5.2,
+          "max_amount": 540
+        },
+        {
+          "description": "Fragrance purchase",
+          "min_amount": 5.0,
+          "max_amount": 2000
+        },
+        {
+          "description": "Beauty consultation fee",
+          "min_amount": 24,
+          "max_amount": 2000
+        },
+        {
+          "description": "Makeup kit purchase",
+          "min_amount": 5.0,
+          "max_amount": 2000
+        },
+        {
+          "description": "Hair extension purchase",
+          "min_amount": 4.8,
+          "max_amount": 2000
+        },
+        {
+          "description": "Lash extension payment",
+          "min_amount": 9.1,
+          "max_amount": 2000
+        },
+        {
+          "description": "Eyebrow grooming payment",
+          "min_amount": 10,
+          "max_amount": 2000
+        },
+        {
+          "description": "Beard grooming service",
+          "min_amount": 9.2,
+          "max_amount": 2000
+        },
+        {
+          "description": "Personal grooming kit purchase",
+          "min_amount": 10,
+          "max_amount": 2000
+        },
+        {
+          "description": "Salon home service payment",
+          "min_amount": 11,
+          "max_amount": 2000
+        },
+        {
+          "description": "Bridal makeup deposit",
+          "min_amount": 90,
+          "max_amount": 2000
+        },
+        {
+          "description": "Gele tying payment",
+          "min_amount": 10,
+          "max_amount": 2000
+        },
+        {
+          "description": "Beauty training fee",
+          "min_amount": 25,
+          "max_amount": 2000
+        },
+        {
+          "description": "Cosmetic procedure deposit",
+          "min_amount": 105,
+          "max_amount": 2000
+        },
+        {
+          "description": "Body cream purchase",
+          "min_amount": 4.8,
+          "max_amount": 2000
+        },
+        {
+          "description": "Soap and lotion purchase",
+          "min_amount": 5.2,
+          "max_amount": 2000
+        },
+        {
+          "description": "Salon membership fee",
+          "min_amount": 3,
+          "max_amount": 305
+        },
+        {
+          "description": "Beauty product restock",
+          "min_amount": 4.7,
+          "max_amount": 2000
+        },
+        {
+          "description": "Hair retouch payment",
+          "min_amount": 9.8,
+          "max_amount": 2000
+        },
+        {
+          "description": "Steam treatment fee",
+          "min_amount": 3,
+          "max_amount": 290
+        },
+        {
+          "description": "Men grooming payment",
+          "min_amount": 10,
+          "max_amount": 2000
+        },
+        {
+          "description": "Skin analysis consultation",
+          "min_amount": 22,
+          "max_amount": 2000
+        },
+        {
+          "description": "Waxing service payment",
+          "min_amount": 10,
+          "max_amount": 2000
+        },
+        {
+          "description": "Threading service fee",
+          "min_amount": 3,
+          "max_amount": 335
+        },
+        {
+          "description": "Salon booking deposit",
+          "min_amount": 94,
+          "max_amount": 2000
+        },
+        {
+          "description": "Beauty room rental",
+          "min_amount": 9.5,
+          "max_amount": 2000
+        },
+        {
+          "description": "Hair wash payment",
+          "min_amount": 9.4,
+          "max_amount": 2000
+        },
+        {
+          "description": "Detangling service payment",
+          "min_amount": 9.3,
+          "max_amount": 2000
+        },
+        {
+          "description": "Facial cleanser purchase",
+          "min_amount": 5.2,
+          "max_amount": 2000
+        },
+        {
+          "description": "Perfume refill payment",
+          "min_amount": 11,
+          "max_amount": 2000
+        },
+        {
+          "description": "Organic skincare purchase",
+          "min_amount": 5.2,
+          "max_amount": 2000
+        },
+        {
+          "description": "Makeup brush purchase",
+          "min_amount": 4.9,
+          "max_amount": 2000
+        },
+        {
+          "description": "Salon package payment",
+          "min_amount": 10,
+          "max_amount": 2000
+        },
+        {
+          "description": "Relaxer treatment payment",
+          "min_amount": 9.0,
+          "max_amount": 2000
+        },
+        {
+          "description": "Beauty lounge payment",
+          "min_amount": 9.7,
+          "max_amount": 2000
+        },
+        {
+          "description": "Self-care expense",
+          "min_amount": 5.0,
+          "max_amount": 525
+        },
+        {
+          "description": "Personal beauty settlement",
+          "min_amount": 9.8,
+          "max_amount": 2000
+        }
+      ]
+    },
+    {
+      "category_name": "Government and Public Services",
+      "min_transaction_amount": 1,
+      "max_transaction_amount": 30000,
+      "transaction_descriptions": [
+        {
+          "description": "Tax payment",
+          "min_amount": 18,
+          "max_amount": 9540
+        },
+        {
+          "description": "Payroll tax remittance",
+          "min_amount": 1.8,
+          "max_amount": 570
+        },
+        {
+          "description": "Business registration fee",
+          "min_amount": 8.4,
+          "max_amount": 880
+        },
+        {
+          "description": "Passport application payment",
+          "min_amount": 17,
+          "max_amount": 9090
+        },
+        {
+          "description": "Visa application fee",
+          "min_amount": 8.6,
+          "max_amount": 900
+        },
+        {
+          "description": "National ID processing fee",
+          "min_amount": 8.1,
+          "max_amount": 855
+        },
+        {
+          "description": "Drivers license renewal",
+          "min_amount": 9.0,
+          "max_amount": 945
+        },
+        {
+          "description": "Vehicle plate number payment",
+          "min_amount": 18,
+          "max_amount": 9630
+        },
+        {
+          "description": "Road tax payment",
+          "min_amount": 17,
+          "max_amount": 9090
+        },
+        {
+          "description": "Court filing fee",
+          "min_amount": 1.9,
+          "max_amount": 585
+        },
+        {
+          "description": "Police clearance fee",
+          "min_amount": 9.1,
+          "max_amount": 955
+        },
+        {
+          "description": "Environmental levy payment",
+          "min_amount": 17,
+          "max_amount": 8910
+        },
+        {
+          "description": "Land use charge",
+          "min_amount": 1.7,
+          "max_amount": 535
+        },
+        {
+          "description": "Tenement rate payment",
+          "min_amount": 19,
+          "max_amount": 9990
+        },
+        {
+          "description": "Fire service compliance fee",
+          "min_amount": 1.8,
+          "max_amount": 565
+        },
+        {
+          "description": "Corporate filing payment",
+          "min_amount": 18,
+          "max_amount": 9360
+        },
+        {
+          "description": "Tender document payment",
+          "min_amount": 18,
+          "max_amount": 9270
+        },
+        {
+          "description": "Government permit fee",
+          "min_amount": 9.2,
+          "max_amount": 965
+        },
+        {
+          "description": "Local government levy",
+          "min_amount": 1.7,
+          "max_amount": 540
+        },
+        {
+          "description": "Signage permit payment",
+          "min_amount": 19,
+          "max_amount": 9720
+        },
+        {
+          "description": "Immigration fee payment",
+          "min_amount": 18,
+          "max_amount": 9270
+        },
+        {
+          "description": "Birth certificate processing fee",
+          "min_amount": 8.1,
+          "max_amount": 855
+        },
+        {
+          "description": "Marriage registry payment",
+          "min_amount": 18,
+          "max_amount": 9540
+        },
+        {
+          "description": "Public service charge",
+          "min_amount": 1.7,
+          "max_amount": 525
+        },
+        {
+          "description": "Municipal service fee",
+          "min_amount": 1.8,
+          "max_amount": 570
+        },
+        {
+          "description": "Stamp duty payment",
+          "min_amount": 19,
+          "max_amount": 9990
+        },
+        {
+          "description": "Utility regulation fee",
+          "min_amount": 1.9,
+          "max_amount": 585
+        },
+        {
+          "description": "Airport tax payment",
+          "min_amount": 19,
+          "max_amount": 9720
+        },
+        {
+          "description": "Export license fee",
+          "min_amount": 9.5,
+          "max_amount": 990
+        },
+        {
+          "description": "Import duty payment",
+          "min_amount": 19,
+          "max_amount": 9900
+        },
+        {
+          "description": "Regulatory filing fee",
+          "min_amount": 1.9,
+          "max_amount": 590
+        },
+        {
+          "description": "Health certificate fee",
+          "min_amount": 1.9,
+          "max_amount": 585
+        },
+        {
+          "description": "Building permit renewal",
+          "min_amount": 8.7,
+          "max_amount": 920
+        },
+        {
+          "description": "Public records request fee",
+          "min_amount": 1.7,
+          "max_amount": 540
+        },
+        {
+          "description": "Election form payment",
+          "min_amount": 18,
+          "max_amount": 9540
+        },
+        {
+          "description": "Business premises permit",
+          "min_amount": 8.6,
+          "max_amount": 910
+        },
+        {
+          "description": "Waste management levy",
+          "min_amount": 1.7,
+          "max_amount": 550
+        },
+        {
+          "description": "Radio license payment",
+          "min_amount": 17,
+          "max_amount": 9180
+        },
+        {
+          "description": "Television license payment",
+          "min_amount": 18,
+          "max_amount": 9360
+        },
+        {
+          "description": "Government exam fee",
+          "min_amount": 1.7,
+          "max_amount": 530
+        },
+        {
+          "description": "Public transport permit fee",
+          "min_amount": 8.1,
+          "max_amount": 855
+        },
+        {
+          "description": "Traffic offense settlement",
+          "min_amount": 16,
+          "max_amount": 8640
+        },
+        {
+          "description": "Penalty payment",
+          "min_amount": 16,
+          "max_amount": 8640
+        },
+        {
+          "description": "Verification fee payment",
+          "min_amount": 17,
+          "max_amount": 9000
+        },
+        {
+          "description": "Subsidy program contribution",
+          "min_amount": 1.7,
+          "max_amount": 525
+        },
+        {
+          "description": "Official document legalization",
+          "min_amount": 9.5,
+          "max_amount": 990
+        },
+        {
+          "description": "Name change processing fee",
+          "min_amount": 8.3,
+          "max_amount": 875
+        },
+        {
+          "description": "Affidavit filing payment",
+          "min_amount": 18,
+          "max_amount": 9450
+        },
+        {
+          "description": "Public office service charge",
+          "min_amount": 1.8,
+          "max_amount": 555
+        },
+        {
+          "description": "Government compliance settlement",
+          "min_amount": 17,
+          "max_amount": 9000
+        }
+      ]
+    },
+    {
+      "category_name": "Professional Services",
+      "min_transaction_amount": 10,
+      "max_transaction_amount": 30000,
+      "transaction_descriptions": [
+        {
+          "description": "Legal consultation fee",
+          "min_amount": 50,
+          "max_amount": 16650
+        },
+        {
+          "description": "Accounting service payment",
+          "min_amount": 18,
+          "max_amount": 9500
+        },
+        {
+          "description": "Audit service payment",
+          "min_amount": 51,
+          "max_amount": 17100
+        },
+        {
+          "description": "Business advisory fee",
+          "min_amount": 46,
+          "max_amount": 15500
+        },
+        {
+          "description": "Tax consultancy payment",
+          "min_amount": 48,
+          "max_amount": 16000
+        },
+        {
+          "description": "Graphic design payment",
+          "min_amount": 48,
+          "max_amount": 16300
+        },
+        {
+          "description": "Branding service fee",
+          "min_amount": 10,
+          "max_amount": 600
+        },
+        {
+          "description": "Photography service payment",
+          "min_amount": 18,
+          "max_amount": 9700
+        },
+        {
+          "description": "Videography service fee",
+          "min_amount": 10,
+          "max_amount": 655
+        },
+        {
+          "description": "Copywriting fee payment",
+          "min_amount": 19,
+          "max_amount": 10000
+        },
+        {
+          "description": "Content creation payment",
+          "min_amount": 18,
+          "max_amount": 9500
+        },
+        {
+          "description": "HR consultancy fee",
+          "min_amount": 49,
+          "max_amount": 16500
+        },
+        {
+          "description": "Recruitment service payment",
+          "min_amount": 21,
+          "max_amount": 11100
+        },
+        {
+          "description": "Training facilitator payment",
+          "min_amount": 48,
+          "max_amount": 16150
+        },
+        {
+          "description": "Business plan writing fee",
+          "min_amount": 10,
+          "max_amount": 1070
+        },
+        {
+          "description": "Proposal drafting payment",
+          "min_amount": 20,
+          "max_amount": 10400
+        },
+        {
+          "description": "Contract drafting fee",
+          "min_amount": 10,
+          "max_amount": 600
+        },
+        {
+          "description": "Trademark registration fee",
+          "min_amount": 10,
+          "max_amount": 1090
+        },
+        {
+          "description": "Public relations service fee",
+          "min_amount": 10,
+          "max_amount": 570
+        },
+        {
+          "description": "Digital marketing payment",
+          "min_amount": 20,
+          "max_amount": 10700
+        },
+        {
+          "description": "Social media management fee",
+          "min_amount": 10,
+          "max_amount": 575
+        },
+        {
+          "description": "Virtual assistant payment",
+          "min_amount": 20,
+          "max_amount": 10400
+        },
+        {
+          "description": "Web design service fee",
+          "min_amount": 53,
+          "max_amount": 17750
+        },
+        {
+          "description": "Resume writing payment",
+          "min_amount": 18,
+          "max_amount": 9500
+        },
+        {
+          "description": "Translation service payment",
+          "min_amount": 21,
+          "max_amount": 10800
+        },
+        {
+          "description": "Data entry service fee",
+          "min_amount": 10,
+          "max_amount": 970
+        },
+        {
+          "description": "Research assistance payment",
+          "min_amount": 20,
+          "max_amount": 10500
+        },
+        {
+          "description": "Transcription fee payment",
+          "min_amount": 20,
+          "max_amount": 10500
+        },
+        {
+          "description": "Printing service payment",
+          "min_amount": 20,
+          "max_amount": 10700
+        },
+        {
+          "description": "Brand strategy consultation",
+          "min_amount": 51,
+          "max_amount": 17100
+        },
+        {
+          "description": "Editing service payment",
+          "min_amount": 21,
+          "max_amount": 10800
+        },
+        {
+          "description": "Proofreading fee",
+          "min_amount": 10,
+          "max_amount": 590
+        },
+        {
+          "description": "UI UX consultation fee",
+          "min_amount": 48,
+          "max_amount": 16150
+        },
+        {
+          "description": "Administrative support payment",
+          "min_amount": 20,
+          "max_amount": 10400
+        },
+        {
+          "description": "Company profiling service",
+          "min_amount": 10,
+          "max_amount": 1100
+        },
+        {
+          "description": "Business coaching payment",
+          "min_amount": 46,
+          "max_amount": 15700
+        },
+        {
+          "description": "Facilitation service payment",
+          "min_amount": 45,
+          "max_amount": 15200
+        },
+        {
+          "description": "Workshop coordination fee",
+          "min_amount": 46,
+          "max_amount": 15500
+        },
+        {
+          "description": "Legal filing support",
+          "min_amount": 10,
+          "max_amount": 610
+        },
+        {
+          "description": "Corporate training payment",
+          "min_amount": 52,
+          "max_amount": 17600
+        },
+        {
+          "description": "Presentation design fee",
+          "min_amount": 45,
+          "max_amount": 15200
+        },
+        {
+          "description": "Business registration support",
+          "min_amount": 10,
+          "max_amount": 980
+        },
+        {
+          "description": "Strategic planning workshop fee",
+          "min_amount": 48,
+          "max_amount": 16000
+        },
+        {
+          "description": "Freelance service payment",
+          "min_amount": 18,
+          "max_amount": 9700
+        },
+        {
+          "description": "Document preparation fee",
+          "min_amount": 10,
+          "max_amount": 620
+        },
+        {
+          "description": "Notary service payment",
+          "min_amount": 20,
+          "max_amount": 10500
+        },
+        {
+          "description": "Management consulting fee",
+          "min_amount": 10,
+          "max_amount": 575
+        },
+        {
+          "description": "Professional retainer fee",
+          "min_amount": 41,
+          "max_amount": 12950
+        },
+        {
+          "description": "Specialized service payment",
+          "min_amount": 21,
+          "max_amount": 10800
+        },
+        {
+          "description": "Consultancy settlement",
+          "min_amount": 46,
+          "max_amount": 15350
+        }
+      ]
+    },
+    {
+      "category_name": "Religious and Charity",
+      "min_transaction_amount": 1,
+      "max_transaction_amount": 10000,
+      "transaction_descriptions": [
+        {
+          "description": "Tithe payment",
+          "min_amount": 1.1,
+          "max_amount": 5550
+        },
+        {
+          "description": "Offering contribution",
+          "min_amount": 1,
+          "max_amount": 4800
+        },
+        {
+          "description": "Seed donation",
+          "min_amount": 1,
+          "max_amount": 4850
+        },
+        {
+          "description": "Thanksgiving contribution",
+          "min_amount": 1,
+          "max_amount": 295
+        },
+        {
+          "description": "Church project donation",
+          "min_amount": 1,
+          "max_amount": 5250
+        },
+        {
+          "description": "Mosque donation",
+          "min_amount": 1.0,
+          "max_amount": 5400
+        },
+        {
+          "description": "Welfare support contribution",
+          "min_amount": 5.0,
+          "max_amount": 525
+        },
+        {
+          "description": "Charity donation",
+          "min_amount": 1,
+          "max_amount": 4800
+        },
+        {
+          "description": "Orphanage support payment",
+          "min_amount": 10,
+          "max_amount": 5300
+        },
+        {
+          "description": "Widow support contribution",
+          "min_amount": 1,
+          "max_amount": 310
+        },
+        {
+          "description": "Mission support payment",
+          "min_amount": 9.2,
+          "max_amount": 4850
+        },
+        {
+          "description": "Evangelism support payment",
+          "min_amount": 10,
+          "max_amount": 5250
+        },
+        {
+          "description": "Religious event offering",
+          "min_amount": 1,
+          "max_amount": 5150
+        },
+        {
+          "description": "Building fund contribution",
+          "min_amount": 1,
+          "max_amount": 290
+        },
+        {
+          "description": "Faith conference registration",
+          "min_amount": 4.7,
+          "max_amount": 495
+        },
+        {
+          "description": "Choir uniform payment",
+          "min_amount": 9.8,
+          "max_amount": 5150
+        },
+        {
+          "description": "Thanksgiving service support",
+          "min_amount": 1,
+          "max_amount": 290
+        },
+        {
+          "description": "Prayer program donation",
+          "min_amount": 1.1,
+          "max_amount": 5550
+        },
+        {
+          "description": "NGO donation payment",
+          "min_amount": 1.0,
+          "max_amount": 5450
+        },
+        {
+          "description": "Food outreach contribution",
+          "min_amount": 1,
+          "max_amount": 310
+        },
+        {
+          "description": "Community support donation",
+          "min_amount": 1,
+          "max_amount": 4750
+        },
+        {
+          "description": "Humanitarian aid support",
+          "min_amount": 1.1,
+          "max_amount": 330
+        },
+        {
+          "description": "Educational charity donation",
+          "min_amount": 1,
+          "max_amount": 4950
+        },
+        {
+          "description": "Medical assistance donation",
+          "min_amount": 1.0,
+          "max_amount": 5350
+        },
+        {
+          "description": "Volunteer transport support",
+          "min_amount": 1,
+          "max_amount": 310
+        },
+        {
+          "description": "Charity fundraiser contribution",
+          "min_amount": 1.0,
+          "max_amount": 325
+        },
+        {
+          "description": "Relief material payment",
+          "min_amount": 10,
+          "max_amount": 5500
+        },
+        {
+          "description": "House of worship maintenance",
+          "min_amount": 19,
+          "max_amount": 6060
+        },
+        {
+          "description": "Religious camp fee",
+          "min_amount": 1.1,
+          "max_amount": 330
+        },
+        {
+          "description": "Ministry support payment",
+          "min_amount": 9.8,
+          "max_amount": 5150
+        },
+        {
+          "description": "Faith materials purchase",
+          "min_amount": 5.2,
+          "max_amount": 2720
+        },
+        {
+          "description": "Pastoral welfare contribution",
+          "min_amount": 5.2,
+          "max_amount": 550
+        },
+        {
+          "description": "Special thanksgiving donation",
+          "min_amount": 1.1,
+          "max_amount": 5500
+        },
+        {
+          "description": "Prison outreach support",
+          "min_amount": 1,
+          "max_amount": 310
+        },
+        {
+          "description": "Study material payment",
+          "min_amount": 9.4,
+          "max_amount": 4950
+        },
+        {
+          "description": "Ramadan support contribution",
+          "min_amount": 1,
+          "max_amount": 310
+        },
+        {
+          "description": "Zakat payment",
+          "min_amount": 1.0,
+          "max_amount": 5400
+        },
+        {
+          "description": "Sadaqah contribution",
+          "min_amount": 1.0,
+          "max_amount": 5350
+        },
+        {
+          "description": "Church welfare levy",
+          "min_amount": 4.8,
+          "max_amount": 505
+        },
+        {
+          "description": "Religious society dues",
+          "min_amount": 1,
+          "max_amount": 290
+        },
+        {
+          "description": "Youth fellowship contribution",
+          "min_amount": 1,
+          "max_amount": 305
+        },
+        {
+          "description": "Mission trip support",
+          "min_amount": 1,
+          "max_amount": 305
+        },
+        {
+          "description": "Community feeding support",
+          "min_amount": 1.1,
+          "max_amount": 330
+        },
+        {
+          "description": "Festival donation payment",
+          "min_amount": 1,
+          "max_amount": 4950
+        },
+        {
+          "description": "Benevolence support payment",
+          "min_amount": 11,
+          "max_amount": 5550
+        },
+        {
+          "description": "Sanctuary upkeep contribution",
+          "min_amount": 1,
+          "max_amount": 300
+        },
+        {
+          "description": "Faith-based scholarship donation",
+          "min_amount": 1.0,
+          "max_amount": 5300
+        },
+        {
+          "description": "Charity logistics support",
+          "min_amount": 1.0,
+          "max_amount": 320
+        },
+        {
+          "description": "Religious organization support",
+          "min_amount": 1.1,
+          "max_amount": 330
+        },
+        {
+          "description": "Compassion support settlement",
+          "min_amount": 10,
+          "max_amount": 5450
+        }
+      ]
+    },
+    {
+      "category_name": "Travel and Tourism",
+      "min_transaction_amount": 10,
+      "max_transaction_amount": 15000,
+      "transaction_descriptions": [
+        {
+          "description": "Flight ticket purchase",
+          "min_amount": 165,
+          "max_amount": 13100
+        },
+        {
+          "description": "Visa processing payment",
+          "min_amount": 19,
+          "max_amount": 10100
+        },
+        {
+          "description": "Travel insurance payment",
+          "min_amount": 19,
+          "max_amount": 10100
+        },
+        {
+          "description": "Hotel reservation payment",
+          "min_amount": 58,
+          "max_amount": 10200
+        },
+        {
+          "description": "Tour package payment",
+          "min_amount": 18,
+          "max_amount": 9500
+        },
+        {
+          "description": "Airport transfer fee",
+          "min_amount": 10,
+          "max_amount": 580
+        },
+        {
+          "description": "Travel agency service fee",
+          "min_amount": 10,
+          "max_amount": 625
+        },
+        {
+          "description": "Holiday booking deposit",
+          "min_amount": 190,
+          "max_amount": 15000
+        },
+        {
+          "description": "International trip payment",
+          "min_amount": 160,
+          "max_amount": 12600
+        },
+        {
+          "description": "Local tourism ticket",
+          "min_amount": 10,
+          "max_amount": 1090
+        },
+        {
+          "description": "Museum access fee",
+          "min_amount": 10,
+          "max_amount": 1100
+        },
+        {
+          "description": "Safari trip booking",
+          "min_amount": 18,
+          "max_amount": 9600
+        },
+        {
+          "description": "Vacation rental payment",
+          "min_amount": 18,
+          "max_amount": 9700
+        },
+        {
+          "description": "Travel document fee",
+          "min_amount": 10,
+          "max_amount": 570
+        },
+        {
+          "description": "Passport renewal payment",
+          "min_amount": 20,
+          "max_amount": 10400
+        },
+        {
+          "description": "Embassy appointment fee",
+          "min_amount": 10,
+          "max_amount": 650
+        },
+        {
+          "description": "Travel vaccination fee",
+          "min_amount": 10,
+          "max_amount": 660
+        },
+        {
+          "description": "Resort booking payment",
+          "min_amount": 56,
+          "max_amount": 9900
+        },
+        {
+          "description": "Cruise reservation payment",
+          "min_amount": 170,
+          "max_amount": 13300
+        },
+        {
+          "description": "Travel SIM purchase",
+          "min_amount": 10,
+          "max_amount": 5250
+        },
+        {
+          "description": "Luggage purchase payment",
+          "min_amount": 20,
+          "max_amount": 10400
+        },
+        {
+          "description": "Airport lounge access fee",
+          "min_amount": 11,
+          "max_amount": 1110
+        },
+        {
+          "description": "Road trip fuel payment",
+          "min_amount": 18,
+          "max_amount": 970
+        },
+        {
+          "description": "Holiday shopping payment",
+          "min_amount": 18,
+          "max_amount": 9700
+        },
+        {
+          "description": "Travel guide fee",
+          "min_amount": 10,
+          "max_amount": 590
+        },
+        {
+          "description": "Excursion payment",
+          "min_amount": 19,
+          "max_amount": 10200
+        },
+        {
+          "description": "City tour ticket",
+          "min_amount": 10,
+          "max_amount": 1060
+        },
+        {
+          "description": "Travel photography fee",
+          "min_amount": 10,
+          "max_amount": 580
+        },
+        {
+          "description": "Baggage fee payment",
+          "min_amount": 18,
+          "max_amount": 9700
+        },
+        {
+          "description": "Travel meal payment",
+          "min_amount": 21,
+          "max_amount": 10900
+        },
+        {
+          "description": "Cab booking during trip",
+          "min_amount": 19,
+          "max_amount": 10100
+        },
+        {
+          "description": "Hostel booking payment",
+          "min_amount": 19,
+          "max_amount": 10000
+        },
+        {
+          "description": "Short holiday package",
+          "min_amount": 10,
+          "max_amount": 1090
+        },
+        {
+          "description": "Tourist attraction fee",
+          "min_amount": 10,
+          "max_amount": 575
+        },
+        {
+          "description": "Travel visa support payment",
+          "min_amount": 21,
+          "max_amount": 10800
+        },
+        {
+          "description": "Business trip ticketing",
+          "min_amount": 10,
+          "max_amount": 1000
+        },
+        {
+          "description": "Travel itinerary planning fee",
+          "min_amount": 10,
+          "max_amount": 990
+        },
+        {
+          "description": "Conference travel expense",
+          "min_amount": 10,
+          "max_amount": 1070
+        },
+        {
+          "description": "Vacation transport payment",
+          "min_amount": 19,
+          "max_amount": 9900
+        },
+        {
+          "description": "Beach trip package",
+          "min_amount": 10,
+          "max_amount": 1060
+        },
+        {
+          "description": "Tourism tax payment",
+          "min_amount": 21,
+          "max_amount": 10900
+        },
+        {
+          "description": "Weekend getaway booking",
+          "min_amount": 20,
+          "max_amount": 10400
+        },
+        {
+          "description": "Travel advance payment",
+          "min_amount": 21,
+          "max_amount": 11000
+        },
+        {
+          "description": "Adventure trip fee",
+          "min_amount": 10,
+          "max_amount": 605
+        },
+        {
+          "description": "International roaming payment",
+          "min_amount": 19,
+          "max_amount": 10100
+        },
+        {
+          "description": "Travel forex purchase",
+          "min_amount": 10,
+          "max_amount": 4850
+        },
+        {
+          "description": "Border processing fee",
+          "min_amount": 10,
+          "max_amount": 4850
+        },
+        {
+          "description": "Tour reservation payment",
+          "min_amount": 20,
+          "max_amount": 10500
+        },
+        {
+          "description": "Flight reschedule fee",
+          "min_amount": 160,
+          "max_amount": 12700
+        },
+        {
+          "description": "Tourism services settlement",
+          "min_amount": 20,
+          "max_amount": 10400
+        }
+      ]
+    },
+    {
+      "category_name": "Security and Safety",
+      "min_transaction_amount": 5,
+      "max_transaction_amount": 40000,
+      "transaction_descriptions": [
+        {
+          "description": "Security guard service payment",
+          "min_amount": 22,
+          "max_amount": 11550
+        },
+        {
+          "description": "CCTV installation payment",
+          "min_amount": 40,
+          "max_amount": 12650
+        },
+        {
+          "description": "Alarm system maintenance",
+          "min_amount": 44,
+          "max_amount": 13750
+        },
+        {
+          "description": "Access control system payment",
+          "min_amount": 22,
+          "max_amount": 11750
+        },
+        {
+          "description": "Private investigation fee",
+          "min_amount": 5,
+          "max_amount": 705
+        },
+        {
+          "description": "Neighborhood security levy",
+          "min_amount": 5,
+          "max_amount": 660
+        },
+        {
+          "description": "Emergency response fee",
+          "min_amount": 5,
+          "max_amount": 725
+        },
+        {
+          "description": "Fire extinguisher purchase",
+          "min_amount": 11,
+          "max_amount": 5560
+        },
+        {
+          "description": "Fire alarm servicing",
+          "min_amount": 44,
+          "max_amount": 14000
+        },
+        {
+          "description": "Security patrol payment",
+          "min_amount": 23,
+          "max_amount": 12100
+        },
+        {
+          "description": "Bodyguard service fee",
+          "min_amount": 5,
+          "max_amount": 695
+        },
+        {
+          "description": "Event security payment",
+          "min_amount": 21,
+          "max_amount": 11000
+        },
+        {
+          "description": "Safe lock installation",
+          "min_amount": 44,
+          "max_amount": 14000
+        },
+        {
+          "description": "Security gadget purchase",
+          "min_amount": 10,
+          "max_amount": 5340
+        },
+        {
+          "description": "Perimeter fencing service",
+          "min_amount": 11,
+          "max_amount": 1110
+        },
+        {
+          "description": "Security light installation",
+          "min_amount": 40,
+          "max_amount": 12550
+        },
+        {
+          "description": "Security consultancy fee",
+          "min_amount": 57,
+          "max_amount": 19000
+        },
+        {
+          "description": "Incident response service",
+          "min_amount": 11,
+          "max_amount": 1170
+        },
+        {
+          "description": "Office security support",
+          "min_amount": 5,
+          "max_amount": 680
+        },
+        {
+          "description": "Home panic alarm payment",
+          "min_amount": 22,
+          "max_amount": 11350
+        },
+        {
+          "description": "Burglar proof installation",
+          "min_amount": 45,
+          "max_amount": 14250
+        },
+        {
+          "description": "Digital doorbell payment",
+          "min_amount": 20,
+          "max_amount": 10800
+        },
+        {
+          "description": "Identity verification fee",
+          "min_amount": 5,
+          "max_amount": 700
+        },
+        {
+          "description": "Visitor management system fee",
+          "min_amount": 5,
+          "max_amount": 685
+        },
+        {
+          "description": "Gate access control charge",
+          "min_amount": 11,
+          "max_amount": 1180
+        },
+        {
+          "description": "Intercom system payment",
+          "min_amount": 22,
+          "max_amount": 11650
+        },
+        {
+          "description": "Protective gear purchase",
+          "min_amount": 10,
+          "max_amount": 5340
+        },
+        {
+          "description": "Emergency drill training fee",
+          "min_amount": 51,
+          "max_amount": 17050
+        },
+        {
+          "description": "Smoke detector purchase",
+          "min_amount": 11,
+          "max_amount": 5990
+        },
+        {
+          "description": "Security monitoring subscription",
+          "min_amount": 7.0,
+          "max_amount": 12200
+        },
+        {
+          "description": "Remote surveillance service",
+          "min_amount": 11,
+          "max_amount": 1160
+        },
+        {
+          "description": "Watchman monthly payment",
+          "min_amount": 23,
+          "max_amount": 12000
+        },
+        {
+          "description": "Community vigilance support",
+          "min_amount": 5,
+          "max_amount": 635
+        },
+        {
+          "description": "Tracking device subscription",
+          "min_amount": 6.1,
+          "max_amount": 10650
+        },
+        {
+          "description": "Vehicle security device payment",
+          "min_amount": 20,
+          "max_amount": 10550
+        },
+        {
+          "description": "Personal safety gadget purchase",
+          "min_amount": 10,
+          "max_amount": 5390
+        },
+        {
+          "description": "Security escort payment",
+          "min_amount": 23,
+          "max_amount": 11900
+        },
+        {
+          "description": "Fire safety training payment",
+          "min_amount": 55,
+          "max_amount": 18500
+        },
+        {
+          "description": "Security permit fee",
+          "min_amount": 11,
+          "max_amount": 1170
+        },
+        {
+          "description": "Guard dog service payment",
+          "min_amount": 23,
+          "max_amount": 12000
+        },
+        {
+          "description": "Security booth maintenance",
+          "min_amount": 46,
+          "max_amount": 14400
+        },
+        {
+          "description": "Risk assessment fee",
+          "min_amount": 5,
+          "max_amount": 635
+        },
+        {
+          "description": "Workplace safety support",
+          "min_amount": 5,
+          "max_amount": 635
+        },
+        {
+          "description": "Safe deposit box rental",
+          "min_amount": 205,
+          "max_amount": 40000
+        },
+        {
+          "description": "Security awareness training",
+          "min_amount": 56,
+          "max_amount": 18850
+        },
+        {
+          "description": "Emergency hotline support",
+          "min_amount": 5,
+          "max_amount": 695
+        },
+        {
+          "description": "Safety compliance fee",
+          "min_amount": 5,
+          "max_amount": 735
+        },
+        {
+          "description": "Guard uniform purchase",
+          "min_amount": 11,
+          "max_amount": 5990
+        },
+        {
+          "description": "Incident prevention support",
+          "min_amount": 5,
+          "max_amount": 640
+        },
+        {
+          "description": "Security operations settlement",
+          "min_amount": 22,
+          "max_amount": 11650
+        }
+      ]
+    }
+  ]
+}

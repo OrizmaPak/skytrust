@@ -32,8 +32,8 @@ async function getMissedMaturity(req, res) {
       SELECT 
         pa.*, 
         pp.* 
-      FROM sky."propertyaccount" pa
-      JOIN sky."propertyproduct" pp 
+      FROM skytobi."propertyaccount" pa
+      JOIN skytobi."propertyproduct" pp 
         ON pa.productid = pp.id
       ${accountFilter}
       ORDER BY pa.dateadded DESC
@@ -64,7 +64,7 @@ async function getMissedMaturity(req, res) {
       const installmentsQuery = {
         text: `
           SELECT * 
-          FROM sky."propertyinstallments"
+          FROM skytobi."propertyinstallments"
           WHERE accountnumber = $1
           ORDER BY duedate ASC
         `,
@@ -81,7 +81,7 @@ async function getMissedMaturity(req, res) {
             debit,
             transactionref, 
             dateadded
-          FROM sky."transaction"
+          FROM skytobi."transaction"
           WHERE accountnumber = $1
           ORDER BY dateadded ASC
         `,
@@ -157,7 +157,7 @@ async function getMissedMaturity(req, res) {
             const itemQuery = {
               text: `
                 SELECT * 
-                FROM sky."propertyitems"
+                FROM skytobi."propertyitems"
                 WHERE accountnumber = $1
                   AND itemid = $2
                   AND status = 'ACTIVE'
@@ -173,7 +173,7 @@ async function getMissedMaturity(req, res) {
               const inventoryQuery = {
                 text: `
                   SELECT itemname 
-                  FROM sky."inventory"
+                  FROM skytobi."inventory"
                   WHERE itemid = $1
                 `,
                 values: [itemid]

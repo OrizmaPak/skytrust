@@ -10,9 +10,9 @@
         try {
             let query = {
                 text: `SELECT u.*, b.branch AS branchname, rp.registrationpoint AS registrationpointname
-                       FROM sky."User" u
-                       LEFT JOIN sky."Branch" b ON u.branch = b.id
-                       LEFT JOIN sky."Registrationpoint" rp ON u.registrationpoint = rp.id`,
+                       FROM skytobi."User" u
+                       LEFT JOIN skytobi."Branch" b ON u.branch = b.id
+                       LEFT JOIN skytobi."Registrationpoint" rp ON u.registrationpoint = rp.id`,
                 values: []
             };
     
@@ -77,8 +77,8 @@
                 try {
                     const membershipQuery = `
                         SELECT m.*, dm.member AS membername
-                        FROM sky."Membership" m
-                        LEFT JOIN sky."DefineMember" dm ON m.member = dm.id
+                        FROM skytobi."Membership" m
+                        LEFT JOIN skytobi."DefineMember" dm ON m.member = dm.id
                         WHERE m.userid = $1
                     `;
                     const { rows: membershipRows } = await pg.query(membershipQuery, [user.id]);
@@ -91,7 +91,7 @@
     
             // Get total count for pagination
             const countQuery = {
-                text: `SELECT COUNT(*) FROM sky."User" u ${whereClause}`,
+                text: `SELECT COUNT(*) FROM skytobi."User" u ${whereClause}`,
                 values: whereClause ? query.values.slice(0, -2) : []
             };
             const { rows: [{ count: total }] } = await pg.query(countQuery);

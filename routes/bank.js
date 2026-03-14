@@ -3,7 +3,7 @@ const { saveOrUpdateBank } = require('../controllers/bank/list/manage');
 const { getBanks } = require('../controllers/bank/list/get');
 const { saveOrUpdateRecipient } = require('../controllers/bank/reciepients/manage');
 const { getRecipients } = require('../controllers/bank/reciepients/get');
-const { generateTransactions } = require('../controllers/bank/generatetransactions/generate');
+const { generateTransactions, getTransactionCategories } = require('../controllers/bank/generatetransactions/generate');
 const { deleteRecipient } = require('../controllers/bank/reciepients/delete');
 const router = express.Router();
 
@@ -19,5 +19,8 @@ router.route('/reciepients')
 
 router.route('/generatetransactions')
     .post(generateTransactions);
+
+router.route('/transactioncategories')
+    .get(getTransactionCategories);
 
 module.exports = router;

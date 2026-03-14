@@ -35,13 +35,13 @@ const getOnlineUsers = async (req, res) => {
           ELSE FLOOR(EXTRACT(EPOCH FROM (NOW() - l.date)) / 31536000) || ' years ago'
         END AS time_ago
       FROM 
-        sky."Lastseen" l
+        skytobi."Lastseen" l
       LEFT JOIN 
-        sky."User" u ON l.userid = u.id
+        skytobi."User" u ON l.userid = u.id
       LEFT JOIN 
-        sky."User" u2 ON u.createdby = u2.id
+        skytobi."User" u2 ON u.createdby = u2.id
       LEFT JOIN 
-        sky."Branch" b ON u.branch = b.id
+        skytobi."Branch" b ON u.branch = b.id
       WHERE 
         l.date > NOW() - INTERVAL '1 hour'
     `;

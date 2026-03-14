@@ -18,7 +18,7 @@ const deleteRecipient = async (req, res) => {
 
     try {
         const query = `
-            UPDATE sky."reciepients"
+            UPDATE skytobi."reciepients"
             SET status = 'DELETED'
             WHERE id = $1
             RETURNING *

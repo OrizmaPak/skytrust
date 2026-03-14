@@ -20,7 +20,7 @@ const deleteSavingsAccount = async (req, res) => {
     await pg.query("BEGIN");
 
     const accountResult = await pg.query(
-      `SELECT * FROM sky."savings" WHERE id = $1`,
+      `SELECT * FROM skytobi."savings" WHERE id = $1`,
       [id]
     );
 
@@ -40,12 +40,12 @@ const deleteSavingsAccount = async (req, res) => {
     const accountNumber = String(account.accountnumber);
 
     const deletedTransactions = await pg.query(
-      `DELETE FROM sky."transaction" WHERE accountnumber = $1`,
+      `DELETE FROM skytobi."transaction" WHERE accountnumber = $1`,
       [accountNumber]
     );
 
     const deletedAccount = await pg.query(
-      `DELETE FROM sky."savings" WHERE id = $1 RETURNING *`,
+      `DELETE FROM skytobi."savings" WHERE id = $1 RETURNING *`,
       [id]
     );
 

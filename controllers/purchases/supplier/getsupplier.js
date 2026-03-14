@@ -4,7 +4,7 @@ const { activityMiddleware } = require("../../../middleware/activity"); // Added
 
 const getSupplier = async (req, res) => {
   const { query } = req;
-  let queryStr = `SELECT * FROM sky."Supplier"`;
+  let queryStr = `SELECT * FROM skytobi."Supplier"`;
   let params = [];
   let whereClause = '';
   let valueIndex = 1;

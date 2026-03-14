@@ -66,7 +66,7 @@ app.use(requestprocessor);
 app.use('/node/api/v1/auth', authRouter);
 app.use('/node/api/v1/branch', branchRouter);
 app.use('/node/api/v1/admin', authMiddleware, adminRouter);
-// app.use('/node/api/v1/inventory', authMiddleware, inventoryRouter);
+app.use('/node/api/v1/inventory', authMiddleware, inventoryRouter);
 app.use('/node/api/v1/glaccounts', authMiddleware, glaccountsRouter);
 app.use('/node/api/v1/members', authMiddleware, memberRouter);
 app.use('/node/api/v1/savings', authMiddleware, savingsRouter);
@@ -75,15 +75,15 @@ app.use('/node/api/v1/payment', authMiddleware, transactionMiddleware, paymentRo
 app.use('/node/api/v1/payment2', transactionMiddleware, paymentRouter);
 app.use('/node/api/v1/transactions', authMiddleware, transactionsRouter); 
 app.use('/node/api/v1/bank', authMiddleware, bankRouter);
-// app.use('/node/api/v1/purchases', authMiddleware, purchasesRouter);
-// app.use('/node/api/v1/expense', authMiddleware, expenseRouter);
-// app.use('/node/api/v1/sales', authMiddleware, salesRouter);
-// app.use('/node/api/v1/property', authMiddleware, propertyRouter);
-// app.use('/node/api/v1/rotary', authMiddleware, rotaryRouter);
-// app.use('/node/api/v1/personnel', authMiddleware, personnelRouter);
+app.use('/node/api/v1/purchases', authMiddleware, purchasesRouter);
+app.use('/node/api/v1/expense', authMiddleware, expenseRouter);
+app.use('/node/api/v1/sales', authMiddleware, salesRouter);
+app.use('/node/api/v1/property', authMiddleware, propertyRouter);
+app.use('/node/api/v1/rotary', authMiddleware, rotaryRouter);
+app.use('/node/api/v1/personnel', authMiddleware, personnelRouter);
 
-// app.use('/node/api/v1/incomings', incomingsRouter); 
-// app.use('/node/api/v1/ai', aiRouter);
+app.use('/node/api/v1/incomings', incomingsRouter); 
+app.use('/node/api/v1/ai', aiRouter);
 
 app.get('/node/', (req, res) => {
     res.send('Welcome to the Sky Trust backend!');

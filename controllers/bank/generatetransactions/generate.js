@@ -1,6 +1,7 @@
 const { StatusCodes } = require("http-status-codes");
 const pg = require("../../../db/pg");
 const { activityMiddleware } = require("../../../middleware/activity");
+const transactionCatalog = require("../../../data/transaction_categories_usd.json");
 
 const CREDIT_NARRATIONS = [
   "Salary payment",
@@ -15,39 +16,16 @@ const CREDIT_NARRATIONS = [
   "Savings top up"
 ];
 
-const DEBIT_NARRATIONS = [
-  "Cash withdrawal",
-  "ATM withdrawal",
-  "POS purchase",
-  "Transfer to beneficiary",
-  "Utility bill payment",
-  "School fees payment",
-  "Loan repayment",
-  "Airtime and data purchase",
-  "Food and groceries",
-  "Maintenance expense"
-];
-
 const roundToTwo = (value) => Number(Number(value).toFixed(2));
-
 const randomBetween = (min, max) => min + Math.random() * (max - min);
-
 const randomIntBetween = (min, max) => {
   const start = Math.ceil(min);
   const end = Math.floor(max);
   return Math.floor(Math.random() * (end - start + 1)) + start;
 };
-
 const pickRandom = (items) => items[Math.floor(Math.random() * items.length)];
-
 const randomDateBetween = (start, end) =>
   new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-
-const formatMoney = (amount) =>
-  new Intl.NumberFormat("en-NG", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  }).format(amount);
 
 const buildReference = (accountnumber, txDate, index) => {
   const accountPart = String(accountnumber).slice(-4);
@@ -96,9 +74,9 @@ const resolveAccountProfile = async (accountnumber, fallbackUserid, fallbackBran
       s.amount,
       COALESCE(sp.currency, 'NGN') AS currency,
       CONCAT(u.firstname, ' ', u.lastname, ' ', COALESCE(u.othernames, '')) AS accountname
-    FROM sky."savings" s
-    LEFT JOIN sky."User" u ON u.id = s.userid
-    LEFT JOIN sky."savingsproduct" sp ON sp.id = s.savingsproductid
+    FROM skytobi."savings" s
+    LEFT JOIN skytobi."User" u ON u.id = s.userid
+    LEFT JOIN skytobi."savingsproduct" sp ON sp.id = s.savingsproductid
     WHERE s.accountnumber::text = $1
     LIMIT 1
   `;
@@ -113,8 +91,8 @@ const resolveAccountProfile = async (accountnumber, fallbackUserid, fallbackBran
       l.loanamount AS amount,
       'NGN' AS currency,
       CONCAT(u.firstname, ' ', u.lastname, ' ', COALESCE(u.othernames, '')) AS accountname
-    FROM sky."loanaccounts" l
-    LEFT JOIN sky."User" u ON u.id = l.userid
+    FROM skytobi."loanaccounts" l
+    LEFT JOIN skytobi."User" u ON u.id = l.userid
     WHERE l.accountnumber::text = $1
     LIMIT 1
   `;
@@ -129,8 +107,8 @@ const resolveAccountProfile = async (accountnumber, fallbackUserid, fallbackBran
       r.amount,
       'NGN' AS currency,
       CONCAT(u.firstname, ' ', u.lastname, ' ', COALESCE(u.othernames, '')) AS accountname
-    FROM sky."rotaryaccount" r
-    LEFT JOIN sky."User" u ON u.id = r.userid
+    FROM skytobi."rotaryaccount" r
+    LEFT JOIN skytobi."User" u ON u.id = r.userid
     WHERE r.accountnumber::text = $1
     LIMIT 1
   `;
@@ -145,8 +123,8 @@ const resolveAccountProfile = async (accountnumber, fallbackUserid, fallbackBran
       p.registrationcharge::float AS amount,
       'NGN' AS currency,
       CONCAT(u.firstname, ' ', u.lastname, ' ', COALESCE(u.othernames, '')) AS accountname
-    FROM sky."propertyaccount" p
-    LEFT JOIN sky."User" u ON u.id = p.userid
+    FROM skytobi."propertyaccount" p
+    LEFT JOIN skytobi."User" u ON u.id = p.userid
     WHERE p.accountnumber::text = $1
     LIMIT 1
   `;
@@ -161,7 +139,7 @@ const resolveAccountProfile = async (accountnumber, fallbackUserid, fallbackBran
       0::float AS amount,
       'NGN' AS currency,
       COALESCE(a.groupname, a.accountnumber::text) AS accountname
-    FROM sky."Accounts" a
+    FROM skytobi."Accounts" a
     WHERE a.accountnumber::text = $1
     LIMIT 1
   `;
@@ -184,10 +162,107 @@ const resolveAccountProfile = async (accountnumber, fallbackUserid, fallbackBran
   return null;
 };
 
-const buildNarration = (type, whichaccount, accountName, amount) => {
-  const base = pickRandom(type === "CREDIT" ? CREDIT_NARRATIONS : DEBIT_NARRATIONS);
-  const accountLabel = whichaccount === "SAVINGS" ? "savings" : whichaccount.toLowerCase();
-  return `${base} for ${accountName || accountLabel} account (${formatMoney(amount)})`;
+const buildCreditNarration = (accountName, amount) => {
+  const base = pickRandom(CREDIT_NARRATIONS);
+  return `${base} for ${accountName || "customer"} (${amount.toFixed(2)})`;
+};
+
+const getTransactionCategories = async (req, res) => {
+  const categories = (transactionCatalog.transaction_categories || []).map((category) => ({
+    category_name: category.category_name,
+    min_transaction_amount: category.min_transaction_amount,
+    max_transaction_amount: category.max_transaction_amount,
+    description_count: category.transaction_descriptions.length,
+    transaction_descriptions: category.transaction_descriptions
+  }));
+
+  return res.status(StatusCodes.OK).json({
+    status: true,
+    message: "Transaction categories retrieved successfully",
+    statuscode: StatusCodes.OK,
+    data: {
+      currency: transactionCatalog.currency || "USD",
+      categories
+    },
+    errors: []
+  });
+};
+
+const parseSelectedCategories = (selectedCategories) => {
+  if (!selectedCategories) return [];
+  if (Array.isArray(selectedCategories)) return selectedCategories;
+
+  if (typeof selectedCategories === "string") {
+    try {
+      const parsed = JSON.parse(selectedCategories);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+      return selectedCategories
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean);
+    }
+  }
+
+  return [];
+};
+
+const buildDebitBlueprints = (selectedCategoryNames, debitCount, safeDebitCeiling) => {
+  const allCategories = transactionCatalog.transaction_categories || [];
+  const activeCategories = selectedCategoryNames.length > 0
+    ? allCategories.filter((category) => selectedCategoryNames.includes(category.category_name))
+    : allCategories;
+
+  if (activeCategories.length === 0) {
+    throw new Error("No matching transaction categories were found.");
+  }
+
+  const descriptionPool = activeCategories.flatMap((category) =>
+    category.transaction_descriptions.map((description) => ({
+      category_name: category.category_name,
+      category_min: Number(category.min_transaction_amount || description.min_amount || 1),
+      category_max: Number(category.max_transaction_amount || description.max_amount || 500),
+      description: description.description,
+      min_amount: Number(description.min_amount || category.min_transaction_amount || 1),
+      max_amount: Number(description.max_amount || category.max_transaction_amount || 500)
+    }))
+  );
+
+  const blueprints = Array.from({ length: debitCount }, () => pickRandom(descriptionPool));
+  const minTotal = roundToTwo(blueprints.reduce((sum, item) => sum + item.min_amount, 0));
+  const maxTotal = roundToTwo(blueprints.reduce((sum, item) => sum + item.max_amount, 0));
+  const targetTotal = roundToTwo(
+    Math.min(
+      maxTotal,
+      Math.max(minTotal, safeDebitCeiling * randomBetween(0.45, 0.9))
+    )
+  );
+
+  let remaining = Math.max(0, roundToTwo(targetTotal - minTotal));
+  const debitPlans = blueprints.map((item) => ({
+    ...item,
+    amount: roundToTwo(item.min_amount)
+  }));
+
+  const shuffled = [...debitPlans].sort(() => Math.random() - 0.5);
+  for (const plan of shuffled) {
+    if (remaining <= 0) break;
+
+    const categoryCap = Math.min(plan.max_amount, plan.category_max);
+    const availableExtra = roundToTwo(Math.max(0, categoryCap - plan.amount));
+    if (availableExtra <= 0) continue;
+
+    const extra = roundToTwo(Math.min(availableExtra, randomBetween(0, remaining)));
+    plan.amount = roundToTwo(plan.amount + extra);
+    remaining = roundToTwo(remaining - extra);
+  }
+
+  if (remaining > 0 && debitPlans.length > 0) {
+    const last = debitPlans[debitPlans.length - 1];
+    last.amount = roundToTwo(Math.min(last.max_amount, last.amount + remaining));
+  }
+
+  return debitPlans;
 };
 
 const generateTransactions = async (req, res) => {
@@ -200,13 +275,15 @@ const generateTransactions = async (req, res) => {
     creditsno,
     debitsno,
     userid,
-    branch
+    branch,
+    selectedcategories
   } = req.body;
   const user = req.user;
 
   const parsedEstimate = Number(estimatedamount ?? totalamount);
   const creditCount = Number(creditsno);
   const debitCount = Number(debitsno);
+  const selectedCategoryNames = parseSelectedCategories(selectedcategories);
 
   if (
     !accountnumber ||
@@ -269,153 +346,133 @@ const generateTransactions = async (req, res) => {
 
     const balanceResult = await pg.query(
       `SELECT COALESCE(SUM(credit), 0) - COALESCE(SUM(debit), 0) AS balance
-       FROM sky."transaction"
+       FROM skytobi."transaction"
        WHERE accountnumber = $1 AND status = 'ACTIVE'`,
       [String(profile.accountnumber)]
     );
 
     const currentBalance = Number(balanceResult.rows[0]?.balance || 0);
     const accountBaseAmount = Number(profile.amount || 0);
-    const estimatedBase = Math.max(parsedEstimate, 1000);
-    const minimumTxnAmount = Math.max(250, Math.min(estimatedBase * 0.05, 5000));
-
+    const estimatedBase = Math.max(parsedEstimate, 100);
     const openingBalance = roundToTwo(
-      Math.max(currentBalance, accountBaseAmount * 0.1, estimatedBase * randomBetween(0.35, 0.8))
+      Math.max(currentBalance, accountBaseAmount * 0.1, estimatedBase * randomBetween(0.5, 0.95))
     );
 
+    const minimumCreditAmount = Math.max(25, Math.min(estimatedBase * 0.05, 3000));
     const targetCreditTotal = roundToTwo(
       creditCount > 0
-        ? Math.max(estimatedBase * randomBetween(0.95, 1.35), creditCount * minimumTxnAmount)
+        ? Math.max(estimatedBase * randomBetween(0.9, 1.25), creditCount * minimumCreditAmount)
         : 0
     );
 
-    const safeDebitCeiling = openingBalance + targetCreditTotal - Math.max(estimatedBase * 0.15, 500);
-    const targetDebitTotal = roundToTwo(
-      debitCount > 0
-        ? Math.max(
-            Math.min(
-              estimatedBase * randomBetween(0.3, 0.85),
-              Math.max(safeDebitCeiling, debitCount * minimumTxnAmount)
-            ),
-            debitCount * minimumTxnAmount
-          )
-        : 0
+    const safeDebitCeiling = Math.max(
+      debitCount * 5,
+      openingBalance + targetCreditTotal - Math.max(estimatedBase * 0.1, 50)
     );
 
-    const creditAmounts = splitWeightedAmount(targetCreditTotal, creditCount, minimumTxnAmount);
-    let debitAmounts = splitWeightedAmount(
-      Math.min(targetDebitTotal, Math.max(openingBalance + targetCreditTotal - 250, debitCount * minimumTxnAmount)),
-      debitCount,
-      minimumTxnAmount
-    );
+    const creditAmounts = splitWeightedAmount(targetCreditTotal, creditCount, minimumCreditAmount);
+    const debitPlans = buildDebitBlueprints(selectedCategoryNames, debitCount, safeDebitCeiling);
 
-    let runningBalance = openingBalance;
     const allDates = Array.from({ length: creditCount + debitCount }, () => randomDateBetween(start, end))
       .sort((a, b) => a - b);
 
-    const transactions = [];
+    let runningBalance = openingBalance;
     let remainingCredits = [...creditAmounts];
-    let remainingDebits = [...debitAmounts];
+    let remainingDebits = [...debitPlans];
+    const transactions = [];
 
     for (let index = 0; index < allDates.length; index++) {
       const txDate = allDates[index];
       const mustUseCredit = remainingCredits.length > 0 && (
         remainingDebits.length === 0 ||
-        runningBalance < remainingDebits[remainingDebits.length - 1]
+        runningBalance < remainingDebits[remainingDebits.length - 1].amount
       );
 
       const shouldUseCredit = mustUseCredit || (
         remainingCredits.length > 0 &&
-        (remainingDebits.length === 0 || Math.random() < 0.58)
+        (remainingDebits.length === 0 || Math.random() < 0.5)
       );
 
-      const type = shouldUseCredit ? "CREDIT" : "DEBIT";
-      const amount = shouldUseCredit ? remainingCredits.shift() : remainingDebits.shift();
+      if (shouldUseCredit) {
+        const amount = remainingCredits.shift();
+        if (!amount || amount <= 0) continue;
 
-      if (!amount || amount <= 0) {
-        continue;
+        const reference = buildReference(profile.accountnumber, txDate, index);
+        const description = buildCreditNarration(profile.accountname, amount);
+
+        runningBalance = roundToTwo(runningBalance + amount);
+        transactions.push({
+          accountnumber: String(profile.accountnumber),
+          userid: Number(profile.userid || userid || 0),
+          currency: profile.currency || transactionCatalog.currency || "USD",
+          credit: amount,
+          debit: 0,
+          description,
+          image: null,
+          branch: profile.branch ?? Number(branch || 0),
+          registrationpoint: profile.registrationpoint ?? 0,
+          dateadded: txDate,
+          approvedby: user?.id || 0,
+          status: "ACTIVE",
+          updateddated: null,
+          transactiondate: txDate,
+          transactiondesc: description,
+          transactionref: reference,
+          cashref: "",
+          updatedby: null,
+          ttype: "CREDIT",
+          tfrom: Math.random() < 0.7 ? "BANK" : "CASH",
+          createdby: user?.id || 0,
+          valuedate: txDate,
+          reference,
+          whichaccount: profile.whichaccount,
+          voucher: "",
+          tax: false,
+          category_name: null
+        });
+      } else {
+        const plan = remainingDebits.shift();
+        if (!plan || plan.amount <= 0) continue;
+
+        if (plan.amount > runningBalance) {
+          remainingCredits.unshift(plan.amount);
+          continue;
+        }
+
+        const reference = buildReference(profile.accountnumber, txDate, index);
+        const description = `${plan.description} [${plan.category_name}]`;
+
+        runningBalance = roundToTwo(runningBalance - plan.amount);
+        transactions.push({
+          accountnumber: String(profile.accountnumber),
+          userid: Number(profile.userid || userid || 0),
+          currency: profile.currency || transactionCatalog.currency || "USD",
+          credit: 0,
+          debit: plan.amount,
+          description,
+          image: null,
+          branch: profile.branch ?? Number(branch || 0),
+          registrationpoint: profile.registrationpoint ?? 0,
+          dateadded: txDate,
+          approvedby: user?.id || 0,
+          status: "ACTIVE",
+          updateddated: null,
+          transactiondate: txDate,
+          transactiondesc: description,
+          transactionref: reference,
+          cashref: "",
+          updatedby: null,
+          ttype: "DEBIT",
+          tfrom: Math.random() < 0.65 ? "BANK" : "CASH",
+          createdby: user?.id || 0,
+          valuedate: txDate,
+          reference,
+          whichaccount: profile.whichaccount,
+          voucher: "",
+          tax: false,
+          category_name: plan.category_name
+        });
       }
-
-      if (type === "DEBIT" && amount > runningBalance) {
-        remainingCredits.unshift(amount);
-        continue;
-      }
-
-      const reference = buildReference(profile.accountnumber, txDate, index);
-      const tfrom = type === "CREDIT"
-        ? (Math.random() < 0.7 ? "BANK" : "CASH")
-        : (Math.random() < 0.65 ? "BANK" : "CASH");
-      const description = buildNarration(type, profile.whichaccount, profile.accountname, amount);
-
-      runningBalance = roundToTwo(
-        type === "CREDIT" ? runningBalance + amount : runningBalance - amount
-      );
-
-      transactions.push({
-        accountnumber: String(profile.accountnumber),
-        userid: Number(profile.userid || userid || 0),
-        currency: profile.currency || "NGN",
-        credit: type === "CREDIT" ? amount : 0,
-        debit: type === "DEBIT" ? amount : 0,
-        description,
-        image: null,
-        branch: profile.branch ?? Number(branch || 0),
-        registrationpoint: profile.registrationpoint ?? 0,
-        dateadded: txDate,
-        approvedby: user?.id || 0,
-        status: "ACTIVE",
-        updateddated: null,
-        transactiondate: txDate,
-        transactiondesc: description,
-        transactionref: reference,
-        cashref: "",
-        updatedby: null,
-        ttype: type,
-        tfrom,
-        createdby: user?.id || 0,
-        valuedate: txDate,
-        reference,
-        whichaccount: profile.whichaccount,
-        voucher: "",
-        tax: false
-      });
-    }
-
-    // If some debits were skipped because of balance protection, convert the remainder to credits
-    while (remainingDebits.length > 0) {
-      const amount = remainingDebits.shift();
-      const txDate = randomDateBetween(start, end);
-      const reference = buildReference(profile.accountnumber, txDate, transactions.length);
-      const description = `Reclassified inflow for ${profile.accountname || "account"} (${formatMoney(amount)})`;
-
-      transactions.push({
-        accountnumber: String(profile.accountnumber),
-        userid: Number(profile.userid || userid || 0),
-        currency: profile.currency || "NGN",
-        credit: amount,
-        debit: 0,
-        description,
-        image: null,
-        branch: profile.branch ?? Number(branch || 0),
-        registrationpoint: profile.registrationpoint ?? 0,
-        dateadded: txDate,
-        approvedby: user?.id || 0,
-        status: "ACTIVE",
-        updateddated: null,
-        transactiondate: txDate,
-        transactiondesc: description,
-        transactionref: reference,
-        cashref: "",
-        updatedby: null,
-        ttype: "CREDIT",
-        tfrom: "BANK",
-        createdby: user?.id || 0,
-        valuedate: txDate,
-        reference,
-        whichaccount: profile.whichaccount,
-        voucher: "",
-        tax: false
-      });
     }
 
     transactions.sort((a, b) => new Date(a.transactiondate) - new Date(b.transactiondate));
@@ -424,7 +481,7 @@ const generateTransactions = async (req, res) => {
     try {
       for (const transaction of transactions) {
         await pg.query(
-          `INSERT INTO sky."transaction" (
+          `INSERT INTO skytobi."transaction" (
             accountnumber,
             userid,
             currency,
@@ -497,7 +554,7 @@ const generateTransactions = async (req, res) => {
     await activityMiddleware(
       req,
       user.id,
-      `Generated ${transactions.length} realistic transactions for ${profile.accountnumber}`,
+      `Generated ${transactions.length} category-based transactions for ${profile.accountnumber}`,
       "TRANSACTION"
     );
 
@@ -509,11 +566,13 @@ const generateTransactions = async (req, res) => {
       summary: {
         accountnumber: String(profile.accountnumber),
         whichaccount: profile.whichaccount,
+        currency: profile.currency || transactionCatalog.currency || "USD",
         openingbalance: openingBalance,
         totalcredits: totalCredits,
         totaldebits: totalDebits,
         closingbalance: roundToTwo(openingBalance + totalCredits - totalDebits),
-        generatedcount: transactions.length
+        generatedcount: transactions.length,
+        selectedcategories: selectedCategoryNames.length > 0 ? selectedCategoryNames : "ALL"
       },
       errors: []
     });
@@ -531,4 +590,7 @@ const generateTransactions = async (req, res) => {
   }
 };
 
-module.exports = { generateTransactions };
+module.exports = {
+  generateTransactions,
+  getTransactionCategories
+};

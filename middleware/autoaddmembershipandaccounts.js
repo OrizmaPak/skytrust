@@ -1,41 +1,124 @@
 const pg = require("../db/pg");
 
-const autoAddMembershipAndAccounts = async (req, res, user=0) => {
+const autoAddMembershipAndAccounts = async (req, res, user = 0) => {
     try {
         const userId = req.newuser.id;
-        // if (!req.user) {
-        //     req.user.id = 0
-        //     // console.error('User information is missing in the request.');
-        //     // return false;
-        // }
+        const userBranch = req.newuser.branch || req.body.branch || 1;
+        const registrationPoint = req.newuser.registrationpoint || 0;
+        const createdAt = new Date();
 
-        // Fetch all DefineMember rows with addmember set to 'YES'
-        const { rows: defineMembers } = await pg.query(`SELECT id FROM sky."DefineMember" WHERE addmember = 'YES'`);
- 
-        // Iterate over each DefineMember and create a Membership entry if it doesn't exist
-        for (const defineMember of defineMembers) { 
-            const memberId = defineMember.id;
+        const { rows: defineMembers } = await pg.query(`
+            SELECT id
+            FROM skytobi."DefineMember"
+            WHERE addmember = 'YES'
+        `);
 
-            // Check if a membership already exists for this user and member
-            const { rows: existingMembership } = await pg.query(
-                `SELECT id FROM sky."Membership" WHERE userid = $1 AND member = $2`,
-                [userId, memberId]
-            );
+        let membershipsCreated = 0;
+        for (const defineMember of defineMembers) {
+            const { rows: existingMembership } = await pg.query(`
+                SELECT id
+                FROM skytobi."Membership"
+                WHERE userid = $1 AND member = $2
+            `, [userId, defineMember.id]);
 
-            // If no existing membership, create a new one
             if (existingMembership.length === 0) {
-                await pg.query(
-                    `INSERT INTO sky."Membership" (member, userid, createdby, status) VALUES ($1, $2, $3, 'ACTIVE')`,
-                    [memberId, userId, userId]
-                );
+                await pg.query(`
+                    INSERT INTO skytobi."Membership" (member, userid, createdby, status)
+                    VALUES ($1, $2, $3, 'ACTIVE')
+                `, [defineMember.id, userId, userId]);
+                membershipsCreated += 1;
             }
         }
 
-        return true;
+        const { rows: savingsProducts } = await pg.query(`
+            SELECT id
+            FROM skytobi."savingsproduct"
+            WHERE addmember = 'YES' AND status = 'ACTIVE'
+            ORDER BY id ASC
+        `);
+
+        let accountsCreated = 0;
+        if (savingsProducts.length > 0) {
+            const { rows: [orgSettings] } = await pg.query(`
+                SELECT savings_account_prefix
+                FROM skytobi."Organisationsettings"
+                WHERE status = 'ACTIVE'
+                LIMIT 1
+            `);
+
+            if (!orgSettings?.savings_account_prefix) {
+                throw new Error("Savings account prefix not set in organisation settings.");
+            }
+
+            const { rows: [latestAccount] } = await pg.query(`
+                SELECT accountnumber
+                FROM skytobi."savings"
+                WHERE accountnumber::text LIKE $1
+                ORDER BY accountnumber DESC
+                LIMIT 1
+            `, [`${orgSettings.savings_account_prefix}%`]);
+
+            let nextAccountNumber = latestAccount
+                ? Number(latestAccount.accountnumber) + 1
+                : Number(`${orgSettings.savings_account_prefix}${'0'.repeat(10 - String(orgSettings.savings_account_prefix).length - 1)}1`);
+
+            for (const product of savingsProducts) {
+                const { rows: [existingAccount] } = await pg.query(`
+                    SELECT id
+                    FROM skytobi."savings"
+                    WHERE userid = $1 AND savingsproductid = $2 AND member = 0 AND status = 'ACTIVE'
+                `, [userId, product.id]);
+
+                if (existingAccount) {
+                    continue;
+                }
+
+                await pg.query(`
+                    INSERT INTO skytobi."savings"
+                    (
+                        savingsproductid, accountnumber, userid, amount, branch, registrationpoint,
+                        registrationcharge, registrationdate, registrationdesc, accountofficer,
+                        sms, whatsapp, email, status, dateadded, createdby, member
+                    )
+                    VALUES
+                    ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, 'ACTIVE', $14, $15, 0)
+                `, [
+                    product.id,
+                    String(nextAccountNumber),
+                    userId,
+                    0,
+                    userBranch,
+                    registrationPoint,
+                    0,
+                    createdAt,
+                    'Automatically created during signup',
+                    String(userId),
+                    false,
+                    false,
+                    false,
+                    createdAt,
+                    userId
+                ]);
+
+                nextAccountNumber += 1;
+                accountsCreated += 1;
+            }
+        }
+
+        return {
+            status: true,
+            membershipsCreated,
+            accountsCreated
+        };
     } catch (error) {
         console.error('Error in autoAddMembershipAndAccounts middleware:', error);
-        return false
+        return {
+            status: false,
+            membershipsCreated: 0,
+            accountsCreated: 0,
+            error: error.message
+        };
     }
 };
 
-module.exports = {autoAddMembershipAndAccounts};
+module.exports = { autoAddMembershipAndAccounts };

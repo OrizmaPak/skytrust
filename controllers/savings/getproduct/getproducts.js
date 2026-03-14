@@ -20,20 +20,20 @@ const getSavingsProducts = async (req, res) => {
                     WHEN sp.membership IS NOT NULL THEN
                         CASE 
                             WHEN sp.membership ~ '^[0-9]+$' THEN
-                                (SELECT dm.member FROM sky."DefineMember" dm WHERE dm.id = sp.membership::int)
+                                (SELECT dm.member FROM skytobi."DefineMember" dm WHERE dm.id = sp.membership::int)
                             ELSE
                                 (SELECT string_agg(dm.member, '||') 
-                                 FROM sky."DefineMember" dm 
+                                 FROM skytobi."DefineMember" dm 
                                  WHERE dm.id = ANY(string_to_array(sp.membership, '||')::int[]))
                         END
                     ELSE NULL
                 END AS membervalues
             FROM 
-                sky."savingsproduct" sp
+                skytobi."savingsproduct" sp
             LEFT JOIN 
-                sky."Deduction" d ON sp.id = d.savingsproductid AND d.status = 'ACTIVE' 
+                skytobi."Deduction" d ON sp.id = d.savingsproductid AND d.status = 'ACTIVE' 
             LEFT JOIN 
-                sky."Interest" i ON sp.id = i.savingsproductid AND i.status = 'ACTIVE'
+                skytobi."Interest" i ON sp.id = i.savingsproductid AND i.status = 'ACTIVE'
             WHERE 
                 sp.status = 'ACTIVE'
             GROUP BY 

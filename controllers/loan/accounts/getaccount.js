@@ -62,14 +62,14 @@ const getLoanAccount = async (req, res) => {
                 br.branch AS branchname,
                 COALESCE(rp.registrationpoint, 'N/A') AS registrationpointname,
                 COALESCE(json_agg(c) FILTER (WHERE c.id IS NOT NULL), '[]') AS collaterals
-            FROM sky."loanaccounts" la
-            JOIN sky."User" u1 ON la.userid::text = u1.id::text
-            LEFT JOIN sky."User" u2 ON la.accountofficer::text = u2.id::text
-            JOIN sky."loanproduct" lp ON la.loanproduct::text = lp.id::text
-            JOIN sky."DefineMember" dm ON la.member::text = dm.id::text
-            JOIN sky."Branch" br ON la.branch::text = br.id::text
-            LEFT JOIN sky."Registrationpoint" rp ON la.registrationpoint::text = rp.id::text
-            LEFT JOIN sky."collateral" c ON la.accountnumber::text = c.accountnumber::text
+            FROM skytobi."loanaccounts" la
+            JOIN skytobi."User" u1 ON la.userid::text = u1.id::text
+            LEFT JOIN skytobi."User" u2 ON la.accountofficer::text = u2.id::text
+            JOIN skytobi."loanproduct" lp ON la.loanproduct::text = lp.id::text
+            JOIN skytobi."DefineMember" dm ON la.member::text = dm.id::text
+            JOIN skytobi."Branch" br ON la.branch::text = br.id::text
+            LEFT JOIN skytobi."Registrationpoint" rp ON la.registrationpoint::text = rp.id::text
+            LEFT JOIN skytobi."collateral" c ON la.accountnumber::text = c.accountnumber::text
         `;
 
         // Initialize WHERE clauses and parameters
@@ -222,14 +222,14 @@ const getLoanAccount = async (req, res) => {
         // Get total count for pagination without 'q'
         const countQueryText = `
             SELECT COUNT(DISTINCT la.id) AS total
-            FROM sky."loanaccounts" la
-            JOIN sky."User" u1 ON la.userid::text = u1.id::text
-            LEFT JOIN sky."User" u2 ON la.accountofficer::text = u2.id::text
-            JOIN sky."loanproduct" lp ON la.loanproduct::text = lp.id::text
-            JOIN sky."DefineMember" dm ON la.member::text = dm.id::text
-            JOIN sky."Branch" br ON la.branch::text = br.id::text
-            LEFT JOIN sky."Registrationpoint" rp ON la.registrationpoint::text = rp.id::text
-            LEFT JOIN sky."collateral" c ON la.accountnumber::text = c.accountnumber::text
+            FROM skytobi."loanaccounts" la
+            JOIN skytobi."User" u1 ON la.userid::text = u1.id::text
+            LEFT JOIN skytobi."User" u2 ON la.accountofficer::text = u2.id::text
+            JOIN skytobi."loanproduct" lp ON la.loanproduct::text = lp.id::text
+            JOIN skytobi."DefineMember" dm ON la.member::text = dm.id::text
+            JOIN skytobi."Branch" br ON la.branch::text = br.id::text
+            LEFT JOIN skytobi."Registrationpoint" rp ON la.registrationpoint::text = rp.id::text
+            LEFT JOIN skytobi."collateral" c ON la.accountnumber::text = c.accountnumber::text
             ${whereClause}
         `;
 

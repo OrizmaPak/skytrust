@@ -33,7 +33,7 @@ const saveOrUpdateReferee = async (req, res) => {
     try {
         // Check if the user exists
         const { rows: userRows } = await pg.query(
-            `SELECT id FROM sky."User" WHERE id = $1 AND status = 'ACTIVE'`,
+            `SELECT id FROM skytobi."User" WHERE id = $1 AND status = 'ACTIVE'`,
             [userid]
         );
 
@@ -53,7 +53,7 @@ const saveOrUpdateReferee = async (req, res) => {
         if (id) {
             // Update existing referee
             query = {
-                text: `UPDATE sky."referee" SET 
+                text: `UPDATE skytobi."referee" SET 
                         refereename = COALESCE($1, refereename),
                         refereeofficeaddress = COALESCE($2, refereeofficeaddress),
                         refereeresidentialaddress = COALESCE($3, refereeresidentialaddress),
@@ -71,7 +71,7 @@ const saveOrUpdateReferee = async (req, res) => {
         } else {
             // Insert new referee
             query = {
-                text: `INSERT INTO sky."referee" 
+                text: `INSERT INTO skytobi."referee" 
                         (userid, refereename, refereeofficeaddress, refereeresidentialaddress, refereeoccupation, refereephone, refereeyearsknown, relationship, imageone, imagetwo, createdby) 
                        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
                 values: [userid, refereename, refereeofficeaddress, refereeresidentialaddress, refereeoccupation, refereephone, refereeyearsknown, relationship, imageone, imagetwo, user.id]

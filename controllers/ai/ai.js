@@ -2,13 +2,20 @@ require('dotenv').config(); // Load environment variables from .env file
 const OpenAI = require('openai');
 const { generateNextDates } = require('../../utils/datecode');
 
-const client = new OpenAI({
-  apiKey: process.env.OPEN_AI_KEY, // This is the default and can be omitted
-});
+function getOpenAIClient() {
+  const apiKey = process.env.OPENAI_API_KEY?.trim() || process.env.OPEN_AI_KEY?.trim();
+
+  if (!apiKey) {
+    throw new Error('OpenAI API key is not configured');
+  }
+
+  return new OpenAI({ apiKey });
+}
 
 // Function to generate text using OpenAI
 async function generateText(prompt) {
   try {
+    const client = getOpenAIClient();
     const response = await client.chat.completions.create({
       model: 'gpt-4o',
       messages: [{ role: 'user', content: prompt }],
@@ -33,6 +40,7 @@ async function generateText(prompt) {
 // Function to generate text using OpenAI
 async function generateTextwithClient(prompt, req) {
   try {
+    const client = getOpenAIClient();
     const response = await client.chat.completions.create({
       model: 'gpt-4o',
       messages: [{ role: 'user', content: prompt }],

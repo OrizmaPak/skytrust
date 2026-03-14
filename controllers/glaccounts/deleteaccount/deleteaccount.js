@@ -48,7 +48,7 @@ const deleteAccount = async (req, res) => {
     await pg.query("BEGIN");
 
     const accountResult = await pg.query(
-      `SELECT * FROM sky."Accounts" WHERE id = $1`,
+      `SELECT * FROM skytobi."Accounts" WHERE id = $1`,
       [id]
     );
 
@@ -71,7 +71,7 @@ const deleteAccount = async (req, res) => {
     const clearedDefaults = [];
     for (const field of DEFAULT_ACCOUNT_FIELDS) {
       const updateResult = await pg.query(
-        `UPDATE sky."Organisationsettings"
+        `UPDATE skytobi."Organisationsettings"
          SET "${field}" = NULL
          WHERE "${field}" = $1`,
         [accountNumberValue]
@@ -83,22 +83,22 @@ const deleteAccount = async (req, res) => {
     }
 
     const deletedTransactions = await pg.query(
-      `DELETE FROM sky."transaction" WHERE accountnumber = $1`,
+      `DELETE FROM skytobi."transaction" WHERE accountnumber = $1`,
       [accountNumber]
     );
 
     const deletedBankTransactions = await pg.query(
-      `DELETE FROM sky."banktransaction" WHERE accountnumber = $1`,
+      `DELETE FROM skytobi."banktransaction" WHERE accountnumber = $1`,
       [accountNumber]
     );
 
     const deletedLoanFees = await pg.query(
-      `DELETE FROM sky."loanfee" WHERE glaccount = $1`,
+      `DELETE FROM skytobi."loanfee" WHERE glaccount = $1`,
       [accountNumber]
     );
 
     await pg.query(
-      `DELETE FROM sky."Accounts" WHERE id = $1`,
+      `DELETE FROM skytobi."Accounts" WHERE id = $1`,
       [id]
     );
 

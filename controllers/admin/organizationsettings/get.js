@@ -5,7 +5,7 @@ const getorgsettings = async (req, res) => {
 
     let userid;
 
-    let queryString = `SELECT * FROM sky."Organisationsettings"`;
+    let queryString = `SELECT * FROM skytobi."Organisationsettings"`;
     
 
     try {

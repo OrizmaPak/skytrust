@@ -18,11 +18,11 @@ const getCompositeDetails = async (req, res) => {
                           cd.createdby, 
                           cd.dateadded, 
                           cd.status 
-                   FROM sky."compositedetails" cd
-                   JOIN sky."Inventory" i ON cd.compositeid = i.itemid
-                   JOIN sky."Inventory" inv ON cd.itemid = inv.itemid
+                   FROM skytobi."compositedetails" cd
+                   JOIN skytobi."Inventory" i ON cd.compositeid = i.itemid
+                   JOIN skytobi."Inventory" inv ON cd.itemid = inv.itemid
                    WHERE inv.id = (
-                       SELECT MAX(id) FROM sky."Inventory" WHERE itemid = cd.itemid
+                       SELECT MAX(id) FROM skytobi."Inventory" WHERE itemid = cd.itemid
                    )`,
             values: []
         };
@@ -120,13 +120,13 @@ const getCompositeDetails = async (req, res) => {
 
         // Get total count for pagination
         const countQuery = {
-            text: `SELECT COUNT(*) FROM sky."compositedetails" cd
-                   JOIN sky."Inventory" i ON cd.compositeid = i.compositeid
+            text: `SELECT COUNT(*) FROM skytobi."compositedetails" cd
+                   JOIN skytobi."Inventory" i ON cd.compositeid = i.compositeid
                    JOIN (
                        SELECT itemid, itemname, pricetwo
-                       FROM sky."Inventory" inv
+                       FROM skytobi."Inventory" inv
                        WHERE inv.id = (
-                           SELECT MAX(id) FROM sky."Inventory" WHERE itemid = inv.itemid
+                           SELECT MAX(id) FROM skytobi."Inventory" WHERE itemid = inv.itemid
                        )
                    ) inv ON cd.itemid = inv.itemid
                    ${whereClause}`,

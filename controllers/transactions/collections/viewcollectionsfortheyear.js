@@ -64,7 +64,7 @@ const viewCollectionsForTheYear = async (req, res) => {
 
   try {
     // Fetch default_cash_account
-    const orgSettingsQuery = `SELECT default_cash_account FROM sky."Organisationsettings" LIMIT 1`;
+    const orgSettingsQuery = `SELECT default_cash_account FROM skytobi."Organisationsettings" LIMIT 1`;
     const { rows: orgSettings } = await pg.query(orgSettingsQuery);
     const defaultCashAccount = orgSettings[0]?.default_cash_account;
 
@@ -98,8 +98,8 @@ const viewCollectionsForTheYear = async (req, res) => {
 
     const yearDataQuery = `
       SELECT t.*
-      FROM sky."transaction" t
-      JOIN sky."User" u ON t.userid = u.id
+      FROM skytobi."transaction" t
+      JOIN skytobi."User" u ON t.userid = u.id
       WHERE ${queryConditions.join(' AND ')}
     `;
 
@@ -139,7 +139,7 @@ const viewCollectionsForTheYear = async (req, res) => {
         if (transactionRefs.length > 0) {
           const bankTxQuery = `
             SELECT credit, debit 
-            FROM sky."banktransaction"
+            FROM skytobi."banktransaction"
             WHERE transactionref = ANY($1) AND status = 'ACTIVE'
           `;
           const bankTxResult = await pg.query(bankTxQuery, [transactionRefs]);
@@ -157,7 +157,7 @@ const viewCollectionsForTheYear = async (req, res) => {
         if (penaltyRefs.length > 0) {
           const penaltyQuery = `
             SELECT debit, credit 
-            FROM sky."transaction"
+            FROM skytobi."transaction"
             WHERE cashref = ANY($1) AND status = 'ACTIVE' AND accountnumber != $2
           `;
           const penaltyResult = await pg.query(penaltyQuery, [penaltyRefs, defaultCashAccount]);

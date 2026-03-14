@@ -15,13 +15,13 @@ const getAccounts = async (req, res) => {
                           CONCAT(ao.firstname, ' ', ao.lastname, ' ', COALESCE(ao.othernames, '')) AS accountofficername,
                           sp.productname AS savingsproduct,
                           dm.member AS membername
-                   FROM sky."savings" s 
-                   JOIN sky."User" u ON s.userid = u.id
-                   JOIN sky."Branch" b ON s.branch = b.id
-                   LEFT JOIN sky."Registrationpoint" rp ON s.registrationpoint = rp.id
-                   LEFT JOIN sky."User" ao ON CAST(s.accountofficer AS INTEGER) = ao.id
-                   LEFT JOIN sky."savingsproduct" sp ON s.savingsproductid = sp.id
-                   LEFT JOIN sky."DefineMember" dm ON s.member = dm.id`,
+                   FROM skytobi."savings" s 
+                   JOIN skytobi."User" u ON s.userid = u.id
+                   JOIN skytobi."Branch" b ON s.branch = b.id
+                   LEFT JOIN skytobi."Registrationpoint" rp ON s.registrationpoint = rp.id
+                   LEFT JOIN skytobi."User" ao ON CAST(s.accountofficer AS INTEGER) = ao.id
+                   LEFT JOIN skytobi."savingsproduct" sp ON s.savingsproductid = sp.id
+                   LEFT JOIN skytobi."DefineMember" dm ON s.member = dm.id`,
             values: []
         };
 
@@ -76,7 +76,7 @@ const getAccounts = async (req, res) => {
 
         // Get total count for pagination
         const countQuery = {
-            text: `SELECT COUNT(*) FROM sky."savings" s ${whereClause.length > 0 ? 'WHERE ' + whereClause.join(' AND ') : ''}`,
+            text: `SELECT COUNT(*) FROM skytobi."savings" s ${whereClause.length > 0 ? 'WHERE ' + whereClause.join(' AND ') : ''}`,
             values: query.values.slice(0, -2) // Exclude limit and offset
         };
         const { rows: [{ count: total }] } = await pg.query(countQuery);
