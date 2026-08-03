@@ -1,19 +1,23 @@
 const { StatusCodes } = require("http-status-codes");
-const bcrypt = require("bcrypt");
-const { isValidEmail } = require("../../../utils/isValidEmail");
 const pg = require("../../../db/pg");
-const jwt = require("jsonwebtoken");
-const { calculateExpiryDate, isPastDate } = require("../../../utils/expiredate");
-const { sendEmail } = require("../../../utils/sendEmail");
-const { authMiddleware } = require("../../../middleware/authentication");
-const { activityMiddleware } = require("../../../middleware/activity"); // Added tracker middleware
+const { activityMiddleware } = require("../../../middleware/activity");
+const { hasPermission } = require("../../../utils/permissions");
 
   
 async function managepermissions(req, res) {
 
     const { id='', permissions='', role } = req.body;
+    const user = req.user
 
-    console.log(permissions)
+    if (!hasPermission(user, 'ACCESS CONTROL')) {
+        return res.status(StatusCodes.FORBIDDEN).json({
+            status: false,
+            message: "You are not authorized to update permissions",
+            statuscode: StatusCodes.FORBIDDEN,
+            data: null,
+            errors: []
+        });
+    }
 
     if (!role || !id) {
         return res.status(StatusCodes.BAD_REQUEST).json({
@@ -26,7 +30,20 @@ async function managepermissions(req, res) {
     }
 
     // GET THE USERS
-    const { rows: userDetails } = await pg.query(`SELECT role FROM skytobi."User" WHERE id = $1`, [id]);
+    const { rows: userDetails } = await pg.query(
+        `SELECT id, firstname, lastname, othernames, role FROM skytobi."User" WHERE id = $1`,
+        [id]
+    );
+
+    if (userDetails.length === 0) {
+        return res.status(StatusCodes.NOT_FOUND).json({
+            status: false,
+            message: "User not found",
+            statuscode: StatusCodes.NOT_FOUND,
+            data: null,
+            errors: []
+        });
+    }
 
     // CHECK IF THE USER TO BE UPDATED IS A SUPERADMIN
     if (userDetails[0].role === 'SUPERADMIN') {
@@ -38,14 +55,6 @@ async function managepermissions(req, res) {
             errors: []
         });
     }
-
-
-
-
-
-
-    // CHECK IF USER IS AUTHENTICATED
-    const user = req.user
     // DECLARE THE USER OPERATED ON
     let userid;
 
@@ -73,7 +82,7 @@ async function managepermissions(req, res) {
         if (userDetails.length > 0) {
             const { firstname, lastname, othernames } = userDetails[0];
             const fullName = `${firstname} ${lastname} ${othernames || ''}`.trim();
-            activity = activityMiddleware(req, user.id, `Updated Permissions of ${fullName} with id of ${id} to ${role} role`, 'PERMISSIONS');
+            await activityMiddleware(req, user.id, `Updated Permissions of ${fullName || id} with id of ${id} to ${role} role`, 'PERMISSIONS');
         }
         
         await activityMiddleware(req, user.id, `Updated Permissions of ${id}`, 'PERMISSIONS');

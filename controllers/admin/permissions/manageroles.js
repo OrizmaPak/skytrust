@@ -1,9 +1,31 @@
 const { StatusCodes } = require("http-status-codes");
 const pg = require("../../../db/pg");
 const { activityMiddleware } = require("../../../middleware/activity");
+const { hasPermission } = require("../../../utils/permissions");
 
 async function manageroles(req, res) {
     const { id, role, permissions, description, status } = req.body;
+    const user = req.user;
+
+    if (!hasPermission(user, 'ACCESS CONTROL')) {
+        return res.status(StatusCodes.FORBIDDEN).json({
+            status: false,
+            message: "You are not authorized to manage roles",
+            statuscode: StatusCodes.FORBIDDEN,
+            data: null,
+            errors: []
+        });
+    }
+
+    if (!role) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+            status: false,
+            message: "Role name is required",
+            statuscode: StatusCodes.BAD_REQUEST,
+            data: null,
+            errors: []
+        });
+    }
 
     if (role.toLowerCase() === 'custom') {
         return res.status(StatusCodes.BAD_REQUEST).json({
@@ -24,8 +46,6 @@ async function manageroles(req, res) {
             errors: []
         });
     }
-   
-    const user = req.user;
    
     try {   
         if (role) {
@@ -55,14 +75,6 @@ async function manageroles(req, res) {
                 await pg.query(`INSERT INTO skytobi."Roles" (role, permissions, description, status) VALUES ($1, $2, $3, $4)`, [role, permissions, description, status || 'ACTIVE']);
                 await activityMiddleware(req, user.id, `Role '${role}' created successfully`);
             }
-        } else {
-            return res.status(StatusCodes.BAD_REQUEST).json({
-                status: false,
-                message: "Role name is required",
-                statuscode: StatusCodes.BAD_REQUEST,
-                data: null,
-                errors: []
-            });
         }
 
         return res.status(StatusCodes.OK).json({

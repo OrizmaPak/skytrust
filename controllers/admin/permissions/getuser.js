@@ -1,11 +1,5 @@
 const { StatusCodes } = require("http-status-codes");
-const bcrypt = require("bcrypt");
-const { isValidEmail } = require("../../../utils/isValidEmail");
 const pg = require("../../../db/pg");
-const jwt = require("jsonwebtoken");
-const { calculateExpiryDate } = require("../../../utils/expiredate");
-const { sendEmail } = require("../../../utils/sendEmail");
-const { authMiddleware } = require("../../../middleware/authentication");
 
 async function getuser(req, res) {
     try {
@@ -22,18 +16,29 @@ async function getuser(req, res) {
                 errors: []
             });
         }
-        // CHECK IF USER IS AUTHENTICATED
-        const {rows: users} = pg.query(`SELECT * FROM skytobi."User" WHERE status = ACTIVE AND id = $1`, [id])
-        console.log(users)
+        const { rows: users } = await pg.query(
+            `SELECT * FROM skytobi."User" WHERE status = $1 AND id = $2`,
+            ['ACTIVE', id]
+        );
+
         if(users.length > 0){
+            const sanitizedUsers = users.map(({ password, ...user }) => user);
             return res.status(StatusCodes.OK).json({
                 status: true,
                 message: "Profile fetched successfully.",
                 statuscode: StatusCodes.OK,
-                data: users,
+                data: sanitizedUsers,
                 errors: []
             });
         }
+
+        return res.status(StatusCodes.NOT_FOUND).json({
+            status: false,
+            message: "User not found",
+            statuscode: StatusCodes.NOT_FOUND,
+            data: null,
+            errors: []
+        });
     } catch (error) {
         console.error('Unexpected Error:', error);
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({

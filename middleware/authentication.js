@@ -2,9 +2,9 @@ const jwt = require('jsonwebtoken');
 const { StatusCodes } = require('http-status-codes');
 const pg = require('../db/pg');
 const { manageOnlineUser } = require('./onlinestatus');
+const { resolveEffectivePermissions } = require('../utils/permissions');
 
 const authMiddleware = async (req, res, next) => {
-  console.log('we entered the authmiddlware')
   // CHECK IF THE HEADER HAS A TOKEN
   const token = req.headers['authorization']?.split(' ')[1];
 
@@ -40,6 +40,12 @@ const authMiddleware = async (req, res, next) => {
         });
       }
       const { password, ...withoutpassword } = loggedinuser;
+      const { rows: [role] } = await pg.query(
+        `SELECT permissions FROM skytobi."Roles" WHERE role = $1 AND status = $2`,
+        [withoutpassword.role, 'ACTIVE']
+      );
+      withoutpassword.rolepermissions = role?.permissions || withoutpassword.permissions;
+      withoutpassword.permissions = resolveEffectivePermissions(withoutpassword, withoutpassword.rolepermissions);
       // ATTACH USER TO REQUEST OBJECT
       req.user = withoutpassword;
 

@@ -8,6 +8,7 @@ const { sendEmail } = require("../../utils/sendEmail");
 const { authMiddleware } = require("../../middleware/authentication");
 const { activityMiddleware } = require("../../middleware/activity");
 const { uploadToGoogleDrive } = require("../../utils/uploadToGoogleDrive");
+const { hasPermission } = require("../../utils/permissions");
 
 async function updateuser(req, res) {
     if (req.files) {
@@ -74,6 +75,17 @@ async function updateuser(req, res) {
     console.log('req.body', req.body);
 
     try {  
+        const isPermissionUpdate = role !== undefined || permissions !== undefined || userpermissions !== undefined;
+        if (isPermissionUpdate && !hasPermission(user, 'ACCESS CONTROL')) {
+            return res.status(StatusCodes.FORBIDDEN).json({
+                status: false,
+                message: "You are not authorized to update roles or permissions",
+                statuscode: StatusCodes.FORBIDDEN,
+                data: null,
+                errors: []
+            });
+        }
+
         if (status) {
             await pg.query(
                 `UPDATE skytobi."User" 
@@ -159,13 +171,17 @@ async function updateuser(req, res) {
             );
         }
         await activityMiddleware(req, user.id, `Updated Profile`, 'AUTH');
-        // For returning updated data, always query using the target id (userid)
-        const updatedUser = await pg.query(`SELECT * FROM skytobi."User" WHERE id = $1`, [userid]);
+
+        const updatedUser = email && !id && !_userid
+            ? await pg.query(`SELECT * FROM skytobi."User" WHERE email = $1`, [email])
+            : await pg.query(`SELECT * FROM skytobi."User" WHERE id = $1`, [userid]);
+
+        const { password: _password, ...userWithoutPassword } = updatedUser.rows[0] || {};
         return res.status(StatusCodes.OK).json({
             status: true,
             message: 'Profile Update Successful',
             statuscode: StatusCodes.OK,
-            data: updatedUser.rows[0],
+            data: userWithoutPassword,
             errors: []
         });
 
