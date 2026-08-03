@@ -1,8 +1,8 @@
 const { StatusCodes } = require("http-status-codes");
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 const { isValidEmail } = require("../../utils/isValidEmail");
 const pg = require("../../db/pg");
-const jwt = require("jsonwebtoken");
 const { sendEmail } = require("../../utils/sendEmail");
 const { activityMiddleware } = require("../../middleware/activity"); // Added tracker middleware
 
@@ -50,45 +50,57 @@ async function forgotpassword(req, res) {
         }
 
         // Generate a new password
-        const newPassword = Math.random().toString(36).slice(-8); // Generate a random 8-character password
+        const newPassword = crypto.randomBytes(6).toString("base64url");
         const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-        // Sign the new password with JWT
-        const signedPassword = jwt.sign({ password: newPassword }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        await pg.query("BEGIN");
+        try {
+            // Update inside a transaction so email failure does not leave the user locked out.
+            await pg.query(`UPDATE skytobi."User" SET password = $1 WHERE id = $2`, [hashedPassword, existingUser.id]);
 
-        // Update the user's password in the database
-        await pg.query(`UPDATE skytobi."User" SET password = $1 WHERE id = $2`, [hashedPassword, existingUser.id]);
+            // Send the new password via email
+            await sendEmail({
+                to: email,
+                subject: 'Your New Password for Sky Trust',
+                text: `Your password has been reset. Your new password is: ${newPassword}`,
+                html: `<!DOCTYPE html>
+                        <html>
+                        <head>
+                            <title>Your New Password</title>
+                        </head>
+                        <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; color: #333333; margin: 0; padding: 0; line-height: 1.6;">
+                            <div style="width: 80%; max-width: 600px; margin: 20px auto; background-color: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                            <div style="text-align: center; padding-bottom: 20px;">
+                                <h1 style="color: #4CAF50; margin: 0; font-size: 24px;">Your New Password</h1>
+                            </div>
+                            <div style="margin: 20px 0;">
+                                <p>Hello ${existingUser.firstname},</p>
+                                <p>Your password has been reset. Your new password is:</p>
+                                <p style="font-size: 18px; font-weight: bold;">${newPassword}</p>
+                                <p>Please change this password after logging in for security reasons.</p>
+                                <p>Best Regards,<br>The Sky Trust Team</p>
+                            </div>
+                            <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #666666;">
+                                <p>&copy; 2024 Sky Trust. All rights reserved.</p>
+                                <p>1234 Farming Lane, Harvest City, Agriculture Country</p>
+                            </div>
+                            </div>
+                        </body>
+                        </html>`
+            });
 
-        // Send the new password via email
-        await sendEmail({
-            to: email,
-            subject: 'Your New Password for Sky Trust',
-            text: `Your password has been reset. Your new password is: ${newPassword}`,
-            html: `<!DOCTYPE html>
-                    <html>
-                    <head>
-                        <title>Your New Password</title>
-                    </head>
-                    <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; color: #333333; margin: 0; padding: 0; line-height: 1.6;">
-                        <div style="width: 80%; max-width: 600px; margin: 20px auto; background-color: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                        <div style="text-align: center; padding-bottom: 20px;">
-                            <h1 style="color: #4CAF50; margin: 0; font-size: 24px;">Your New Password</h1>
-                        </div>
-                        <div style="margin: 20px 0;">
-                            <p>Hello ${existingUser.firstname},</p>
-                            <p>Your password has been reset. Your new password is:</p>
-                            <p style="font-size: 18px; font-weight: bold;">${newPassword}</p>
-                            <p>Please change this password after logging in for security reasons.</p>
-                            <p>Best Regards,<br>The Sky Trust Team</p>
-                        </div>
-                        <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #666666;">
-                            <p>&copy; 2024 Sky Trust. All rights reserved.</p>
-                            <p>1234 Farming Lane, Harvest City, Agriculture Country</p>
-                        </div>
-                        </div>
-                    </body>
-                    </html>`
-        });
+            await pg.query("COMMIT");
+        } catch (emailError) {
+            await pg.query("ROLLBACK");
+            console.error('Password reset email failed:', emailError);
+            return res.status(StatusCodes.BAD_GATEWAY).json({
+                status: false,
+                message: "Unable to send password reset email. Password was not changed.",
+                statuscode: StatusCodes.BAD_GATEWAY,
+                data: null,
+                errors: []
+            });
+        }
 
         const responseData = {
             status: true,
