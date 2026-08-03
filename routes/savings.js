@@ -28,6 +28,9 @@ router.route('/card')
     .post(manageCard);
 
 router.route('/card/:id')
+    .post(manageCard)
+    .put(manageCard)
+    .patch(manageCard)
     .delete(deleteCard);
 
 router.route('/overridefrequency') 

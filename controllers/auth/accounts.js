@@ -104,7 +104,7 @@ const getPortalTransactions = async (req, res) => {
     try {
         const account = await findOwnedAccount(req.user.id, req.params.accountnumber);
         if (!account) return accountNotFound(res);
-        const allowedQuery = ['startdate', 'enddate', 'q', 'order', 'page', 'limit'];
+        const allowedQuery = ['startdate', 'enddate', 'q', 'order', 'page', 'limit', 'status'];
         req.query = allowedQuery.reduce((query, key) => {
             if (req.query[key] !== undefined) query[key] = req.query[key];
             return query;

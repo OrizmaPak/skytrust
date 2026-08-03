@@ -95,7 +95,7 @@ const getCards = async (req, res) => {
 const manageCard = async (req, res) => {
     if (!requireCardAdministrator(req, res)) return;
     const user = req.user;
-    const {
+    let {
         accountnumber,
         cardholder,
         cardtype = 'DEBIT',
@@ -116,7 +116,9 @@ const manageCard = async (req, res) => {
         : Number(spendinglimit);
 
     const errors = [];
-    if (!accountnumber) errors.push('Account number is required.');
+    const cardId = req.params.id ? Number(req.params.id) : null;
+    if (!accountnumber && !cardId) errors.push('Account number is required.');
+    if (req.params.id && !Number.isInteger(cardId)) errors.push('Card id must be a valid number.');
     if (!cardholder || !String(cardholder).trim()) errors.push('Card holder is required.');
     if (cardnumber && !/^\d{12,19}$/.test(cardnumber)) errors.push('Card number must contain 12 to 19 digits.');
     if (!CARD_BRANDS.includes(normalizedBrand)) errors.push('Unsupported card brand.');
@@ -137,6 +139,27 @@ const manageCard = async (req, res) => {
     }
 
     try {
+        if (!accountnumber && cardId) {
+            const { rows: [existingCardAccount] } = await pg.query(`
+                SELECT s.accountnumber::text AS accountnumber
+                FROM skytobi."Card" c
+                JOIN skytobi."savings" s ON s.id = c.savingsaccountid
+                WHERE c.id = $1
+            `, [cardId]);
+
+            if (!existingCardAccount) {
+                return res.status(StatusCodes.NOT_FOUND).json({
+                    status: false,
+                    message: 'Card not found',
+                    statuscode: StatusCodes.NOT_FOUND,
+                    data: null,
+                    errors: []
+                });
+            }
+
+            accountnumber = existingCardAccount.accountnumber;
+        }
+
         const { rows: [account] } = await pg.query(`
             SELECT s.id, s.accountnumber::text AS accountnumber
             FROM skytobi."savings" s
