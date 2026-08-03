@@ -508,6 +508,7 @@ model savings {
   id                        Int      @id @default(autoincrement())
   savingsproductid          Int
   accountnumber             Int
+  routingnumber             String?
   userid                    Int
   amount                    Float
   member                    Int? @default(0)

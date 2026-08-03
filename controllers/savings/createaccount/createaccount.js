@@ -4,7 +4,7 @@ const { activityMiddleware } = require("../../../middleware/activity");
 
 const manageSavingsAccount = async (req, res) => {
     const user = req.user;
-    let { savingsproductid, userid=user.id, amount = 0, branch=user.branch, registrationpoint=user.registrationpoint, registrationcharge=0, registrationdesc='', bankname1, bankaccountname1, bankaccountnumber1, bankname2, bankaccountname2, bankaccountnumber2, accountofficer=0, sms, whatsapp, email, createdby, accountnumber, member=0, registrationdate, reason, status} = req.body;
+    let { savingsproductid, userid=user.id, amount = 0, branch=user.branch, registrationpoint=user.registrationpoint, registrationcharge=0, registrationdesc='', bankname1, bankaccountname1, bankaccountnumber1, bankname2, bankaccountname2, bankaccountnumber2, accountofficer=0, sms, whatsapp, email, createdby, accountnumber, routingnumber, member=0, registrationdate, reason, status} = req.body;
 
     try {
         if (req && req.skipResponse) {
@@ -52,6 +52,7 @@ const manageSavingsAccount = async (req, res) => {
         if (registrationdate !== undefined && registrationdate !== '' && isNaN(Date.parse(registrationdate))) typeErrors.push('registrationdate must be a valid date.');
 
         if (accountnumber !== undefined && accountnumber !== '' && isNaN(parseInt(accountnumber))) typeErrors.push('accountnumber must be a number.');
+        if (routingnumber !== undefined && routingnumber !== '' && !/^\d+$/.test(String(routingnumber))) typeErrors.push('routingnumber must contain only numbers.');
 
         // If any type errors are found, return an error response
         if (typeErrors.length > 0) {
@@ -430,12 +431,13 @@ const manageSavingsAccount = async (req, res) => {
                     status = COALESCE($16, status),
                     member = COALESCE($17, member),
                     registrationdate = COALESCE($18, registrationdate),
-                    reason = COALESCE($19, reason)
-                WHERE accountnumber = $20
+                    reason = COALESCE($19, reason),
+                    routingnumber = COALESCE($20, routingnumber)
+                WHERE accountnumber = $21
                 RETURNING id, status
             `;
             const updateAccountResult = await pg.query(updateAccountQuery, [
-                branch, amount, registrationpoint, registrationcharge, registrationdesc, bankname1, bankaccountname1, bankaccountnumber1??0, bankname2, bankaccountname2, bankaccountnumber2??0, accountofficer, sms, whatsapp, email, status, member, registrationdate, reason, accountnumber
+                branch, amount, registrationpoint, registrationcharge, registrationdesc, bankname1, bankaccountname1, bankaccountnumber1??0, bankname2, bankaccountname2, bankaccountnumber2??0, accountofficer, sms, whatsapp, email, status, member, registrationdate, reason, routingnumber === undefined ? null : String(routingnumber), accountnumber
             ]);
 
             const updatedAccountId = updateAccountResult.rows[0].id;
@@ -485,12 +487,12 @@ const manageSavingsAccount = async (req, res) => {
             // Save the new savings account
             const insertAccountQuery = `
                 INSERT INTO skytobi."savings" 
-                (savingsproductid, accountnumber, userid, amount, branch, registrationpoint, registrationcharge, registrationdate, registrationdesc, bankname1, bankaccountname1, bankaccountnumber1, bankname2, bankaccountname2, bankaccountnumber2, accountofficer, sms, whatsapp, email, status, dateadded, createdby, member)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)
+                (savingsproductid, accountnumber, userid, amount, branch, registrationpoint, registrationcharge, registrationdate, registrationdesc, bankname1, bankaccountname1, bankaccountnumber1, bankname2, bankaccountname2, bankaccountnumber2, accountofficer, sms, whatsapp, email, status, dateadded, createdby, member, routingnumber)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24)
                 RETURNING id, accountnumber
             `;
             const insertAccountResult = await pg.query(insertAccountQuery, [
-                savingsproductid, generatedAccountNumber, userid, amount, branch, registrationpoint, registrationcharge, new Date(), registrationdesc, bankname1, bankaccountname1, bankaccountnumber1 =="" ? 0 :bankaccountnumber1, bankname2, bankaccountname2, bankaccountnumber2 == "" ? 0 : bankaccountnumber2, accountofficer, sms ?? false, whatsapp ?? false, email ?? false, 'ACTIVE', new Date(), userid, member
+                savingsproductid, generatedAccountNumber, userid, amount, branch, registrationpoint, registrationcharge, new Date(), registrationdesc, bankname1, bankaccountname1, bankaccountnumber1 =="" ? 0 :bankaccountnumber1, bankname2, bankaccountname2, bankaccountnumber2 == "" ? 0 : bankaccountnumber2, accountofficer, sms ?? false, whatsapp ?? false, email ?? false, 'ACTIVE', new Date(), userid, member, routingnumber === undefined || routingnumber === '' ? null : String(routingnumber)
             ]);
 
             const newAccountId = insertAccountResult.rows[0].id;

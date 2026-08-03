@@ -51,6 +51,15 @@ async function profile(req, res) {
 
     if (user) {
         try {
+            const { rows: [savingsAccount] } = await pg.query(`
+                SELECT routingnumber
+                FROM skytobi."savings"
+                WHERE userid = $1
+                ORDER BY CASE WHEN status = 'ACTIVE' THEN 0 ELSE 1 END, id ASC
+                LIMIT 1
+            `, [user.id]);
+            user.routingnumber = savingsAccount?.routingnumber || null;
+
             // Fetch membership details for the user
             const membershipQuery = `
                 SELECT m.*, dm.member AS membername

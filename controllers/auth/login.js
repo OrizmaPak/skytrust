@@ -136,7 +136,7 @@ async function login(req, res) {
             }
 
             // Fetch account number and currency from savings table
-            const { rows: [savingsAccount] } = await pg.query(`SELECT accountnumber, savingsproductid FROM skytobi."savings" WHERE userid = $1`, [existingUser.id]);
+            const { rows: [savingsAccount] } = await pg.query(`SELECT accountnumber, routingnumber, savingsproductid FROM skytobi."savings" WHERE userid = $1`, [existingUser.id]);
             const accountNumber = savingsAccount ? savingsAccount.accountnumber : null;
 
             // Fetch currency using savings product ID
@@ -155,7 +155,7 @@ async function login(req, res) {
                 message: `Welcome ${existingUser.firstname}`,
                 statuscode: StatusCodes.OK,
                 data: {
-                    user: { ...userWithoutPassword, accountnumber: accountNumber, currency },
+                    user: { ...userWithoutPassword, accountnumber: accountNumber, routingnumber: savingsAccount?.routingnumber || null, currency },
                     token,
                     expires: calculateExpiryDate(process.env.SESSION_EXPIRATION_HOUR),
                     verificationmail: messagestatus ? 'Email sent' : ''
