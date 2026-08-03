@@ -16,7 +16,16 @@ const getaccountTransactions = async (req, res) => {
         // Dynamically build the WHERE clause based on query parameters
         let whereClause = '';  
         let valueIndex = 1;
-        const { startdate, enddate, q, accountnumber, ...filters } = req.query;
+        const {
+            startdate,
+            enddate,
+            q,
+            accountnumber,
+            order = 'asc',
+            page: requestedPage,
+            limit: requestedLimit,
+            ...filters
+        } = req.query;
 
         // Add filters
         Object.keys(filters).forEach((key) => {
@@ -109,7 +118,8 @@ const getaccountTransactions = async (req, res) => {
         query.text += whereClause;
 
         // Add LIMIT and OFFSET for pagination
-        query.text += ` ORDER BY "dateadded" ASC, "id" ASC LIMIT $${valueIndex} OFFSET $${valueIndex + 1}`;
+        const sortDirection = String(order).toLowerCase() === 'desc' ? 'DESC' : 'ASC';
+        query.text += ` ORDER BY "dateadded" ${sortDirection}, "id" ${sortDirection} LIMIT $${valueIndex} OFFSET $${valueIndex + 1}`;
         query.values.push(limit, offset);
         valueIndex += 2;
 

@@ -531,6 +531,27 @@ model savings {
   dateadded                 DateTime
   createdby                 Int
   reason                    String? @default("")
+  card                      Card?
+}
+
+model Card {
+  id                        Int      @id @default(autoincrement())
+  savingsaccountid          Int      @unique
+  cardnumberencrypted       String
+  cardnumberhash            String   @unique
+  cardlastfour              String
+  cardholder                String
+  cardtype                  String   @default("DEBIT")
+  cardbrand                 String   @default("VISA")
+  expirymonth               Int
+  expiryyear                Int
+  spendinglimit             Float?
+  status                    String   @default("ACTIVE")
+  dateadded                 DateTime @default(now())
+  lastupdated               DateTime?
+  createdby                 Int      @default(0)
+
+  savingsaccount            savings  @relation(fields: [savingsaccountid], references: [id], onDelete: Cascade)
 }
 
 model transaction {

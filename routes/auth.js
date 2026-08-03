@@ -19,6 +19,12 @@ const { resetPassword } = require('../controllers/auth/resetpassword');
 const { verifypasswordaccess } = require('../controllers/auth/verifypasswordaccess');
 const { verifyOtp } = require('../controllers/auth/verifyotp');
 const { resetPin } = require('../controllers/auth/resetpin');
+const {
+    getPortalAccounts,
+    getPortalCard,
+    getPortalTransactions,
+    getPortalBalance
+} = require('../controllers/auth/accounts');
 
 
 router.route('/signup').post(signup);
@@ -26,6 +32,10 @@ router.route('/login').post(login);
 router.route('/changepassword').post(changePassword);
 router.route('/forgotpassword').post(forgotpassword); 
 router.route('/profile').get(authMiddleware, profile); 
+router.route('/accounts').get(authMiddleware, getPortalAccounts);
+router.route('/accounts/:accountnumber/card').get(authMiddleware, getPortalCard);
+router.route('/accounts/:accountnumber/transactions').get(authMiddleware, getPortalTransactions);
+router.route('/accounts/:accountnumber/balance').get(authMiddleware, getPortalBalance);
 router.route('/updateprofile').post(authMiddleware, updateuser); 
 router.route('/sendverificationmail').post(authMiddleware, sendverificationmail); 
 router.route('/signout').get(authMiddleware, signout); 
