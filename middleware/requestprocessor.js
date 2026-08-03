@@ -5,6 +5,20 @@ const storage = multer.memoryStorage();
 
 const upload = multer({ storage: storage });
 
+const largeNumericTextFields = new Set([
+    'accountnumber',
+    'bankaccountnumber',
+    'bankaccountnumber1',
+    'bankaccountnumber2',
+    'cardnumber',
+    'routingnumber'
+]);
+
+const shouldValidateIntegerSize = (key) => {
+    const normalizedKey = String(key || '').toLowerCase();
+    return !largeNumericTextFields.has(normalizedKey);
+};
+
 // Middleware function to handle file uploads and form data
 const requestprocessor = (req, res, next) => {
     const maxIntValue = 9999999999999; // Maximum value for a 32-bit integer
@@ -12,6 +26,7 @@ const requestprocessor = (req, res, next) => {
     // Check and parse body values
     for (let key in req.body) {
         if (Object.prototype.hasOwnProperty.call(req.body, key)) {
+            if (!shouldValidateIntegerSize(key)) continue;
             const parsedValue = parseInt(req.body[key], 10);
             if (!isNaN(parsedValue) && parsedValue > maxIntValue) {
                 const digitLength = req.body[key].length;
@@ -29,6 +44,7 @@ const requestprocessor = (req, res, next) => {
     // Check and parse param values
     for (let key in req.params) {
         if (Object.prototype.hasOwnProperty.call(req.params, key)) {
+            if (!shouldValidateIntegerSize(key)) continue;
             const parsedValue = parseInt(req.params[key], 10);
             if (!isNaN(parsedValue) && parsedValue > maxIntValue) {
                 return res.status(400).json({
