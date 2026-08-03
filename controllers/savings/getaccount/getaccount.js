@@ -3,6 +3,13 @@ const pg = require("../../../db/pg");
 const { activityMiddleware } = require("../../../middleware/activity");
 const { divideAndRoundUp } = require("../../../utils/pageCalculator");
 
+const DEFAULT_PAGE_LIMIT = 100;
+
+const parsePositiveInteger = (value, fallback) => {
+    const parsed = Number.parseInt(value, 10);
+    return Number.isInteger(parsed) && parsed > 0 ? parsed : fallback;
+};
+
 const getAccounts = async (req, res) => {
     const user = req.user;
 
@@ -19,7 +26,12 @@ const getAccounts = async (req, res) => {
                    JOIN skytobi."User" u ON s.userid = u.id
                    JOIN skytobi."Branch" b ON s.branch = b.id
                    LEFT JOIN skytobi."Registrationpoint" rp ON s.registrationpoint = rp.id
-                   LEFT JOIN skytobi."User" ao ON CAST(s.accountofficer AS INTEGER) = ao.id
+                   LEFT JOIN skytobi."User" ao ON (
+                       CASE
+                           WHEN s.accountofficer ~ '^[0-9]+$' THEN s.accountofficer::INTEGER
+                           ELSE NULL
+                       END
+                   ) = ao.id
                    LEFT JOIN skytobi."savingsproduct" sp ON s.savingsproductid = sp.id
                    LEFT JOIN skytobi."DefineMember" dm ON s.member = dm.id`,
             values: []
@@ -64,8 +76,9 @@ const getAccounts = async (req, res) => {
 
         // Add pagination
         const searchParams = new URLSearchParams(req.query);
-        const page = parseInt(searchParams.get('page') || '1', 10);
-        const limit = parseInt(searchParams.get('limit') || process.env.DEFAULT_LIMIT, 10);
+        const page = parsePositiveInteger(searchParams.get('page'), 1);
+        const configuredLimit = parsePositiveInteger(process.env.DEFAULT_LIMIT, DEFAULT_PAGE_LIMIT);
+        const limit = parsePositiveInteger(searchParams.get('limit'), configuredLimit);
         const offset = (page - 1) * limit;
 
         query.text += ` LIMIT $${valueIndex} OFFSET $${valueIndex + 1}`;
