@@ -5,6 +5,29 @@ const { divideAndRoundUp } = require("../../../utils/pageCalculator"); // Import
 const { activityMiddleware } = require("../../../middleware/activity"); // Import activity middleware
 const { validateCode } = require("../../../utils/datecode");
 
+const cleanNumber = (value, fallback = 0) => {
+    if (value === undefined || value === null) return fallback;
+    const normalized = String(value).trim();
+    if (!normalized || normalized.toLowerCase() === "undefined" || normalized.toLowerCase() === "null") return fallback;
+    const parsed = Number(normalized);
+    return Number.isFinite(parsed) ? parsed : fallback;
+};
+
+const cleanInteger = (value, fallback = 0) => {
+    if (value === undefined || value === null) return fallback;
+    const normalized = String(value).trim();
+    if (!normalized || normalized.toLowerCase() === "undefined" || normalized.toLowerCase() === "null") return fallback;
+    const parsed = parseInt(normalized, 10);
+    return Number.isFinite(parsed) ? parsed : fallback;
+};
+
+const cleanText = (value, fallback = null) => {
+    if (value === undefined || value === null) return fallback;
+    const normalized = String(value).trim();
+    if (!normalized || normalized.toLowerCase() === "undefined" || normalized.toLowerCase() === "null") return fallback;
+    return normalized;
+};
+
 // Function to handle POST request for creating or updating a savings product
 const manageSavingsProduct = async (req, res) => {
     console.log("Starting manageSavingsProduct function");
@@ -62,33 +85,46 @@ const manageSavingsProduct = async (req, res) => {
     
     // Override default values with those from the body if they exist
     try {            
-        maxbalance = req.body.maxbalance != null && req.body.maxbalance.length ? req.body.maxbalance : 0;
+        maxbalance = cleanNumber(req.body.maxbalance);
         allowdeposit = req.body.allowdeposit ? true : false;
         allowwithdrawal = req.body.allowwithdrawal ? true : false;
-        withdrawallimit = req.body.withdrawallimit != null && req.body.withdrawallimit.length ? req.body.withdrawallimit : 0;
-        withdrawalcharges = req.body.withdrawalcharges != null && req.body.withdrawalcharges.length ? req.body.withdrawalcharges : 0;
-        depositcharge = req.body.depositcharge != null && req.body.depositcharge.length ? req.body.depositcharge : 0;
+        withdrawallimit = cleanNumber(req.body.withdrawallimit);
+        withdrawalcharges = cleanNumber(req.body.withdrawalcharges);
         chargehere = req.body.chargehere ? true : false;
-        activationfee = req.body.activationfee != null && req.body.activationfee.length ? req.body.activationfee : 0;
-        minimumaccountbalance = req.body.minimumaccountbalance != null && req.body.minimumaccountbalance.length ? req.body.minimumaccountbalance : 0;
+        depositcharge = cleanNumber(req.body.depositcharge);
+        activationfee = cleanNumber(req.body.activationfee);
+        minimumaccountbalance = cleanNumber(req.body.minimumaccountbalance);
         allowoverdrawn = req.body.allowoverdrawn ? true : false;
         compulsorydeposit = req.body.compulsorydeposit ? true : false;
         compulsorydepositspillover = req.body.compulsorydepositspillover ? true : false;
-        compulsorydepositfrequencyamount = req.body.compulsorydepositfrequencyamount != null && req.body.compulsorydepositfrequencyamount.length ? req.body.compulsorydepositfrequencyamount : 0;
-        compulsorydepositfrequencyskip = req.body.compulsorydepositfrequencyskip != null && req.body.compulsorydepositfrequencyskip.length ? req.body.compulsorydepositfrequencyskip : 0;
-        compulsorydepositpenalty = req.body.compulsorydepositpenalty != null && req.body.compulsorydepositpenalty.length ? req.body.compulsorydepositpenalty : 0; 
+        compulsorydepositfrequencyamount = cleanNumber(req.body.compulsorydepositfrequencyamount);
+        compulsorydepositfrequencyskip = cleanInteger(req.body.compulsorydepositfrequencyskip);
+        compulsorydepositpenalty = cleanNumber(req.body.compulsorydepositpenalty);
         compulsorydepositdeficit = req.body.compulsorydepositdeficit ? true : false;
         withdrawalcontrol = req.body.withdrawalcontrol ? true : false;
-        withdrawalcontrolamount = req.body.withdrawalcontrolamount != null && req.body.withdrawalcontrolamount.length ? req.body.withdrawalcontrolamount : 0;
-        eligibilityaccountage = req.body.eligibilityaccountage != null && req.body.eligibilityaccountage.length ? req.body.eligibilityaccountage : 0;
-        eligibilityminbalance = req.body.eligibilityminbalance != null && req.body.eligibilityminbalance.length ? req.body.eligibilityminbalance : 0;
-        eligibilitymincredit = req.body.eligibilitymincredit != null && req.body.eligibilitymincredit.length ? req.body.eligibilitymincredit : 0;
-        eligibilitymindebit = req.body.eligibilitymindebit != null && req.body.eligibilitymindebit.length ? req.body.eligibilitymindebit : 0;
-        eligibilityminimumclosedaccounts = req.body.eligibilityminimumclosedaccounts != null && req.body.eligibilityminimumclosedaccounts.length ? req.body.eligibilityminimumclosedaccounts : 0;
-        eligibilityminimumloan = req.body.eligibilityminimumloan != null && req.body.eligibilityminimumloan.length ? req.body.eligibilityminimumloan : 0;
-        eligibilityproduct = req.body.eligibilityproduct != null && req.body.eligibilityproduct.length ? req.body.eligibilityproduct : 0;
-        useraccount = req.body.useraccount ?? 1;
+        withdrawalcontrolamount = cleanNumber(req.body.withdrawalcontrolamount);
+        eligibilityaccountage = cleanInteger(req.body.eligibilityaccountage);
+        eligibilityminbalance = cleanNumber(req.body.eligibilityminbalance);
+        eligibilitymincredit = cleanNumber(req.body.eligibilitymincredit);
+        eligibilitymindebit = cleanNumber(req.body.eligibilitymindebit);
+        eligibilityminimumclosedaccounts = cleanInteger(req.body.eligibilityminimumclosedaccounts);
+        eligibilityminimumloan = cleanNumber(req.body.eligibilityminimumloan);
+        eligibilityproduct = cleanInteger(req.body.eligibilityproduct);
+        useraccount = cleanInteger(req.body.useraccount, 1);
         addmember = req.body.addmember || "NO";
+        withdrawalchargetype = cleanText(withdrawalchargetype);
+        withdrawalchargeinterval = cleanText(withdrawalchargeinterval);
+        depositechargetype = cleanText(depositechargetype, "PERCENTAGE");
+        withdrawallimittype = cleanText(withdrawallimittype);
+        compulsorydeposittype = cleanText(compulsorydeposittype);
+        compulsorydepositfrequency = cleanText(compulsorydepositfrequency);
+        compulsorydepositpenaltytype = cleanText(compulsorydepositpenaltytype);
+        compulsorydepositpenaltyfrom = cleanInteger(compulsorydepositpenaltyfrom, null);
+        compulsorydepositpenaltyfallbackfrom = cleanInteger(compulsorydepositpenaltyfallbackfrom, null);
+        withdrawalcontrolsize = cleanText(withdrawalcontrolsize);
+        withdrawalcontroltype = cleanText(withdrawalcontroltype);
+        withdrawalcontrolwindow = cleanText(withdrawalcontrolwindow);
+        eligibilityproductcategory = cleanText(eligibilityproductcategory);
     } catch (error) {
         console.error("Error processing request body:", error);
         return res.status(StatusCodes.BAD_REQUEST).json({
@@ -248,18 +284,21 @@ const manageSavingsProduct = async (req, res) => {
     console.log("Processing interests and deductions");
 
     // Process interests
+    interestrowsize = cleanInteger(interestrowsize);
+    deductionrowsize = cleanInteger(deductionrowsize);
+
     for (let i = 1; i <= interestrowsize; i++) {
         console.log(`Processing interest ${i}`);
         const interest = {
             interestname: body[`interestname${i}`],
             interestmethod: body[`interestmethod${i}`],
-            interesteligibilityaccountage: parseInt(body[`interesteligibilityaccountage${i}`] || 0, 10),
-            interesteligibilitybalance: parseFloat(body[`interesteligibilitybalance${i}`] || 0),
-            interestamount: parseFloat(body[`interestamount${i}`]),
+            interesteligibilityaccountage: cleanInteger(body[`interesteligibilityaccountage${i}`]),
+            interesteligibilitybalance: cleanNumber(body[`interesteligibilitybalance${i}`]),
+            interestamount: cleanNumber(body[`interestamount${i}`]),
             interesttype: body[`interesttype${i}`],
             interestfrequency: body[`interestfrequency${i}`],
-            interestfrequencynumber: parseInt(body[`interestfrequencynumber${i}`] || 0, 10),
-            interestfrequencyskip: parseInt(body[`interestfrequencyskip${i}`] || 0, 10),
+            interestfrequencynumber: cleanInteger(body[`interestfrequencynumber${i}`]),
+            interestfrequencyskip: cleanInteger(body[`interestfrequencyskip${i}`]),
             interestgoforapproval: body[`interestgoforapproval${i}`] ? true : false,
             status: body[`intereststatus${i}`] || "ACTIVE"
         };
@@ -299,14 +338,14 @@ const manageSavingsProduct = async (req, res) => {
         console.log(`Processing deduction ${i}`);
         const deduction = {
             deductionname: body[`deductionname${i}`],        
-            deductioneligibilityaccountage: parseInt(body[`deductioneligibilityaccountage${i}`] || 0, 10),
-            deductioneligibilitybalance: parseFloat(body[`deductioneligibilitybalance${i}`] || 0),
-            deductionamount: parseFloat(body[`deductionamount${i}`]),
+            deductioneligibilityaccountage: cleanInteger(body[`deductioneligibilityaccountage${i}`]),
+            deductioneligibilitybalance: cleanNumber(body[`deductioneligibilitybalance${i}`]),
+            deductionamount: cleanNumber(body[`deductionamount${i}`]),
             deductiontype: body[`deductiontype${i}`],
             deductionmethod: body[`deductionmethod${i}`],
             deductionfrequency: body[`deductionfrequency${i}`],
-            deductionfrequencynumber: parseInt(body[`deductionfrequencynumber${i}`] || 0, 10),
-            deductionfrequencyskip: parseInt(body[`deductionfrequencyskip${i}`] || 0, 10),
+            deductionfrequencynumber: cleanInteger(body[`deductionfrequencynumber${i}`]),
+            deductionfrequencyskip: cleanInteger(body[`deductionfrequencyskip${i}`]),
             deductiongoforapproval: body[`deductiongoforapproval${i}`] ? true : false,
             status: body[`deductionstatus${i}`] || "ACTIVE"
         };

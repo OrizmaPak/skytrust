@@ -2,6 +2,9 @@ const { StatusCodes } = require("http-status-codes");
 const pg = require("../../../db/pg");
 const { activityMiddleware } = require("../../../middleware/activity");
 
+const hasValue = (value) => value !== undefined && value !== null && String(value).trim() !== '';
+const numericTextOrNull = (value) => hasValue(value) ? String(value).trim() : null;
+
 const manageSavingsAccount = async (req, res) => {
     const user = req.user;
     let { savingsproductid, userid=user.id, amount = 0, branch=user.branch, registrationpoint=user.registrationpoint, registrationcharge=0, registrationdesc='', bankname1, bankaccountname1, bankaccountnumber1, bankname2, bankaccountname2, bankaccountnumber2, accountofficer=0, sms, whatsapp, email, createdby, accountnumber, routingnumber, member=0, registrationdate, reason, status} = req.body;
@@ -33,7 +36,7 @@ const manageSavingsAccount = async (req, res) => {
         if (bankname2 !== undefined && bankname2 !== '' && typeof bankname2 !== 'string') typeErrors.push('bankname2 must be a string.');
         if (bankaccountname2 !== undefined && bankaccountname2 !== '' && typeof bankaccountname2 !== 'string') typeErrors.push('bankaccountname2 must be a string.');
         if (bankaccountnumber2 !== undefined && bankaccountnumber2 !== '' && isNaN(parseInt(bankaccountnumber2))) typeErrors.push('bankaccountnumber2 must be a number.');
-        if (accountofficer !== 0 && accountofficer !== undefined && accountofficer !== '' && typeof accountofficer !== 'string') typeErrors.push('accountofficer must be a string.');
+        if (accountofficer !== 0 && accountofficer !== undefined && accountofficer !== '' && isNaN(parseInt(accountofficer))) typeErrors.push('accountofficer must be a number.');
         // if (sms !== undefined && sms !== '') {
         //     if (sms.toLowerCase() !== 'true' && sms.toLowerCase() !== 'false') {
         //         typeErrors.push('sms must be a boolean.');
@@ -437,7 +440,7 @@ const manageSavingsAccount = async (req, res) => {
                 RETURNING id, status
             `;
             const updateAccountResult = await pg.query(updateAccountQuery, [
-                branch, amount, registrationpoint, registrationcharge, registrationdesc, bankname1, bankaccountname1, bankaccountnumber1??0, bankname2, bankaccountname2, bankaccountnumber2??0, accountofficer, sms, whatsapp, email, status, member, registrationdate, reason, routingnumber === undefined ? null : String(routingnumber), accountnumber
+                branch, amount, registrationpoint, registrationcharge, registrationdesc, bankname1, bankaccountname1, numericTextOrNull(bankaccountnumber1) ?? 0, bankname2, bankaccountname2, numericTextOrNull(bankaccountnumber2) ?? 0, accountofficer, sms, whatsapp, email, status, member, registrationdate, reason, numericTextOrNull(routingnumber), accountnumber
             ]);
 
             const updatedAccountId = updateAccountResult.rows[0].id;
@@ -492,7 +495,7 @@ const manageSavingsAccount = async (req, res) => {
                 RETURNING id, accountnumber
             `;
             const insertAccountResult = await pg.query(insertAccountQuery, [
-                savingsproductid, generatedAccountNumber, userid, amount, branch, registrationpoint, registrationcharge, new Date(), registrationdesc, bankname1, bankaccountname1, bankaccountnumber1 =="" ? 0 :bankaccountnumber1, bankname2, bankaccountname2, bankaccountnumber2 == "" ? 0 : bankaccountnumber2, accountofficer, sms ?? false, whatsapp ?? false, email ?? false, 'ACTIVE', new Date(), userid, member, routingnumber === undefined || routingnumber === '' ? null : String(routingnumber)
+                savingsproductid, generatedAccountNumber, userid, amount, branch, registrationpoint, registrationcharge, new Date(), registrationdesc, bankname1, bankaccountname1, numericTextOrNull(bankaccountnumber1) ?? 0, bankname2, bankaccountname2, numericTextOrNull(bankaccountnumber2) ?? 0, accountofficer, sms ?? false, whatsapp ?? false, email ?? false, 'ACTIVE', new Date(), userid, member, numericTextOrNull(routingnumber)
             ]);
 
             const newAccountId = insertAccountResult.rows[0].id;
