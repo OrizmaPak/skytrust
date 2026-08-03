@@ -153,19 +153,19 @@ const manageSubtask = async (req, res) => {
             }
             // Send mail to assignedto
             if (assignedto) {
-                console.log('assignedto', assignedToIds)   
-                assignedToIds.forEach(async id => {
+                console.log('assignedto', assignedToIds)
+                await Promise.all(assignedToIds.map(async id => {
                     const { rows: [user] } = await pg.query(`SELECT email FROM skytobi."User" WHERE id = $1`, [id]);
                     if (user) {
                         console.log('email', user.email)
-                       await sendEmail({
-                           to: user.email,
-                           subject: `Subtask updated: ${title}`,
-                           text: `The subtask ${title} has been updated. New details: Title: ${title}, Start Date: ${startdate}, End Date: ${enddate}, Description: ${description}, Task Status: ${taskstatus}.`,
-                           html: `The subtask ${title} has been updated. New details: Title: ${title}, Start Date: ${startdate}, End Date: ${enddate}, Description: ${description}, Task Status: ${taskstatus}.`
-                       });
+                        await sendEmail({
+                            to: user.email,
+                            subject: `Subtask updated: ${title}`,
+                            text: `The subtask ${title} has been updated. New details: Title: ${title}, Start Date: ${startdate}, End Date: ${enddate}, Description: ${description}, Task Status: ${taskstatus}.`,
+                            html: `The subtask ${title} has been updated. New details: Title: ${title}, Start Date: ${startdate}, End Date: ${enddate}, Description: ${description}, Task Status: ${taskstatus}.`
+                        });
                     }
-                });
+                }));
             }
             return res.status(StatusCodes.OK).json({
                 status: true,
@@ -178,12 +178,17 @@ const manageSubtask = async (req, res) => {
             const { rows: [newSubtask] } = await pg.query(`INSERT INTO skytobi."Subtask" (task, title, startdate, enddate, description, createdby, assignedto, taskstatus) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`, [task, title, startdate, enddate, description, req.user.id, assignedto, taskstatus]);
             // Send mail to assignedto
             if (assignedto) {
-                assignedToIds.forEach(async id => {
+                await Promise.all(assignedToIds.map(async id => {
                     const { rows: [user] } = await pg.query(`SELECT email FROM skytobi."User" WHERE id = $1`, [id]);
                     if (user) {
-                        sendEmail(user.email, `New subtask: ${title}`, `A new subtask ${title} has been created.`);
+                        await sendEmail({
+                            to: user.email,
+                            subject: `New subtask: ${title}`,
+                            text: `A new subtask ${title} has been created.`,
+                            html: `A new subtask ${title} has been created.`
+                        });
                     }
-                });
+                }));
             }
             return res.status(StatusCodes.CREATED).json({
                 status: true,
