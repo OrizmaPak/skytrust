@@ -10,22 +10,8 @@ const changePassword = async (req, res) => {
     const { oldpassword, newpassword, token = '' } = req.body;
     const bearertoken = req.headers.authorization?.split(' ')[1];
     const changeType = "change password";
- 
- 
-
-    // Ensure the frontend guy is not sending the same password
-    if (oldpassword === newpassword) {
-      return res.status(StatusCodes.BAD_REQUEST).json({
-        status: false,
-        message: "Current and New password cannot be the same",
-        statuscode: StatusCodes.BAD_REQUEST,
-        data: null,
-        errors: []
-      }); 
-    }  
-    
-    // Check if any token is available to work with
-    if (!token && !bearertoken) {
+    // Check if any authenticated user or token is available to work with
+    if (!req.user?.email && !token && !bearertoken) {
       return res.status(StatusCodes.BAD_REQUEST).json({
         status: false,
         message: "No form of authorization found",
@@ -35,21 +21,24 @@ const changePassword = async (req, res) => {
       });
     }
 
-    let decoded;
-    try {
-      decoded = token ? jwt.verify(token, process.env.JWT_SECRET) : jwt.verify(bearertoken, process.env.JWT_SECRET);
-    } catch (error) {
-      console.error('Token verification error:', error);
-      return res.status(StatusCodes.BAD_REQUEST).json({
-        status: false,
-        message: "Token verification error",
-        statuscode: StatusCodes.BAD_REQUEST,
-        data: null,
-        errors: []
-      });
-    }
+    let email = req.user?.email;
+    if (!email) {
+      let decoded;
+      try {
+        decoded = token ? jwt.verify(token, process.env.JWT_SECRET) : jwt.verify(bearertoken, process.env.JWT_SECRET);
+      } catch (error) {
+        console.error('Token verification error:', error);
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          status: false,
+          message: "Token verification error",
+          statuscode: StatusCodes.BAD_REQUEST,
+          data: null,
+          errors: []
+        });
+      }
 
-    const email = token ? decoded.email : decoded.user?.email;
+      email = token ? decoded.email : decoded.user?.email;
+    }
 
     if (!email) {
       return res.status(StatusCodes.BAD_REQUEST).json({
@@ -101,6 +90,17 @@ const changePassword = async (req, res) => {
         statuscode: StatusCodes.BAD_REQUEST,
         data: null,
         errors: [{ field: 'New password', message: 'New password not found' }]
+      });
+    }
+
+    // Ensure the frontend is not sending the same password.
+    if (oldpassword === newpassword) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        status: false,
+        message: "Current and New password cannot be the same",
+        statuscode: StatusCodes.BAD_REQUEST,
+        data: null,
+        errors: []
       });
     }
 

@@ -29,7 +29,7 @@ const {
 
 router.route('/signup').post(signup);
 router.route('/login').post(login);
-router.route('/changepassword').post(changePassword);
+router.route('/changepassword').post(authMiddleware, changePassword);
 router.route('/forgotpassword').post(forgotpassword); 
 router.route('/profile').get(authMiddleware, profile); 
 router.route('/accounts').get(authMiddleware, getPortalAccounts);
