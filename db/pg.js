@@ -1,16 +1,23 @@
-// db.js
-const { Client } = require('pg');
+const { Pool } = require('pg');
 
-// console.log('DATABASE_URL:', process.env.DATABASE_URL);
-// Create a new client instance
-const pg = new Client({
-  connectionString: process.env.DATABASE_URL
+if (!process.env.DATABASE_URL) {
+  throw new Error('DATABASE_URL is not configured');
+}
+
+// Vercel may freeze and resume a function between requests. A pool can discard
+// stale Neon connections and establish a fresh one instead of hanging forever.
+const pg = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  max: 1,
+  idleTimeoutMillis: 10000,
+  connectionTimeoutMillis: 10000,
+  query_timeout: 30000,
+  keepAlive: true,
+  allowExitOnIdle: true,
 });
-// Connect to the database
-pg.connect()
-  .then(() => console.log('Connected to the database pg'))
-  // .catch(err => console.erro.r('Connection error'));
-  .catch(err => console.error('Connection error', err.stack));
 
-module.exports = pg; 
-   
+pg.on('error', (error) => {
+  console.error('Unexpected idle database connection error:', error.message);
+});
+
+module.exports = pg;

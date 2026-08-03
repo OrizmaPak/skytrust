@@ -9,7 +9,6 @@ const { activityMiddleware } = require("../../middleware/activity");
 
 async function login(req, res) {
     const { email, password, verify = '', device = '' } = req.body;
-    console.log({ email, password });
 
     // Basic validation
     if (!email || !password || !isValidEmail(email)) {

@@ -31,6 +31,7 @@ const salesRouter = require('./routes/sales');
 const personnelRouter = require('./routes/personnel');
 const aiRouter = require('./routes/ai');
 const bankRouter = require('./routes/bank');
+const pg = require('./db/pg');
 
 // error handler
 const notFoundMiddleware = require('./middleware/not-found'); 
@@ -84,6 +85,16 @@ app.use('/node/api/v1/personnel', authMiddleware, personnelRouter);
 
 app.use('/node/api/v1/incomings', incomingsRouter); 
 app.use('/node/api/v1/ai', aiRouter);
+
+app.get('/node/health', async (req, res) => {
+  try {
+    await pg.query('SELECT 1');
+    res.status(200).json({ status: true, service: 'skytrust-backend', database: 'connected' });
+  } catch (error) {
+    console.error('Health check database error:', error.message);
+    res.status(503).json({ status: false, service: 'skytrust-backend', database: 'unavailable' });
+  }
+});
 
 app.get('/node/', (req, res) => {
     res.send('Welcome to the Sky Trust backend!');
