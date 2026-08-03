@@ -8,7 +8,10 @@ const { sendEmail } = require("../../utils/sendEmail");
 const { activityMiddleware } = require("../../middleware/activity");
 
 async function login(req, res) {
-    const { email, password, verify = '', device = '' } = req.body;
+    const email = typeof req.body.email === "string" ? req.body.email.trim().toLowerCase() : req.body.email;
+    const password = typeof req.body.password === "string" ? req.body.password.trim() : req.body.password;
+    const { verify = '', device = '' } = req.body;
+    let existingUser;
 
     // Basic validation
     if (!email || !password || !isValidEmail(email)) {
@@ -43,7 +46,7 @@ async function login(req, res) {
 
     try {
         // Check if email already exists using raw query
-        const { rows: [existingUser] } = await pg.query(`SELECT * FROM skytobi."User" WHERE email = $1`, [email]);
+        ({ rows: [existingUser] } = await pg.query(`SELECT * FROM skytobi."User" WHERE lower(email) = lower($1)`, [email]));
 
         if (!existingUser) {
             return res.status(StatusCodes.BAD_REQUEST).json({
@@ -71,7 +74,6 @@ async function login(req, res) {
             const token = jwt.sign({ user: existingUser }, process.env.JWT_SECRET, {
                 expiresIn: process.env.SESSION_EXPIRATION_HOUR + 'h',
             });
-            console.log(token);
 
             // STORE THE SESSION
             await pg.query(`INSERT INTO skytobi."Session" 
@@ -178,7 +180,9 @@ async function login(req, res) {
     } catch (err) {
         console.error('Unexpected Error:', err);
         //  TRACK THE ACTIVITY
-        await activityMiddleware(req, existingUser.id, 'Login Attempt Failed due to an unexpected error', 'AUTH');
+        if (existingUser) {
+            await activityMiddleware(req, existingUser.id, 'Login Attempt Failed due to an unexpected error', 'AUTH');
+        }
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
             status: false,
             message: "An unexpected error occurred",

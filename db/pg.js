@@ -20,4 +20,24 @@ pg.on('error', (error) => {
   console.error('Unexpected idle database connection error:', error.message);
 });
 
+pg.withTransaction = async (callback) => {
+  const client = await pg.connect();
+
+  try {
+    await client.query('BEGIN');
+    const result = await callback(client);
+    await client.query('COMMIT');
+    return result;
+  } catch (error) {
+    try {
+      await client.query('ROLLBACK');
+    } catch (rollbackError) {
+      console.error('Database rollback failed:', rollbackError.message);
+    }
+    throw error;
+  } finally {
+    client.release();
+  }
+};
+
 module.exports = pg;

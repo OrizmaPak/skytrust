@@ -6,9 +6,22 @@ const pg = require("../../db/pg");
 const { sendEmail } = require("../../utils/sendEmail");
 const { activityMiddleware } = require("../../middleware/activity"); // Added tracker middleware
 
+function generateTemporaryPassword(length = 12) {
+    const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
+    let password = "";
+
+    while (password.length < length) {
+        const byte = crypto.randomBytes(1)[0];
+        if (byte < alphabet.length * Math.floor(256 / alphabet.length)) {
+            password += alphabet[byte % alphabet.length];
+        }
+    }
+
+    return password;
+}
+
 async function forgotpassword(req, res) {
-    const { email } = req.body;
-    console.log({ email });
+    const email = typeof req.body.email === "string" ? req.body.email.trim().toLowerCase() : req.body.email;
 
     // Basic validation
     if (!email || !isValidEmail(email)) {
@@ -37,7 +50,7 @@ async function forgotpassword(req, res) {
 
     try {
         // Check if email already exists using raw query
-        const { rows: [existingUser] } = await pg.query(`SELECT * FROM skytobi."User" WHERE email = $1`, [email]);
+        const { rows: [existingUser] } = await pg.query(`SELECT * FROM skytobi."User" WHERE lower(email) = lower($1)`, [email]);
 
         if (!existingUser) {
             return res.status(StatusCodes.BAD_REQUEST).json({
@@ -50,20 +63,20 @@ async function forgotpassword(req, res) {
         }
 
         // Generate a new password
-        const newPassword = crypto.randomBytes(6).toString("base64url");
+        const newPassword = generateTemporaryPassword();
         const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-        await pg.query("BEGIN");
         try {
-            // Update inside a transaction so email failure does not leave the user locked out.
-            await pg.query(`UPDATE skytobi."User" SET password = $1 WHERE id = $2`, [hashedPassword, existingUser.id]);
+            await pg.withTransaction(async (client) => {
+                // Update inside a transaction so email failure does not leave the user locked out.
+                await client.query(`UPDATE skytobi."User" SET password = $1 WHERE id = $2`, [hashedPassword, existingUser.id]);
 
-            // Send the new password via email
-            await sendEmail({
-                to: email,
-                subject: 'Your New Password for Sky Trust',
-                text: `Your password has been reset. Your new password is: ${newPassword}`,
-                html: `<!DOCTYPE html>
+                // Send the new password via email before committing the password change.
+                await sendEmail({
+                    to: email,
+                    subject: 'Your New Password for Sky Trust',
+                    text: `Your password has been reset. Your new password is: ${newPassword}`,
+                    html: `<!DOCTYPE html>
                         <html>
                         <head>
                             <title>Your New Password</title>
@@ -87,11 +100,9 @@ async function forgotpassword(req, res) {
                             </div>
                         </body>
                         </html>`
+                });
             });
-
-            await pg.query("COMMIT");
         } catch (emailError) {
-            await pg.query("ROLLBACK");
             console.error('Password reset email failed:', emailError);
             return res.status(StatusCodes.BAD_GATEWAY).json({
                 status: false,
