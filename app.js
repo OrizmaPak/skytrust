@@ -59,6 +59,15 @@ app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 
 app.use(express.urlencoded({ extended: true }));
+
+app.get('/', (req, res) => {
+  res.status(200).json({
+    status: true,
+    service: 'skytrust-backend',
+    health: '/node/health',
+  });
+});
+
 app.use(decryptMiddleware);
 app.use(encryptResponseMiddleware);
 app.use(requestprocessor);
