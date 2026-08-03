@@ -17,14 +17,14 @@ const getSavingsProducts = async (req, res) => {
                 COALESCE(json_agg(DISTINCT d) FILTER (WHERE d.id IS NOT NULL), '[]') AS deductions,
                 COALESCE(json_agg(DISTINCT i) FILTER (WHERE i.id IS NOT NULL), '[]') AS interests,
                 CASE 
-                    WHEN sp.membership IS NOT NULL THEN
+                    WHEN NULLIF(sp.membership, '') IS NOT NULL THEN
                         CASE 
-                            WHEN sp.membership ~ '^[0-9]+$' THEN
+                            WHEN NULLIF(sp.membership, '') ~ '^[0-9]+$' THEN
                                 (SELECT dm.member FROM skytobi."DefineMember" dm WHERE dm.id = sp.membership::int)
                             ELSE
                                 (SELECT string_agg(dm.member, '||') 
                                  FROM skytobi."DefineMember" dm 
-                                 WHERE dm.id = ANY(string_to_array(sp.membership, '||')::int[]))
+                                 WHERE dm.id = ANY(string_to_array(NULLIF(sp.membership, ''), '||')::int[]))
                         END
                     ELSE NULL
                 END AS membervalues

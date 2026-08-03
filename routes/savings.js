@@ -4,9 +4,11 @@ const { getSavingsProducts } = require('../controllers/savings/getproduct/getpro
 const { manageSavingsAccount } = require('../controllers/savings/createaccount/createaccount');
 const { getAccounts } = require('../controllers/savings/getaccount/getaccount');
 const { deleteSavingsAccount } = require('../controllers/savings/deleteaccount/deleteaccount');
+const { deleteSavingsAccountTransactionHistory } = require('../controllers/savings/deleteaccount/deletetransactionhistory');
 const { getFrequencyOverrides } = require('../controllers/savings/overridefrequency/getoveridefrequency');
 const { saveOrUpdateFrequencyOverride } = require('../controllers/savings/overridefrequency/manageoveride');
 const { getCards, manageCard, deleteCard } = require('../controllers/savings/card/manage');
+const { StatusCodes } = require('http-status-codes');
 const router = express.Router();
 
 
@@ -19,6 +21,17 @@ router.route('/product')
 router.route('/account') 
     .post(manageSavingsAccount)
     .get(getAccounts);
+
+router.route('/account/:id/history')
+    .post(deleteSavingsAccountTransactionHistory)
+    .delete(deleteSavingsAccountTransactionHistory)
+    .get((req, res) => res.status(StatusCodes.METHOD_NOT_ALLOWED).json({
+        status: false,
+        message: 'Use POST or DELETE to delete transaction history for this savings account.',
+        statuscode: StatusCodes.METHOD_NOT_ALLOWED,
+        data: null,
+        errors: ['Method not allowed']
+    }));
 
 router.route('/account/:id')
     .delete(deleteSavingsAccount);

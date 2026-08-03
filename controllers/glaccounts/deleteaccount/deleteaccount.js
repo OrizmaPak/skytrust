@@ -45,15 +45,65 @@ const deleteAccount = async (req, res) => {
   }
 
   try {
-    await pg.query("BEGIN");
+    const result = await pg.withTransaction(async (client) => {
+      const accountResult = await client.query(
+        `SELECT * FROM skytobi."Accounts" WHERE id = $1`,
+        [id]
+      );
 
-    const accountResult = await pg.query(
-      `SELECT * FROM skytobi."Accounts" WHERE id = $1`,
-      [id]
-    );
+      if (accountResult.rows.length === 0) {
+        return { notFound: true };
+      }
 
-    if (accountResult.rows.length === 0) {
-      await pg.query("ROLLBACK");
+      const account = accountResult.rows[0];
+      const accountNumberValue = Number(account.accountnumber);
+      const accountNumber = String(account.accountnumber);
+
+      const clearedDefaults = [];
+      for (const field of DEFAULT_ACCOUNT_FIELDS) {
+        const updateResult = await client.query(
+          `UPDATE skytobi."Organisationsettings"
+           SET "${field}" = NULL
+           WHERE "${field}" = $1`,
+          [accountNumberValue]
+        );
+
+        if (updateResult.rowCount > 0) {
+          clearedDefaults.push(field);
+        }
+      }
+
+      const deletedTransactions = await client.query(
+        `DELETE FROM skytobi."transaction" WHERE accountnumber = $1`,
+        [accountNumber]
+      );
+
+      const deletedBankTransactions = await client.query(
+        `DELETE FROM skytobi."banktransaction" WHERE accountnumber = $1`,
+        [accountNumber]
+      );
+
+      const deletedLoanFees = await client.query(
+        `DELETE FROM skytobi."loanfee" WHERE glaccount = $1`,
+        [accountNumber]
+      );
+
+      await client.query(
+        `DELETE FROM skytobi."Accounts" WHERE id = $1`,
+        [id]
+      );
+
+      return {
+        notFound: false,
+        accountNumber,
+        deletedtransactions: deletedTransactions.rowCount,
+        deletedbanktransactions: deletedBankTransactions.rowCount,
+        deletedloanfees: deletedLoanFees.rowCount,
+        cleareddefaults: clearedDefaults
+      };
+    });
+
+    if (result.notFound) {
       await activityMiddleware(req, user.id, "Account not found for deletion", "ACCOUNT");
       return res.status(StatusCodes.NOT_FOUND).json({
         status: false,
@@ -64,50 +114,10 @@ const deleteAccount = async (req, res) => {
       });
     }
 
-    const account = accountResult.rows[0];
-    const accountNumberValue = Number(account.accountnumber);
-    const accountNumber = String(account.accountnumber);
-
-    const clearedDefaults = [];
-    for (const field of DEFAULT_ACCOUNT_FIELDS) {
-      const updateResult = await pg.query(
-        `UPDATE skytobi."Organisationsettings"
-         SET "${field}" = NULL
-         WHERE "${field}" = $1`,
-        [accountNumberValue]
-      );
-
-      if (updateResult.rowCount > 0) {
-        clearedDefaults.push(field);
-      }
-    }
-
-    const deletedTransactions = await pg.query(
-      `DELETE FROM skytobi."transaction" WHERE accountnumber = $1`,
-      [accountNumber]
-    );
-
-    const deletedBankTransactions = await pg.query(
-      `DELETE FROM skytobi."banktransaction" WHERE accountnumber = $1`,
-      [accountNumber]
-    );
-
-    const deletedLoanFees = await pg.query(
-      `DELETE FROM skytobi."loanfee" WHERE glaccount = $1`,
-      [accountNumber]
-    );
-
-    await pg.query(
-      `DELETE FROM skytobi."Accounts" WHERE id = $1`,
-      [id]
-    );
-
-    await pg.query("COMMIT");
-
     await activityMiddleware(
       req,
       user.id,
-      `Account ${accountNumber} deleted successfully`,
+      `Account ${result.accountNumber} deleted successfully`,
       "ACCOUNT"
     );
 
@@ -115,17 +125,10 @@ const deleteAccount = async (req, res) => {
       status: true,
       message: "Account deleted successfully",
       statuscode: StatusCodes.OK,
-      data: {
-        accountnumber: accountNumber,
-        deletedtransactions: deletedTransactions.rowCount,
-        deletedbanktransactions: deletedBankTransactions.rowCount,
-        deletedloanfees: deletedLoanFees.rowCount,
-        cleareddefaults: clearedDefaults
-      },
+      data: result,
       errors: []
     });
   } catch (error) {
-    await pg.query("ROLLBACK");
     console.error("Unexpected Error:", error);
     await activityMiddleware(req, user.id, "An unexpected error occurred deleting account", "ACCOUNT");
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({

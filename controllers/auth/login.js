@@ -136,8 +136,14 @@ async function login(req, res) {
                 await pg.query(`UPDATE skytobi."User" SET permissions = null WHERE id = $1`, [existingUser.id]);
             }
 
-            // Fetch account number and currency from savings table
-            const { rows: [savingsAccount] } = await pg.query(`SELECT accountnumber, routingnumber, savingsproductid FROM skytobi."savings" WHERE userid = $1`, [existingUser.id]);
+            // Fetch the user's primary savings account details for the online session
+            const { rows: [savingsAccount] } = await pg.query(`
+                SELECT accountnumber, routingnumber, savingsproductid, status
+                FROM skytobi."savings"
+                WHERE userid = $1
+                ORDER BY CASE WHEN status = 'ACTIVE' THEN 0 ELSE 1 END, id ASC
+                LIMIT 1
+            `, [existingUser.id]);
             const accountNumber = savingsAccount ? savingsAccount.accountnumber : null;
 
             // Fetch currency using savings product ID
@@ -156,7 +162,14 @@ async function login(req, res) {
                 message: `Welcome ${existingUser.firstname}`,
                 statuscode: StatusCodes.OK,
                 data: {
-                    user: { ...userWithoutPassword, accountnumber: accountNumber, routingnumber: savingsAccount?.routingnumber || null, currency },
+                    user: {
+                        ...userWithoutPassword,
+                        accountnumber: accountNumber,
+                        routingnumber: savingsAccount?.routingnumber || null,
+                        currency,
+                        accountstatus: savingsAccount?.status || null,
+                        transferblocked: savingsAccount ? savingsAccount.status !== 'ACTIVE' : false
+                    },
                     token,
                     expires: calculateExpiryDate(process.env.SESSION_EXPIRATION_HOUR),
                     verificationmail: messagestatus ? 'Email sent' : ''

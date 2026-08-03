@@ -19,6 +19,16 @@ const shouldValidateIntegerSize = (key) => {
     return !largeNumericTextFields.has(normalizedKey);
 };
 
+const trimBodyStrings = (body) => {
+    if (!body || typeof body !== 'object') return;
+
+    for (let key in body) {
+        if (Object.prototype.hasOwnProperty.call(body, key) && typeof body[key] === 'string') {
+            body[key] = body[key].trim();
+        }
+    }
+};
+
 // Middleware function to handle file uploads and form data
 const requestprocessor = (req, res, next) => {
     const maxIntValue = 9999999999999; // Maximum value for a 32-bit integer
@@ -58,39 +68,28 @@ const requestprocessor = (req, res, next) => {
         }
     }
 
-    if(req.method !== 'POST' && req.method !== 'DELETE'){
+    if (req.method !== 'POST' && req.method !== 'DELETE' && req.method !== 'PUT' && req.method !== 'PATCH') {
+        trimBodyStrings(req.body);
         return next();
-    } else {
-        upload.any()(req, res, (err) => {
-            if (err) {
-                return res.status(400).send('Error uploading files' + err);
-            }
-            
-            // Handle files
-            const files = req.files; // Array of uploaded files
-            console.log('files 111', req.files);
-            if (files) {
-                files.forEach(file => {
-                    console.log(`Uploaded file: ${file.originalname}`);
-                });
-            }
-            
-            if(files && files.length == 0){
-                console.log('No files found in the request');
-            }
-    
-            // Handle form fields
-            req.body = req.body || {}; 
-            for (let key in req.body) {
-                if (Object.prototype.hasOwnProperty.call(req.body, key) && typeof req.body[key] === 'string') {
-                    req.body[key] = req.body[key].trim();
-                }
-            }
-    
-            // Proceed to the next middleware or route handler
-            return next(); 
-        });
     }
+
+    const contentType = (req.headers['content-type'] || '').toLowerCase();
+    const isMultipart = contentType.includes('multipart/form-data');
+
+    if (!isMultipart) {
+        trimBodyStrings(req.body);
+        return next();
+    }
+
+    upload.any()(req, res, (err) => {
+        if (err) {
+            return res.status(400).send('Error uploading files' + err);
+        }
+
+        req.body = req.body || {};
+        trimBodyStrings(req.body);
+        return next();
+    });
 };
 
 module.exports = { requestprocessor }

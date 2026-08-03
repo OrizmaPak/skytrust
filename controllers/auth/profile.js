@@ -45,20 +45,41 @@ async function profile(req, res) {
             });
         }
     } else {
-        // CHECK IF USER IS AUTHENTICATED 
-        user = req.user;
+        // Fetch a fresh copy of the authenticated user instead of the stale JWT payload
+        try {
+            const { rows: [authenticatedUser] } = await pg.query(
+                `SELECT * FROM skytobi."User" WHERE id = $1`,
+                [req.user.id]
+            );
+            user = authenticatedUser;
+        } catch (error) {
+            console.error(error);
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+                status: false,
+                message: "Internal Server Error",
+                statuscode: StatusCodes.INTERNAL_SERVER_ERROR,
+                data: null,
+                errors: ["An error occurred while fetching the authenticated user."]
+            });
+        }
     }
 
     if (user) {
         try {
             const { rows: [savingsAccount] } = await pg.query(`
-                SELECT routingnumber
-                FROM skytobi."savings"
-                WHERE userid = $1
-                ORDER BY CASE WHEN status = 'ACTIVE' THEN 0 ELSE 1 END, id ASC
+                SELECT s.accountnumber, s.routingnumber, s.status, s.savingsproductid, sp.currency
+                FROM skytobi."savings" s
+                LEFT JOIN skytobi."savingsproduct" sp ON sp.id = s.savingsproductid
+                WHERE s.userid = $1
+                ORDER BY CASE WHEN s.status = 'ACTIVE' THEN 0 ELSE 1 END, s.id ASC
                 LIMIT 1
             `, [user.id]);
+
+            user.accountnumber = savingsAccount?.accountnumber || user.accountnumber || null;
             user.routingnumber = savingsAccount?.routingnumber || null;
+            user.currency = savingsAccount?.currency || user.currency || null;
+            user.accountstatus = savingsAccount?.status || null;
+            user.transferblocked = savingsAccount ? savingsAccount.status !== 'ACTIVE' : false;
 
             // Fetch membership details for the user
             const membershipQuery = `

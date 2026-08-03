@@ -1,5 +1,9 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
+  "regions": [
+    "gru1"
+  ],
   "builds": [
     {
       "src": "app.js",

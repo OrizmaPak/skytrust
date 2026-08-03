@@ -1,8 +1,7 @@
-const { StatusCodes } = require("http-status-codes");
 const pg = require("../../../db/pg");
 const { activityMiddleware } = require("../../../middleware/activity");
 
-const deleteSavingsAccount = async (req, res) => {
+const deleteSavingsAccountTransactionHistory = async (req, res) => {
   const user = req.user;
   const id = req.params.id || req.body?.id || req.query.id;
 
@@ -19,7 +18,7 @@ const deleteSavingsAccount = async (req, res) => {
   try {
     const result = await pg.withTransaction(async (client) => {
       const accountResult = await client.query(
-        `SELECT * FROM skytobi."savings" WHERE id = $1`,
+        `SELECT id, accountnumber FROM skytobi."savings" WHERE id = $1`,
         [id]
       );
 
@@ -27,29 +26,21 @@ const deleteSavingsAccount = async (req, res) => {
         return { notFound: true };
       }
 
-      const account = accountResult.rows[0];
-      const accountNumber = String(account.accountnumber);
-
+      const accountNumber = String(accountResult.rows[0].accountnumber);
       const deletedTransactions = await client.query(
-        `DELETE FROM skytobi."transaction" WHERE accountnumber = $1`,
+        `DELETE FROM skytobi."transaction" WHERE accountnumber::text = $1`,
         [accountNumber]
-      );
-
-      const deletedAccount = await client.query(
-        `DELETE FROM skytobi."savings" WHERE id = $1 RETURNING *`,
-        [id]
       );
 
       return {
         notFound: false,
         accountNumber,
-        deletedTransactions: deletedTransactions.rowCount,
-        deletedAccount: deletedAccount.rows[0]
+        deletedTransactions: deletedTransactions.rowCount
       };
     });
 
     if (result.notFound) {
-      await activityMiddleware(req, user.id, "Savings account not found for deletion", "ACCOUNT");
+      await activityMiddleware(req, user.id, "Savings account not found for transaction history deletion", "ACCOUNT");
       return res.status(StatusCodes.NOT_FOUND).json({
         status: false,
         message: "Savings account not found",
@@ -62,23 +53,25 @@ const deleteSavingsAccount = async (req, res) => {
     await activityMiddleware(
       req,
       user.id,
-      `Savings account ${result.accountNumber} deleted successfully`,
-      "ACCOUNT"
+      `Deleted ${result.deletedTransactions} transactions for savings account ${result.accountNumber}`,
+      "TRANSACTION"
     );
 
     return res.status(StatusCodes.OK).json({
       status: true,
-      message: "Savings account deleted successfully",
+      message: result.deletedTransactions > 0
+        ? `Transaction history deleted successfully for account ${result.accountNumber}.`
+        : `No transaction history found for account ${result.accountNumber}.`,
       statuscode: StatusCodes.OK,
       data: {
-        account: result.deletedAccount,
+        accountnumber: result.accountNumber,
         deletedtransactions: result.deletedTransactions
       },
       errors: []
     });
   } catch (error) {
     console.error("Unexpected Error:", error);
-    await activityMiddleware(req, user.id, "An unexpected error occurred deleting savings account", "ACCOUNT");
+    await activityMiddleware(req, user.id, "An unexpected error occurred deleting savings account transaction history", "ACCOUNT");
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       status: false,
       message: "An unexpected error occurred",
@@ -89,4 +82,4 @@ const deleteSavingsAccount = async (req, res) => {
   }
 };
 
-module.exports = { deleteSavingsAccount };
+module.exports = { deleteSavingsAccountTransactionHistory };

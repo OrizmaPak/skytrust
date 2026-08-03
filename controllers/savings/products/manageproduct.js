@@ -139,7 +139,7 @@ const manageSavingsProduct = async (req, res) => {
     console.log("Extracted request body and user3");
 
     // Currency validation
-    const validCurrencies = ["USD", "USD"];
+    const validCurrencies = ["NGN", "USD"];
     if (!validCurrencies.includes(currency)) {
         console.log("Invalid currency detected");
         return res.status(StatusCodes.BAD_REQUEST).json({

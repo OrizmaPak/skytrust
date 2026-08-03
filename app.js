@@ -1,7 +1,5 @@
 require('dotenv').config();
 require('express-async-errors');
-const path = require('path');
-const ngrok = require('@ngrok/ngrok');
 
 // extra security packages
 const helmet = require('helmet');
@@ -130,6 +128,8 @@ const start = async () => {
 
     // Only set up ngrok in development mode
     if (process.env.NODE_ENV === 'development') {
+      const ngrok = require('@ngrok/ngrok');
+
       // Establish connectivity
       const listener = await ngrok.forward({
         addr: port,

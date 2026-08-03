@@ -16,6 +16,27 @@ const CREDIT_NARRATIONS = [
   "Savings top up"
 ];
 
+const RANDOM_COUNTERPARTIES = [
+  "John A.",
+  "Mary K.",
+  "David O.",
+  "Angela M.",
+  "S. Ibrahim",
+  "T. Williams",
+  "Eze Stores",
+  "Metro Bank",
+  "BluePoint Ltd",
+  "City Mart",
+  "Prime Fuel",
+  "Apex Services",
+  "Household Account",
+  "Vendor Account",
+  "Business Account"
+];
+
+const REFERENCE_PREFIXES = ["RSB", "APN", "TRF", "NIP", "MB", "FT"];
+const MAX_BALANCE_DEVIATION = 100;
+
 const roundToTwo = (value) => Number(Number(value).toFixed(2));
 const randomBetween = (min, max) => min + Math.random() * (max - min);
 const randomIntBetween = (min, max) => {
@@ -28,10 +49,12 @@ const randomDateBetween = (start, end) =>
   new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 
 const buildReference = (accountnumber, txDate, index) => {
+  const prefix = pickRandom(REFERENCE_PREFIXES);
   const accountPart = String(accountnumber).slice(-4);
-  const datePart = txDate.toISOString().slice(0, 10).replace(/-/g, "");
-  const randomPart = Math.random().toString(36).slice(2, 7).toUpperCase();
-  return `GEN-${accountPart}-${datePart}-${index + 1}-${randomPart}`;
+  const datePart = txDate.toISOString().slice(2, 10).replace(/-/g, "");
+  const serialPart = String(index + 1).padStart(3, "0");
+  const randomPart = String(randomIntBetween(100000, 999999));
+  return `${prefix}${datePart}${accountPart}${serialPart}${randomPart}`;
 };
 
 const splitWeightedAmount = (total, count, minimumAmount) => {
@@ -162,9 +185,62 @@ const resolveAccountProfile = async (accountnumber, fallbackUserid, fallbackBran
   return null;
 };
 
-const buildCreditNarration = (accountName, amount) => {
+const buildCreditNarration = () => {
   const base = pickRandom(CREDIT_NARRATIONS);
-  return `${base} for ${accountName || "customer"} (${amount.toFixed(2)})`;
+  const useCounterparty = Math.random() < 0.45;
+  if (!useCounterparty) {
+    return base;
+  }
+
+  const patterns = [
+    `${base} from ${pickRandom(RANDOM_COUNTERPARTIES)}`,
+    `${base} via ${pickRandom(RANDOM_COUNTERPARTIES)}`,
+    `${base} - ${pickRandom(RANDOM_COUNTERPARTIES)}`
+  ];
+
+  return pickRandom(patterns);
+};
+
+const normalizeDebitDescription = (description) => {
+  const replacements = [
+    [/Generator fuel purchase/gi, "Purchase of fuel for generator"],
+    [/House cleaning service/gi, "House cleaning payment"],
+    [/Laundry service payment/gi, "Laundry payment"],
+    [/Plumbing repair payment/gi, "Plumbing repair"],
+    [/Electrician repair service/gi, "Electrician service payment"],
+    [/Air conditioner servicing/gi, "Air conditioner service"],
+    [/Home painting deposit/gi, "Deposit for home painting"],
+    [/Roof repair payment/gi, "Roof repair"],
+    [/Tiles replacement payment/gi, "Tiles replacement"],
+    [/TV repair payment/gi, "TV repair service"],
+    [/CCTV maintenance payment/gi, "CCTV maintenance"],
+    [/Door lock replacement/gi, "Door lock replacement payment"]
+  ];
+
+  let output = description;
+  for (const [pattern, replacement] of replacements) {
+    output = output.replace(pattern, replacement);
+  }
+
+  return output;
+};
+
+const buildDebitNarration = (plan) => {
+  const base = normalizeDebitDescription(plan.description);
+  const useCounterparty = Math.random() < 0.35;
+
+  if (!useCounterparty) {
+    return base;
+  }
+
+  const counterparty = pickRandom(RANDOM_COUNTERPARTIES);
+  const patterns = [
+    `${base} - ${counterparty}`,
+    `${base} to ${counterparty}`,
+    `${base} via ${counterparty}`
+  ];
+
+  return pickRandom(patterns);
 };
 
 const getTransactionCategories = async (req, res) => {
@@ -207,7 +283,7 @@ const parseSelectedCategories = (selectedCategories) => {
   return [];
 };
 
-const buildDebitBlueprints = (selectedCategoryNames, debitCount, safeDebitCeiling) => {
+const buildDebitBlueprints = (selectedCategoryNames, debitCount, targetDebitTotal) => {
   const allCategories = transactionCatalog.transaction_categories || [];
   const activeCategories = selectedCategoryNames.length > 0
     ? allCategories.filter((category) => selectedCategoryNames.includes(category.category_name))
@@ -231,12 +307,7 @@ const buildDebitBlueprints = (selectedCategoryNames, debitCount, safeDebitCeilin
   const blueprints = Array.from({ length: debitCount }, () => pickRandom(descriptionPool));
   const minTotal = roundToTwo(blueprints.reduce((sum, item) => sum + item.min_amount, 0));
   const maxTotal = roundToTwo(blueprints.reduce((sum, item) => sum + item.max_amount, 0));
-  const targetTotal = roundToTwo(
-    Math.min(
-      maxTotal,
-      Math.max(minTotal, safeDebitCeiling * randomBetween(0.45, 0.9))
-    )
-  );
+  const targetTotal = roundToTwo(Math.min(maxTotal, Math.max(minTotal, targetDebitTotal)));
 
   let remaining = Math.max(0, roundToTwo(targetTotal - minTotal));
   const debitPlans = blueprints.map((item) => ({
@@ -283,6 +354,8 @@ const generateTransactions = async (req, res) => {
   const parsedEstimate = Number(estimatedamount ?? totalamount);
   const creditCount = Number(creditsno);
   const debitCount = Number(debitsno);
+  const resolvedCreditCount = creditCount === 0 && debitCount > 0 ? 1 : creditCount;
+  const resolvedDebitCount = debitCount === 0 && creditCount > 0 ? 1 : debitCount;
   const selectedCategoryNames = parseSelectedCategories(selectedcategories);
 
   if (
@@ -359,21 +432,24 @@ const generateTransactions = async (req, res) => {
     );
 
     const minimumCreditAmount = Math.max(25, Math.min(estimatedBase * 0.05, 3000));
-    const targetCreditTotal = roundToTwo(
-      creditCount > 0
-        ? Math.max(estimatedBase * randomBetween(0.9, 1.25), creditCount * minimumCreditAmount)
+    const minimumDebitAmount = 5;
+    const targetDebitTotal = roundToTwo(
+      resolvedDebitCount > 0
+        ? Math.max(estimatedBase, resolvedDebitCount * minimumDebitAmount)
         : 0
     );
 
-    const safeDebitCeiling = Math.max(
-      debitCount * 5,
-      openingBalance + targetCreditTotal - Math.max(estimatedBase * 0.1, 50)
+    const debitPlans = buildDebitBlueprints(selectedCategoryNames, resolvedDebitCount, targetDebitTotal);
+    const debitTotal = roundToTwo(debitPlans.reduce((sum, plan) => sum + Number(plan.amount || 0), 0));
+
+    const preferredNetEffect = 0;
+    const clampedNetEffect = roundToTwo(
+      Math.max(-MAX_BALANCE_DEVIATION, Math.min(MAX_BALANCE_DEVIATION, preferredNetEffect))
     );
+    const targetCreditTotal = roundToTwo(Math.max(resolvedCreditCount * minimumCreditAmount, debitTotal + clampedNetEffect));
+    const creditAmounts = splitWeightedAmount(targetCreditTotal, resolvedCreditCount, minimumCreditAmount);
 
-    const creditAmounts = splitWeightedAmount(targetCreditTotal, creditCount, minimumCreditAmount);
-    const debitPlans = buildDebitBlueprints(selectedCategoryNames, debitCount, safeDebitCeiling);
-
-    const allDates = Array.from({ length: creditCount + debitCount }, () => randomDateBetween(start, end))
+    const allDates = Array.from({ length: resolvedCreditCount + resolvedDebitCount }, () => randomDateBetween(start, end))
       .sort((a, b) => a - b);
 
     let runningBalance = openingBalance;
@@ -398,7 +474,7 @@ const generateTransactions = async (req, res) => {
         if (!amount || amount <= 0) continue;
 
         const reference = buildReference(profile.accountnumber, txDate, index);
-        const description = buildCreditNarration(profile.accountname, amount);
+        const description = buildCreditNarration();
 
         runningBalance = roundToTwo(runningBalance + amount);
         transactions.push({
@@ -440,7 +516,7 @@ const generateTransactions = async (req, res) => {
         }
 
         const reference = buildReference(profile.accountnumber, txDate, index);
-        const description = `${plan.description} [${plan.category_name}]`;
+        const description = buildDebitNarration(plan);
 
         runningBalance = roundToTwo(runningBalance - plan.amount);
         transactions.push({
@@ -477,10 +553,9 @@ const generateTransactions = async (req, res) => {
 
     transactions.sort((a, b) => new Date(a.transactiondate) - new Date(b.transactiondate));
 
-    await pg.query("BEGIN");
-    try {
+    await pg.withTransaction(async (client) => {
       for (const transaction of transactions) {
-        await pg.query(
+        await client.query(
           `INSERT INTO skytobi."transaction" (
             accountnumber,
             userid,
@@ -541,15 +616,11 @@ const generateTransactions = async (req, res) => {
           ]
         );
       }
-
-      await pg.query("COMMIT");
-    } catch (error) {
-      await pg.query("ROLLBACK");
-      throw error;
-    }
+    });
 
     const totalCredits = roundToTwo(transactions.reduce((sum, tx) => sum + Number(tx.credit || 0), 0));
     const totalDebits = roundToTwo(transactions.reduce((sum, tx) => sum + Number(tx.debit || 0), 0));
+    const netEffect = roundToTwo(totalCredits - totalDebits);
 
     await activityMiddleware(
       req,
@@ -567,10 +638,12 @@ const generateTransactions = async (req, res) => {
         accountnumber: String(profile.accountnumber),
         whichaccount: profile.whichaccount,
         currency: profile.currency || transactionCatalog.currency || "USD",
+        currentbalancebefore: roundToTwo(currentBalance),
         openingbalance: openingBalance,
         totalcredits: totalCredits,
         totaldebits: totalDebits,
-        closingbalance: roundToTwo(openingBalance + totalCredits - totalDebits),
+        neteffect: netEffect,
+        closingbalance: roundToTwo(currentBalance + netEffect),
         generatedcount: transactions.length,
         selectedcategories: selectedCategoryNames.length > 0 ? selectedCategoryNames : "ALL"
       },

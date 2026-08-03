@@ -7,7 +7,7 @@ const numericTextOrNull = (value) => hasValue(value) ? String(value).trim() : nu
 
 const manageSavingsAccount = async (req, res) => {
     const user = req.user;
-    let { savingsproductid, userid=user.id, amount = 0, branch=user.branch, registrationpoint=user.registrationpoint, registrationcharge=0, registrationdesc='', bankname1, bankaccountname1, bankaccountnumber1, bankname2, bankaccountname2, bankaccountnumber2, accountofficer=0, sms, whatsapp, email, createdby, accountnumber, routingnumber, member=0, registrationdate, reason, status} = req.body;
+    let { savingsproductid, userid=user.id, amount = 0, branch=user.branch, registrationpoint=user.registrationpoint, registrationcharge=0, registrationdesc='', bankname1, bankaccountname1, bankaccountnumber1, bankname2, bankaccountname2, bankaccountnumber2, accountofficer=0, sms, whatsapp, email, createdby, accountnumber, routingnumber, member, registrationdate, reason, status} = req.body;
 
     try {
         if (req && req.skipResponse) {
@@ -20,6 +20,8 @@ const manageSavingsAccount = async (req, res) => {
         sms = sms ? true : false;
         whatsapp = whatsapp ? true : false;
         email = email ? true : false;
+        member = member === undefined || member === '' ? (accountnumber ? null : 0) : member;
+        accountofficer = accountofficer === undefined || accountofficer === '' ? null : accountofficer;
         //   Type validation based on the model
         let typeErrors = [];
 

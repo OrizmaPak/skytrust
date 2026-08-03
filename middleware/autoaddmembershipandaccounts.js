@@ -1,13 +1,13 @@
 const pg = require("../db/pg");
 
-const autoAddMembershipAndAccounts = async (req, res, user = 0) => {
+const autoAddMembershipAndAccounts = async (req, res, user = 0, db = pg) => {
     try {
         const userId = req.newuser.id;
         const userBranch = req.newuser.branch || req.body.branch || 1;
         const registrationPoint = req.newuser.registrationpoint || 0;
         const createdAt = new Date();
 
-        const { rows: defineMembers } = await pg.query(`
+        const { rows: defineMembers } = await db.query(`
             SELECT id
             FROM skytobi."DefineMember"
             WHERE addmember = 'YES'
@@ -15,14 +15,14 @@ const autoAddMembershipAndAccounts = async (req, res, user = 0) => {
 
         let membershipsCreated = 0;
         for (const defineMember of defineMembers) {
-            const { rows: existingMembership } = await pg.query(`
+            const { rows: existingMembership } = await db.query(`
                 SELECT id
                 FROM skytobi."Membership"
                 WHERE userid = $1 AND member = $2
             `, [userId, defineMember.id]);
 
             if (existingMembership.length === 0) {
-                await pg.query(`
+                await db.query(`
                     INSERT INTO skytobi."Membership" (member, userid, createdby, status)
                     VALUES ($1, $2, $3, 'ACTIVE')
                 `, [defineMember.id, userId, userId]);
@@ -30,7 +30,7 @@ const autoAddMembershipAndAccounts = async (req, res, user = 0) => {
             }
         }
 
-        const { rows: savingsProducts } = await pg.query(`
+        const { rows: savingsProducts } = await db.query(`
             SELECT id
             FROM skytobi."savingsproduct"
             WHERE addmember = 'YES' AND status = 'ACTIVE'
@@ -39,7 +39,7 @@ const autoAddMembershipAndAccounts = async (req, res, user = 0) => {
 
         let accountsCreated = 0;
         if (savingsProducts.length > 0) {
-            const { rows: [orgSettings] } = await pg.query(`
+            const { rows: [orgSettings] } = await db.query(`
                 SELECT savings_account_prefix
                 FROM skytobi."Organisationsettings"
                 WHERE status = 'ACTIVE'
@@ -50,7 +50,7 @@ const autoAddMembershipAndAccounts = async (req, res, user = 0) => {
                 throw new Error("Savings account prefix not set in organisation settings.");
             }
 
-            const { rows: [latestAccount] } = await pg.query(`
+            const { rows: [latestAccount] } = await db.query(`
                 SELECT accountnumber
                 FROM skytobi."savings"
                 WHERE accountnumber::text LIKE $1
@@ -63,7 +63,7 @@ const autoAddMembershipAndAccounts = async (req, res, user = 0) => {
                 : Number(`${orgSettings.savings_account_prefix}${'0'.repeat(10 - String(orgSettings.savings_account_prefix).length - 1)}1`);
 
             for (const product of savingsProducts) {
-                const { rows: [existingAccount] } = await pg.query(`
+                const { rows: [existingAccount] } = await db.query(`
                     SELECT id
                     FROM skytobi."savings"
                     WHERE userid = $1 AND savingsproductid = $2 AND member = 0 AND status = 'ACTIVE'
@@ -73,7 +73,7 @@ const autoAddMembershipAndAccounts = async (req, res, user = 0) => {
                     continue;
                 }
 
-                await pg.query(`
+                await db.query(`
                     INSERT INTO skytobi."savings"
                     (
                         savingsproductid, accountnumber, userid, amount, branch, registrationpoint,
