@@ -64,6 +64,7 @@ model User {
   state         String?
   emailverified DateTime?
   address       String?
+  zipcode       String?
   role          String    @default("MEMBER")
   permissions   String?
   userpermissions   String? @default("")

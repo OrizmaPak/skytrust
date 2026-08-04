@@ -23,6 +23,7 @@ async function updateuser(req, res) {
         image2,
         country,
         state,
+        zipcode,
         emailverified,
         address,
         officeaddress,
@@ -107,10 +108,49 @@ async function updateuser(req, res) {
                      state = COALESCE($8, state),
                      country = COALESCE($9, country),
                      address = COALESCE($10, address),
-                     officeaddress = COALESCE($11, officeaddress),
-                     branch = COALESCE($12, branch),
+                     zipcode = COALESCE($11, zipcode),
+                     officeaddress = COALESCE($12, officeaddress),
+                     branch = COALESCE($13, branch),
+                     permissions = COALESCE($14, permissions),
+                     userpermissions = COALESCE($15, userpermissions),
+                     gender = COALESCE($16, gender),
+                     occupation = COALESCE($17, occupation),
+                     lga = COALESCE($18, lga),
+                     town = COALESCE($19, town),
+                     maritalstatus = COALESCE($20, maritalstatus),
+                     spousename = COALESCE($21, spousename),
+                     stateofresidence = COALESCE($22, stateofresidence),
+                     lgaofresidence = COALESCE($23, lgaofresidence),
+                     nextofkinfullname = COALESCE($24, nextofkinfullname),
+                     nextofkinphone = COALESCE($25, nextofkinphone),
+                     nextofkinrelationship = COALESCE($26, nextofkinrelationship),
+                     nextofkinaddress = COALESCE($27, nextofkinaddress),
+                     nextofkinofficeaddress = COALESCE($28, nextofkinofficeaddress),
+                     nextofkinoccupation = COALESCE($29, nextofkinoccupation),
+                     dateofbirth = COALESCE($30, dateofbirth),
+                     registrationpoint = COALESCE($31, registrationpoint)
+                 WHERE id = $32`,
+                [
+                    firstname, lastname, othernames, image, image2, role, new Date(), state, country, address, zipcode, officeaddress, branch, permissions, userpermissions, gender, occupation, lga, town, maritalstatus, spousename, stateofresidence, lgaofresidence, nextofkinfullname, nextofkinphone, nextofkinrelationship, nextofkinaddress, nextofkinofficeaddress, nextofkinoccupation, dateofbirth, registrationpoint, id
+                ]
+            );
+        } else if (!id && email) {
+            await pg.query(
+                `UPDATE skytobi."User" 
+                 SET firstname = COALESCE($1, firstname), 
+                     lastname = COALESCE($2, lastname), 
+                     othernames = COALESCE($3, othernames), 
+                     image = COALESCE(NULLIF($4, ''), image),
+                     image2 = COALESCE(NULLIF($5, ''), image2),
+                     role = COALESCE($6, role),
+                     lastupdated = $7,
+                     state = COALESCE($8, state),
+                     country = COALESCE($9, country),
+                     address = COALESCE($10, address),
+                     zipcode = COALESCE($11, zipcode),
+                     officeaddress = COALESCE($12, officeaddress),
                      permissions = COALESCE($13, permissions),
-                     userpermissions = COALESCE($14, userpermissions), 
+                     userpermissions = COALESCE($14, userpermissions),
                      gender = COALESCE($15, gender),
                      occupation = COALESCE($16, occupation),
                      lga = COALESCE($17, lga),
@@ -127,46 +167,9 @@ async function updateuser(req, res) {
                      nextofkinoccupation = COALESCE($28, nextofkinoccupation),
                      dateofbirth = COALESCE($29, dateofbirth),
                      registrationpoint = COALESCE($30, registrationpoint)
-                 WHERE id = $31`,
+                 WHERE email = $31`,
                 [
-                    firstname, lastname, othernames, image, image2, role, new Date(), state, country, address, officeaddress, branch, permissions, userpermissions, gender, occupation, lga, town, maritalstatus, spousename, stateofresidence, lgaofresidence, nextofkinfullname, nextofkinphone, nextofkinrelationship, nextofkinaddress, nextofkinofficeaddress, nextofkinoccupation, dateofbirth, registrationpoint, id
-                ]
-            );
-        } else if (!id && email) {
-            await pg.query(
-                `UPDATE skytobi."User" 
-                 SET firstname = COALESCE($1, firstname), 
-                     lastname = COALESCE($2, lastname), 
-                     othernames = COALESCE($3, othernames), 
-                     image = COALESCE(NULLIF($4, ''), image),
-                     image2 = COALESCE(NULLIF($5, ''), image2),
-                     role = COALESCE($6, role),
-                     lastupdated = $7,
-                     state = COALESCE($8, state),
-                     country = COALESCE($9, country),
-                     address = COALESCE($10, address),
-                     officeaddress = COALESCE($11, officeaddress),
-                     permissions = COALESCE($12, permissions),
-                     userpermissions = COALESCE($13, userpermissions),
-                     gender = COALESCE($14, gender),
-                     occupation = COALESCE($15, occupation),
-                     lga = COALESCE($16, lga),
-                     town = COALESCE($17, town),
-                     maritalstatus = COALESCE($18, maritalstatus),
-                     spousename = COALESCE($19, spousename),
-                     stateofresidence = COALESCE($20, stateofresidence),
-                     lgaofresidence = COALESCE($21, lgaofresidence),
-                     nextofkinfullname = COALESCE($22, nextofkinfullname),
-                     nextofkinphone = COALESCE($23, nextofkinphone),
-                     nextofkinrelationship = COALESCE($24, nextofkinrelationship),
-                     nextofkinaddress = COALESCE($25, nextofkinaddress),
-                     nextofkinofficeaddress = COALESCE($26, nextofkinofficeaddress),
-                     nextofkinoccupation = COALESCE($27, nextofkinoccupation),
-                     dateofbirth = COALESCE($28, dateofbirth),
-                     registrationpoint = COALESCE($29, registrationpoint)
-                 WHERE email = $30`,
-                [
-                    firstname, lastname, othernames, image, image2, role, new Date(), state, country, address, officeaddress, permissions, userpermissions, gender, occupation, lga, town, maritalstatus, spousename, stateofresidence, lgaofresidence, nextofkinfullname, nextofkinphone, nextofkinrelationship, nextofkinaddress, nextofkinofficeaddress, nextofkinoccupation, dateofbirth, registrationpoint, email
+                    firstname, lastname, othernames, image, image2, role, new Date(), state, country, address, zipcode, officeaddress, permissions, userpermissions, gender, occupation, lga, town, maritalstatus, spousename, stateofresidence, lgaofresidence, nextofkinfullname, nextofkinphone, nextofkinrelationship, nextofkinaddress, nextofkinofficeaddress, nextofkinoccupation, dateofbirth, registrationpoint, email
                 ]
             );
         }
