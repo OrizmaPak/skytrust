@@ -17,7 +17,8 @@ const optionalAmount = value => {
 
 const updateTransaction = async (req, res) => {
     const user = req.user;
-    const id = req.params.id || req.body.id;
+    const body = req.body || {};
+    const id = req.params.id || body.id;
 
     if (!id) {
         return res.status(StatusCodes.BAD_REQUEST).json({
@@ -29,11 +30,11 @@ const updateTransaction = async (req, res) => {
         });
     }
 
-    const credit = optionalAmount(req.body.credit);
-    const debit = optionalAmount(req.body.debit);
-    const transactiondate = optionalDate(req.body.transactiondate);
-    const valuedate = optionalDate(req.body.valuedate);
-    const description = req.body.description === undefined ? null : req.body.description;
+    const credit = optionalAmount(body.credit);
+    const debit = optionalAmount(body.debit);
+    const transactiondate = optionalDate(body.transactiondate);
+    const valuedate = optionalDate(body.valuedate);
+    const description = body.description === undefined ? null : String(body.description).trim();
 
     if ([credit, debit, transactiondate, valuedate].some(value => value === undefined)) {
         return res.status(StatusCodes.BAD_REQUEST).json({
@@ -68,7 +69,11 @@ const updateTransaction = async (req, res) => {
             });
         }
 
-        await activityMiddleware(req, user.id, `Transaction ${id} updated successfully`, 'TRANSACTION');
+        try {
+            await activityMiddleware(req, user.id, `Transaction ${id} updated successfully`, 'TRANSACTION');
+        } catch (activityError) {
+            console.error('Unable to log transaction update activity:', activityError);
+        }
 
         return res.status(StatusCodes.OK).json({
             status: true,
@@ -79,7 +84,11 @@ const updateTransaction = async (req, res) => {
         });
     } catch (error) {
         console.error('Unexpected Error:', error);
-        await activityMiddleware(req, user.id, `An unexpected error occurred updating transaction ${id}`, 'TRANSACTION');
+        try {
+            await activityMiddleware(req, user.id, `An unexpected error occurred updating transaction ${id}`, 'TRANSACTION');
+        } catch (activityError) {
+            console.error('Unable to log failed transaction update activity:', activityError);
+        }
 
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
             status: false,
