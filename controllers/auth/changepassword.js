@@ -50,7 +50,7 @@ const changePassword = async (req, res) => {
       });
     }
 
-    
+
 
     // If it’s a non-signed-in user
     if (token) {
@@ -133,16 +133,18 @@ const changePassword = async (req, res) => {
     // Hash the new password and update
     const hashpwd = await bcrypt.hash(newpassword, 10);
     await pg.query(`UPDATE skytobi."User" SET password = $1 WHERE email = $2`, [hashpwd, email]);
-    
+
     // Remove the verification token (if exists)
     await pg.query(`DELETE FROM skytobi."VerificationToken" WHERE token = $1`, [token]);
 
-    // Send confirmation email
-    await sendEmail({
-      to: email,
-      subject: 'Your Sky Trust Password Has Been Successfully Changed',
-      text: "A secure password is the key to protecting your digital life. If this change wasn't made by you, take action now.",
-      html: `<!DOCTYPE html>
+    // Send confirmation email. The password has already changed, so email delivery
+    // failure should not turn a successful password update into an API failure.
+    try {
+      await sendEmail({
+        to: email,
+        subject: 'Your Sky Trust Password Has Been Successfully Changed',
+        text: "A secure password is the key to protecting your digital life. If this change wasn't made by you, take action now.",
+        html: `<!DOCTYPE html>
             <html>
             <head>
                 <title>Password Changed Notification</title>
@@ -167,10 +169,17 @@ const changePassword = async (req, res) => {
                 </div>
             </body>
             </html>`
-    });
+      });
+    } catch (emailError) {
+      console.error('Password change confirmation email failed:', emailError);
+    }
 
     //  TRACK THE ACTIVITY
-    await activityMiddleware(req, existingUser.id, 'Password Changed', 'AUTH');
+    try {
+      await activityMiddleware(req, existingUser.id, 'Password Changed', 'AUTH');
+    } catch (activityError) {
+      console.error('Password change activity logging failed:', activityError);
+    }
 
     // Return success response
     return res.status(StatusCodes.OK).json({
@@ -192,4 +201,4 @@ const changePassword = async (req, res) => {
   }
 };
 
-module.exports = { changePassword } 
+module.exports = { changePassword }
