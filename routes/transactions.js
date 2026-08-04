@@ -14,6 +14,7 @@ const { viewCollectionsForTheYear } = require('../controllers/transactions/colle
 const { getfullAccountType } = require('../controllers/transactions/collections/getaccountcompletetype');
 const { processWithdrawal } = require('../controllers/transactions/withdrawal/cash/withdrawal');
 const { processCashCollection } = require('../controllers/transactions/deposit/cash/deposit');
+const { updateTransaction } = require('../controllers/transactions/update');
 const router = express.Router();
 
  
@@ -24,6 +25,10 @@ router.route('/')
 
 router.route('/account')
     .get(getaccountTransactions)
+
+router.route('/:id')
+    .put(updateTransaction)
+    .patch(updateTransaction)
 
 router.route('/balance')
     .get(getBalance)
