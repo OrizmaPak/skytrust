@@ -49,7 +49,7 @@ const getBanks = async (req, res) => {
             valueIndex++;
         }
 
-        query.text += whereClause;
+        query.text += `${whereClause} ORDER BY bank ASC`;
 
         const result = await pg.query(query);
         const banks = result.rows;
