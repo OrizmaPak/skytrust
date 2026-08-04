@@ -15,6 +15,7 @@ const { getfullAccountType } = require('../controllers/transactions/collections/
 const { processWithdrawal } = require('../controllers/transactions/withdrawal/cash/withdrawal');
 const { processCashCollection } = require('../controllers/transactions/deposit/cash/deposit');
 const { updateTransaction } = require('../controllers/transactions/update');
+const { reverseTransaction } = require('../controllers/transactions/reverse');
 const router = express.Router();
 
  
@@ -29,6 +30,9 @@ router.route('/account')
 router.route('/:id')
     .put(updateTransaction)
     .patch(updateTransaction)
+
+router.route('/:id/reverse')
+    .post(reverseTransaction)
 
 router.route('/balance')
     .get(getBalance)

@@ -3,6 +3,12 @@ const pg = require("../../../../db/pg");
 const { activityMiddleware } = require("../../../../middleware/activity");
 const { performTransactionOneWay } = require("../../../../middleware/transactions/performTransaction");
 
+const parseOptionalDate = (value) => {
+    if (!value) return new Date();
+    const parsed = new Date(value);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
+};
+
 const processCashCollection = async (req, res) => {
     const timestamp = new Date().getTime();
         const today = new Date();
@@ -10,8 +16,10 @@ const processCashCollection = async (req, res) => {
         const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
         const day = String(today.getDate()).padStart(2, '0');
         const dateString = `${year}${month}${day}`;
-    let { branch, userid, rowsize, location="OUTSIDE", cashref } = req.body;
+    let { branch, userid, rowsize, location="OUTSIDE", cashref, transactiondate, valuedate } = req.body;
     const reqCashref = cashref
+    const postedTransactionDate = parseOptionalDate(transactiondate);
+    const postedValueDate = parseOptionalDate(valuedate);
     if (!cashref) {
         cashref = `DP-${dateString}-${userid}`;
     }
@@ -29,9 +37,19 @@ const processCashCollection = async (req, res) => {
     }
 
     if (!cashref) {
-        return res.status(StatusCodes.BAD_REQUEST).json({  
+        return res.status(StatusCodes.BAD_REQUEST).json({
             status: false,
             message: "marketer reference is required", 
+            statuscode: StatusCodes.BAD_REQUEST,
+            data: null,
+            errors: []
+        });
+    }
+
+    if (!postedTransactionDate || !postedValueDate) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+            status: false,
+            message: "Please enter valid transaction and value dates",
             statuscode: StatusCodes.BAD_REQUEST,
             data: null,
             errors: []
@@ -178,7 +196,8 @@ const processCashCollection = async (req, res) => {
                 credit: Number(credit),
                 debit: 0,
                 reference: "",
-                transactiondate: new Date(),
+                transactiondate: postedTransactionDate,
+                valuedate: postedValueDate,
                 transactiondesc: (location === 'INSIDE' ? 'BRANCH ' : '') + 'Credit Cash transaction collected by ' + userCheckData[0].firstname + ' ' + userCheckData[0].lastname + ' ' + userCheckData[0].othernames,
                 cashref: cashref,
                 currency: 'USD',
@@ -197,7 +216,8 @@ const processCashCollection = async (req, res) => {
                 credit: Number(credit),
                 debit: 0,
                 reference: "",
-                transactiondate: new Date(),
+                transactiondate: postedTransactionDate,
+                valuedate: postedValueDate,
                 transactiondesc: (location === 'INSIDE' ? 'BRANCH ' : '') + 'Credit Cash transaction collected by ' + userCheckData[0].firstname + ' ' + userCheckData[0].lastname + ' ' + userCheckData[0].othernames + (!reqCashref ? ' as a collection remittance by the marketer' : ''),
                 cashref: cashref,
                 currency: 'USD',
@@ -241,9 +261,9 @@ const processCashCollection = async (req, res) => {
                 'CREDIT',
                 'CASH',
                 user.id,
-                new Date(),
+                postedValueDate,
                 generateRandomComplexReference(),
-                new Date(),
+                postedTransactionDate,
                 (location === 'INSIDE' ? 'BRANCH ' : '') + 'Credit to default cash account by ' + userCheckData[0].firstname + ' ' + userCheckData[0].lastname + ' ' + userCheckData[0].othernames + (!reqCashref ? ' as a collection remittance by the marketer' : ''),
                 cashref,
                 'ACTIVE',

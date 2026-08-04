@@ -3,9 +3,17 @@ const pg = require("../../../../db/pg");
 const { activityMiddleware } = require("../../../../middleware/activity");
 const { performTransactionOneWay, performTransaction } = require("../../../../middleware/transactions/performTransaction");
 
+const parseOptionalDate = (value) => {
+    if (!value) return new Date();
+    const parsed = new Date(value);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
+};
+
 const processWithdrawal = async (req, res) => {
     // Destructure and set default values for request body parameters
-    let { allocation = 0, branch, userid, rowsize, location = "OUTSIDE", cashref } = req.body;
+    let { allocation = 0, branch, userid, rowsize, location = "OUTSIDE", cashref, transactiondate, valuedate } = req.body;
+    const postedTransactionDate = parseOptionalDate(transactiondate);
+    const postedValueDate = parseOptionalDate(valuedate);
 
     const originalCashref = cashref
 
@@ -16,6 +24,16 @@ const processWithdrawal = async (req, res) => {
         return res.status(StatusCodes.BAD_REQUEST).json({
             status: false,
             message: "Branch, user, and rowsize are required",
+            statuscode: StatusCodes.BAD_REQUEST,
+            data: null,
+            errors: []
+        });
+    }
+
+    if (!postedTransactionDate || !postedValueDate) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+            status: false,
+            message: "Please enter valid transaction and value dates",
             statuscode: StatusCodes.BAD_REQUEST,
             data: null,
             errors: []
@@ -253,7 +271,8 @@ const processWithdrawal = async (req, res) => {
                     credit: 0,
                     debit: Number(debit),
                     reference: "",
-                    transactiondate: new Date(),
+                    transactiondate: postedTransactionDate,
+                    valuedate: postedValueDate,
                     transactiondesc: (location === 'INSIDE' ? 'BRANCH ' : '') + ' Cash Withdrawal transaction processed by ' + userCheckData[0].firstname + ' ' + userCheckData[0].lastname + ' ' + userCheckData[0].othernames,
                     cashref: cashref,
                     currency: 'USD',
@@ -269,7 +288,8 @@ const processWithdrawal = async (req, res) => {
                     credit: 0,
                     debit: Number(debit),
                     reference: "",
-                    transactiondate: new Date(),
+                    transactiondate: postedTransactionDate,
+                    valuedate: postedValueDate,
                     transactiondesc: (location === 'INSIDE' ? 'BRANCH ' : '') + `Cash Withdrawal transaction processed to ${accountnumber} by ` + userCheckData[0].firstname + ' ' + userCheckData[0].lastname + ' ' + userCheckData[0].othernames,
                     cashref: cashref,
                     currency: 'USD',
@@ -293,7 +313,8 @@ const processWithdrawal = async (req, res) => {
                 credit: Number(debit),
                 debit: 0,
                 reference: "",
-                transactiondate: new Date(),
+                transactiondate: postedTransactionDate,
+                valuedate: postedValueDate,
                 transactiondesc: (location === 'INSIDE' ? 'BRANCH ' : '') + ' Cash Withdrawal reversal processed by ' + userCheckData[0].firstname + ' ' + userCheckData[0].lastname + ' ' + userCheckData[0].othernames,
                 cashref: cashref,
                 currency: 'USD',
@@ -319,7 +340,7 @@ const processWithdrawal = async (req, res) => {
                 ttype: 'WITHDRAWAL',
                 tfrom: 'CASH',
                 createdby: user.id,
-                valuedate: new Date(),
+                valuedate: postedValueDate,
                 reference: transactionDetails.debitcashAccount.reference,
                 transactiondate: transactionDetails.debitcashAccount.transactiondate,
                 transactiondesc: transactionDetails.debitcashAccount.transactiondesc,
