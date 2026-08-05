@@ -1,4 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
+require('../config/env');
 
 let prisma;
 
@@ -21,4 +22,3 @@ prisma.$connect().then(() => {
 });
  
 module.exports = prisma;
-   

@@ -1,13 +1,10 @@
 const { Pool } = require('pg');
-
-if (!process.env.DATABASE_URL) {
-  throw new Error('DATABASE_URL is not configured');
-}
+const config = require('../config/env');
 
 // Vercel may freeze and resume a function between requests. A pool can discard
 // stale Neon connections and establish a fresh one instead of hanging forever.
 const pg = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: config.databaseUrl,
   max: 1,
   idleTimeoutMillis: 10000,
   connectionTimeoutMillis: 10000,
