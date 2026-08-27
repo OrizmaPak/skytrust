@@ -411,4 +411,14 @@ router.post('/conversations/:id/close', requireLiveChatOperator, async (req, res
   return ok(res, 'Conversation closed', { conversation: mapConversation(conversation) });
 });
 
+router.post('/conversations/:id/clear', async (req, res) => {
+  const conversation = await findConversationById(req.params.id);
+  if (!conversation) return fail(res, StatusCodes.NOT_FOUND, 'Conversation not found');
+  if (!await canReadConversation(req, conversation)) return fail(res, StatusCodes.UNAUTHORIZED, 'Unauthorized live chat access');
+
+  await pg.query('DELETE FROM sky.livechat_conversation WHERE id = $1', [conversation.id]);
+
+  return ok(res, 'Conversation cleared', { id: conversation.id });
+});
+
 module.exports = router;
