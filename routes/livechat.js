@@ -99,19 +99,7 @@ const hydrateUser = async req => {
   return user;
 };
 
-const canManageLiveChat = user => {
-  if (!user) return false;
-  const role = String(user.role || '').toUpperCase();
-  const permissions = String(user.permissions || '').toUpperCase();
-  return role === 'SUPERADMIN'
-    || role === 'ADMIN'
-    || role === 'STAFF'
-    || role === 'MANAGER'
-    || permissions.includes('LIVE CHAT')
-    || permissions.includes('LIVECHAT')
-    || permissions.includes('ACCESS CONTROL')
-    || permissions.includes('ACCESS ALL USERS');
-};
+const canManageLiveChat = user => Boolean(user);
 
 const requireLiveChatOperator = async (req, res, next) => {
   const user = await hydrateUser(req);
