@@ -99,14 +99,23 @@ const hydrateUser = async req => {
   return user;
 };
 
-const isAdminUser = user => {
-  const role = String(user?.role || '').toUpperCase();
-  return Boolean(user && role && role !== 'MEMBER' && role !== 'USER');
+const canManageLiveChat = user => {
+  if (!user) return false;
+  const role = String(user.role || '').toUpperCase();
+  const permissions = String(user.permissions || '').toUpperCase();
+  return role === 'SUPERADMIN'
+    || role === 'ADMIN'
+    || role === 'STAFF'
+    || role === 'MANAGER'
+    || permissions.includes('LIVE CHAT')
+    || permissions.includes('LIVECHAT')
+    || permissions.includes('ACCESS CONTROL')
+    || permissions.includes('ACCESS ALL USERS');
 };
 
-const requireAdmin = async (req, res, next) => {
+const requireLiveChatOperator = async (req, res, next) => {
   const user = await hydrateUser(req);
-  if (!isAdminUser(user)) {
+  if (!canManageLiveChat(user)) {
     return fail(res, StatusCodes.UNAUTHORIZED, 'Admin access required');
   }
   req.user = user;
@@ -151,7 +160,7 @@ const getGuestSessionId = req => req.body.visitorSessionId || req.query.visitorS
 
 const canReadConversation = async (req, conversation) => {
   const user = await hydrateUser(req);
-  if (isAdminUser(user)) return true;
+  if (canManageLiveChat(user)) return true;
   if (user && conversation.userid && Number(conversation.userid) === Number(user.id)) return true;
   const visitorSessionId = getGuestSessionId(req);
   return Boolean(conversation.visitorsessionid && visitorSessionId && conversation.visitorsessionid === visitorSessionId);
@@ -242,7 +251,7 @@ router.route('/conversations')
 
     return ok(res, 'Conversation created', { conversation: mapConversation(conversation) }, StatusCodes.CREATED);
   })
-  .get(requireAdmin, async (req, res) => {
+  .get(requireLiveChatOperator, async (req, res) => {
     const status = String(req.query.status || '').toUpperCase();
     const q = String(req.query.q || '').trim();
     const page = Math.max(Number(req.query.page || 1), 1);
@@ -299,7 +308,7 @@ router.route('/conversations/:id')
     if (!conversation) return fail(res, StatusCodes.NOT_FOUND, 'Conversation not found');
     if (!await canReadConversation(req, conversation)) return fail(res, StatusCodes.UNAUTHORIZED, 'Unauthorized live chat access');
 
-    if (isAdminUser(req.livechatUser)) {
+    if (canManageLiveChat(req.livechatUser)) {
       await pg.query(
         "UPDATE sky.livechat_message SET readat = COALESCE(readat, NOW()) WHERE conversationid = $1 AND sendertype <> 'ADMIN'",
         [conversation.id]
@@ -315,7 +324,7 @@ router.route('/conversations/:id')
       messages: messages.map(mapMessage)
     });
   })
-  .patch(requireAdmin, async (req, res) => {
+  .patch(requireLiveChatOperator, async (req, res) => {
     const { assignedTo } = req.body;
     const { rows: [conversation] } = await pg.query(`
       UPDATE sky.livechat_conversation
@@ -356,7 +365,7 @@ router.route('/conversations/:id/messages')
     const senderType = String(req.body.senderType || (user ? 'CLIENT' : 'GUEST')).toUpperCase();
     const adminSending = senderType === 'ADMIN';
 
-    if (adminSending && !isAdminUser(user)) return fail(res, StatusCodes.UNAUTHORIZED, 'Admin access required');
+    if (adminSending && !canManageLiveChat(user)) return fail(res, StatusCodes.UNAUTHORIZED, 'Admin access required');
     if (!adminSending && !await canReadConversation(req, conversation)) return fail(res, StatusCodes.UNAUTHORIZED, 'Unauthorized live chat access');
 
     const body = String(req.body.body || '').trim();
@@ -402,7 +411,7 @@ router.route('/conversations/:id/messages')
     }, StatusCodes.CREATED);
   });
 
-router.post('/conversations/:id/close', requireAdmin, async (req, res) => {
+router.post('/conversations/:id/close', requireLiveChatOperator, async (req, res) => {
   const { rows: [conversation] } = await pg.query(`
     UPDATE sky.livechat_conversation
     SET status = 'CLOSED', closedat = NOW(), closedby = $1, updatedat = NOW()
