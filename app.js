@@ -31,6 +31,7 @@ const salesRouter = require('./routes/sales');
 const personnelRouter = require('./routes/personnel');
 const aiRouter = require('./routes/ai');
 const bankRouter = require('./routes/bank');
+const livechatRouter = require('./routes/livechat');
 
 // error handler
 const notFoundMiddleware = require('./middleware/not-found'); 
@@ -49,8 +50,8 @@ app.use(cors()); // Add CORS middleware to fix cross-origin errors
 
 const corsOptions = {
   origin: '*', // Allow all origins
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-LiveChat-Visitor-Session'],
   credentials: true,
 };
  
@@ -74,6 +75,7 @@ app.use('/node/api/v1/payment', authMiddleware, transactionMiddleware, paymentRo
 app.use('/node/api/v1/payment2', transactionMiddleware, paymentRouter);
 app.use('/node/api/v1/transactions', authMiddleware, transactionsRouter); 
 app.use('/node/api/v1/bank', authMiddleware, bankRouter);
+app.use('/node/api/v1/livechat', livechatRouter);
 // app.use('/node/api/v1/purchases', authMiddleware, purchasesRouter);
 // app.use('/node/api/v1/expense', authMiddleware, expenseRouter);
 // app.use('/node/api/v1/sales', authMiddleware, salesRouter);
