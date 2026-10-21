@@ -57,9 +57,11 @@
             query.text += whereClause;
     
             // Add pagination
-            const searchParams = new URLSearchParams(req.query);
-            const page = parseInt(searchParams.get('page') || '1', 10);
-            const limit = parseInt(searchParams.get('limit') || process.env.DEFAULT_LIMIT, 10);
+            const page = Math.max(parseInt(req.query.page || '1', 10) || 1, 1);
+            const limit = Math.min(
+                Math.max(parseInt(req.query.limit || process.env.DEFAULT_LIMIT || '20', 10) || 20, 1),
+                100,
+            );
             const offset = (page - 1) * limit;
     
             query.text += ` LIMIT $${valueIndex} OFFSET $${valueIndex + 1}`;
