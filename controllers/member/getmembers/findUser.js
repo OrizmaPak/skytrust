@@ -3,13 +3,24 @@
     const pg = require("../../../db/pg");
     const { addOneDay } = require("../../../utils/expiredate");
     const { divideAndRoundUp } = require("../../../utils/pageCalculator");
+
+    const FILTER_COLUMNS = new Set([
+        'id',
+        'branch',
+        'createdby',
+        'email',
+        'phone',
+        'registrationpoint',
+        'role',
+        'status',
+    ]);
     
     const findUsers = async (req, res) => {
         const user = req.user;
     
         try {
             let query = {
-                text: `SELECT * FROM skytobi."User"`,
+                text: `SELECT * FROM skytobi."User" u`,
                 values: []
             };
     
@@ -18,20 +29,12 @@
 
             console.log(user.branch);
     
-            // Fetch column names from the 'User' table across all schemas
-            const { rows: columns } = await pg.query(`
-                SELECT column_name
-                FROM information_schema.columns
-                WHERE table_schema = 'skytobi' AND table_name = 'User'
-            `);
-
             // Dynamically build the WHERE clause based on query parameters
             let valueIndex = query.values.length + 1;
             Object.keys(req.query).forEach((key) => {
-                const column = columns.find(col => col.column_name === key);
-                if (column && req.query[key] !== '') { // Ensure the query parameter is not an empty string
+                if (FILTER_COLUMNS.has(key) && req.query[key] !== '') {
                     whereClause += whereClause ? ` AND ` : ` WHERE `;
-                    whereClause += `"User"."${key}" = $${valueIndex}`;
+                    whereClause += `u."${key}" = $${valueIndex}`;
                     query.values.push(req.query[key]);
                     valueIndex++;
                 }
@@ -39,10 +42,13 @@
     
             // Add search query if provided
             if (req.query.q) {
-                const cols = columns.map(row => row.column_name);
-    
-                // Generate the dynamic SQL query
-                const searchConditions = cols.map(col => `${col}::text ILIKE $${valueIndex}`).join(' OR ');
+                const searchConditions = [
+                    'u.firstname',
+                    'u.lastname',
+                    'u.othernames',
+                    'u.email',
+                    'u.phone',
+                ].map(column => `${column}::text ILIKE $${valueIndex}`).join(' OR ');
                 whereClause += whereClause ? ` AND (${searchConditions})` : ` WHERE (${searchConditions})`;
                 query.values.push(`%${req.query.q}%`);
                 valueIndex++;
@@ -73,7 +79,7 @@
     
             // Get total count for pagination
             const countQuery = {
-                text: `SELECT COUNT(*) FROM skytobi."User" ${whereClause}`,
+                text: `SELECT COUNT(*) FROM skytobi."User" u ${whereClause}`,
                 values: query.values.slice(0, -2) // Exclude limit and offset
             };
             const { rows: [{ count: total }] } = await pg.query(countQuery);
