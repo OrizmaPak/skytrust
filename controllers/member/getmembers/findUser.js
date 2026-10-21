@@ -22,7 +22,7 @@
             const { rows: columns } = await pg.query(`
                 SELECT column_name
                 FROM information_schema.columns
-                WHERE table_schema = 'sky' AND table_name = 'User'
+                WHERE table_schema = 'skytobi' AND table_name = 'User'
             `);
 
             // Dynamically build the WHERE clause based on query parameters
