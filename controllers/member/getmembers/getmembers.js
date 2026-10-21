@@ -29,7 +29,7 @@
             // Dynamically build the WHERE clause based on query parameters
             let valueIndex = query.values.length + 1;
             Object.keys(req.query).forEach((key) => {
-                if (key !== 'q') {
+                if (!['q', 'page', 'limit'].includes(key)) {
                     whereClause += whereClause ? ` AND ` : ` WHERE `;
                     whereClause += `u."${key}" = $${valueIndex}`;
                     query.values.push(req.query[key]);
