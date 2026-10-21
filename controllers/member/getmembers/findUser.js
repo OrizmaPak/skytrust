@@ -20,7 +20,9 @@
     
         try {
             let query = {
-                text: `SELECT * FROM skytobi."User" u`,
+                text: `SELECT u.*, b.branch AS branchname
+                       FROM skytobi."User" u
+                       LEFT JOIN skytobi."Branch" b ON b.id = u.branch`,
                 values: []
             };
     
@@ -73,12 +75,6 @@
                 return userWithoutPassword;
             });
 
-            // Fetch branch names for each user
-            for (let user of users) {
-                const { rows: [branch] } = await pg.query(`SELECT branch FROM skytobi."Branch" WHERE id = $1`, [user.branch]);
-                user.branchname = branch ? branch.branch : null;
-            }
-    
             // Get total count for pagination
             const countQuery = {
                 text: `SELECT COUNT(*) FROM skytobi."User" u ${whereClause}`,
